@@ -13,6 +13,7 @@
 		47752BB61BEA9B8700A97859 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 47752BB51BEA9B8700A97859 /* Assets.xcassets */; };
 		47752BB91BEA9B8700A97859 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 47752BB71BEA9B8700A97859 /* LaunchScreen.storyboard */; };
 		47752BC11BEA9DC800A97859 /* TestMasterTemplates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47752BC01BEA9DC800A97859 /* TestMasterTemplates.swift */; };
+		47FC450B1BEEFAE3005A90E5 /* SingletonTestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47FC450A1BEEFAE3005A90E5 /* SingletonTestManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		47752BB81BEA9B8700A97859 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		47752BBA1BEA9B8700A97859 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		47752BC01BEA9DC800A97859 /* TestMasterTemplates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestMasterTemplates.swift; sourceTree = "<group>"; };
+		47FC450A1BEEFAE3005A90E5 /* SingletonTestManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingletonTestManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +60,7 @@
 			children = (
 				47752BAE1BEA9B8700A97859 /* AppDelegate.swift */,
 				47752BC01BEA9DC800A97859 /* TestMasterTemplates.swift */,
+				47FC450A1BEEFAE3005A90E5 /* SingletonTestManager.swift */,
 				47752BB01BEA9B8700A97859 /* ViewController.swift */,
 				47752BB21BEA9B8700A97859 /* Main.storyboard */,
 				47752BB51BEA9B8700A97859 /* Assets.xcassets */,
@@ -141,6 +144,7 @@
 				47752BB11BEA9B8700A97859 /* ViewController.swift in Sources */,
 				47752BAF1BEA9B8700A97859 /* AppDelegate.swift in Sources */,
 				47752BC11BEA9DC800A97859 /* TestMasterTemplates.swift in Sources */,
+				47FC450B1BEEFAE3005A90E5 /* SingletonTestManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -290,6 +294,7 @@
 				47752BBF1BEA9B8700A97859 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
