@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4703B46B1BF093D600298A03 /* TestingTips.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4703B46A1BF093D600298A03 /* TestingTips.swift */; };
+		4703B46D1BF130C000298A03 /* ReferenceObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4703B46C1BF130C000298A03 /* ReferenceObjects.swift */; };
 		47752BAF1BEA9B8700A97859 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47752BAE1BEA9B8700A97859 /* AppDelegate.swift */; };
 		47752BB11BEA9B8700A97859 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47752BB01BEA9B8700A97859 /* ViewController.swift */; };
 		47752BB41BEA9B8700A97859 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 47752BB21BEA9B8700A97859 /* Main.storyboard */; };
@@ -19,6 +20,7 @@
 
 /* Begin PBXFileReference section */
 		4703B46A1BF093D600298A03 /* TestingTips.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestingTips.swift; sourceTree = "<group>"; };
+		4703B46C1BF130C000298A03 /* ReferenceObjects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReferenceObjects.swift; sourceTree = "<group>"; };
 		47752BAB1BEA9B8700A97859 /* LandgateAPITest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LandgateAPITest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		47752BAE1BEA9B8700A97859 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		47752BB01BEA9B8700A97859 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -65,6 +67,7 @@
 				47FC450A1BEEFAE3005A90E5 /* SingletonTestManager.swift */,
 				47752BB01BEA9B8700A97859 /* ViewController.swift */,
 				47752BB21BEA9B8700A97859 /* Main.storyboard */,
+				4703B46C1BF130C000298A03 /* ReferenceObjects.swift */,
 				4703B46A1BF093D600298A03 /* TestingTips.swift */,
 				47752BB51BEA9B8700A97859 /* Assets.xcassets */,
 				47752BB71BEA9B8700A97859 /* LaunchScreen.storyboard */,
@@ -146,6 +149,7 @@
 			files = (
 				47752BB11BEA9B8700A97859 /* ViewController.swift in Sources */,
 				47752BAF1BEA9B8700A97859 /* AppDelegate.swift in Sources */,
+				4703B46D1BF130C000298A03 /* ReferenceObjects.swift in Sources */,
 				47752BC11BEA9DC800A97859 /* TestMasterTemplates.swift in Sources */,
 				4703B46B1BF093D600298A03 /* TestingTips.swift in Sources */,
 				47FC450B1BEEFAE3005A90E5 /* SingletonTestManager.swift in Sources */,
