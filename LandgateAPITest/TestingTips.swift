@@ -51,4 +51,8 @@ struct Tip {
 	static let Number8: String = "Please stay safe while testing.\nWe don't need to know the signal strength " +
 								"at the edge of a cliff. We don't want drivers to take their eyes off the road. " +
 								"There's no point taking any risk for the sake of this research."
+	
+	static let Number9: String = "Remember that uploading test results will use just as much data as " +
+								"downloading them in the first place. You can always upload at a later date " +
+								"on a wifi connection."
 }

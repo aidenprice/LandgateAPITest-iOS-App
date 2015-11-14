@@ -7,7 +7,25 @@
 //
 
 import Foundation
+import RealmSwift
 
 class TestManager {
 	static let sharedInstance = TestManager()
+	
+	var state
+	
+	var testPlan: [TestEndpoint]?
+	
+	var testCampaign: String = "test_campaign"
+	
+	var testMasterResult: TestMasterResult?
+	
+	var testResults: [TestResult]?
+	
+	var locationResults: [LocationResult]?
+	
+	var connectionResults: [ConnectionResult]?
+	
+	var pingResults: [PingResult]?
+	
 }

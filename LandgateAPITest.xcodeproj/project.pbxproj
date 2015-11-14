@@ -9,6 +9,11 @@
 /* Begin PBXBuildFile section */
 		4703B46B1BF093D600298A03 /* TestingTips.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4703B46A1BF093D600298A03 /* TestingTips.swift */; };
 		4703B46D1BF130C000298A03 /* ReferenceObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4703B46C1BF130C000298A03 /* ReferenceObjects.swift */; };
+		4703B4731BF3D27B00298A03 /* CreditsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4703B4721BF3D27B00298A03 /* CreditsViewController.swift */; };
+		4703B4771BF6C06000298A03 /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4703B4741BF6C06000298A03 /* Realm.framework */; };
+		4703B4781BF6C06000298A03 /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4703B4751BF6C06000298A03 /* RealmSwift.framework */; };
+		4703B4791BF6C06000298A03 /* Transporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4703B4761BF6C06000298A03 /* Transporter.framework */; };
+		4703B47F1BF6DF7000298A03 /* ResultObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4703B47E1BF6DF7000298A03 /* ResultObjects.swift */; };
 		47752BAF1BEA9B8700A97859 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47752BAE1BEA9B8700A97859 /* AppDelegate.swift */; };
 		47752BB11BEA9B8700A97859 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47752BB01BEA9B8700A97859 /* ViewController.swift */; };
 		47752BB41BEA9B8700A97859 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 47752BB21BEA9B8700A97859 /* Main.storyboard */; };
@@ -21,6 +26,11 @@
 /* Begin PBXFileReference section */
 		4703B46A1BF093D600298A03 /* TestingTips.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestingTips.swift; sourceTree = "<group>"; };
 		4703B46C1BF130C000298A03 /* ReferenceObjects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReferenceObjects.swift; sourceTree = "<group>"; };
+		4703B4721BF3D27B00298A03 /* CreditsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreditsViewController.swift; sourceTree = "<group>"; };
+		4703B4741BF6C06000298A03 /* Realm.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Realm.framework; path = Carthage/Build/iOS/Realm.framework; sourceTree = "<group>"; };
+		4703B4751BF6C06000298A03 /* RealmSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RealmSwift.framework; path = Carthage/Build/iOS/RealmSwift.framework; sourceTree = "<group>"; };
+		4703B4761BF6C06000298A03 /* Transporter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Transporter.framework; path = Carthage/Build/iOS/Transporter.framework; sourceTree = "<group>"; };
+		4703B47E1BF6DF7000298A03 /* ResultObjects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResultObjects.swift; sourceTree = "<group>"; };
 		47752BAB1BEA9B8700A97859 /* LandgateAPITest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LandgateAPITest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		47752BAE1BEA9B8700A97859 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		47752BB01BEA9B8700A97859 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -37,6 +47,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4703B4771BF6C06000298A03 /* Realm.framework in Frameworks */,
+				4703B4781BF6C06000298A03 /* RealmSwift.framework in Frameworks */,
+				4703B4791BF6C06000298A03 /* Transporter.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -46,6 +59,9 @@
 		47752BA21BEA9B8700A97859 = {
 			isa = PBXGroup;
 			children = (
+				4703B4741BF6C06000298A03 /* Realm.framework */,
+				4703B4751BF6C06000298A03 /* RealmSwift.framework */,
+				4703B4761BF6C06000298A03 /* Transporter.framework */,
 				47752BAD1BEA9B8700A97859 /* LandgateAPITest */,
 				47752BAC1BEA9B8700A97859 /* Products */,
 			);
@@ -62,10 +78,12 @@
 		47752BAD1BEA9B8700A97859 /* LandgateAPITest */ = {
 			isa = PBXGroup;
 			children = (
+				4703B47E1BF6DF7000298A03 /* ResultObjects.swift */,
 				47752BAE1BEA9B8700A97859 /* AppDelegate.swift */,
 				47752BC01BEA9DC800A97859 /* TestMasterTemplates.swift */,
 				47FC450A1BEEFAE3005A90E5 /* SingletonTestManager.swift */,
 				47752BB01BEA9B8700A97859 /* ViewController.swift */,
+				4703B4721BF3D27B00298A03 /* CreditsViewController.swift */,
 				47752BB21BEA9B8700A97859 /* Main.storyboard */,
 				4703B46C1BF130C000298A03 /* ReferenceObjects.swift */,
 				4703B46A1BF093D600298A03 /* TestingTips.swift */,
@@ -86,6 +104,7 @@
 				47752BA71BEA9B8700A97859 /* Sources */,
 				47752BA81BEA9B8700A97859 /* Frameworks */,
 				47752BA91BEA9B8700A97859 /* Resources */,
+				4703B47A1BF6C08D00298A03 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -142,6 +161,25 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		4703B47A1BF6C08D00298A03 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/Realm.framework ",
+				"$(SRCROOT)/Carthage/Build/iOS/RealmSwift.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/Transporter.framework",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/local/bin/carthage copy-frameworks";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		47752BA71BEA9B8700A97859 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -149,10 +187,12 @@
 			files = (
 				47752BB11BEA9B8700A97859 /* ViewController.swift in Sources */,
 				47752BAF1BEA9B8700A97859 /* AppDelegate.swift in Sources */,
+				4703B4731BF3D27B00298A03 /* CreditsViewController.swift in Sources */,
 				4703B46D1BF130C000298A03 /* ReferenceObjects.swift in Sources */,
 				47752BC11BEA9DC800A97859 /* TestMasterTemplates.swift in Sources */,
 				4703B46B1BF093D600298A03 /* TestingTips.swift in Sources */,
 				47FC450B1BEEFAE3005A90E5 /* SingletonTestManager.swift in Sources */,
+				4703B47F1BF6DF7000298A03 /* ResultObjects.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -265,10 +305,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = LandgateAPITest/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.endeavourapps.LandgateAPITest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
@@ -276,6 +322,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = LandgateAPITest/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.endeavourapps.LandgateAPITest;

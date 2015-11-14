@@ -10,16 +10,18 @@ import Foundation
 import UIKit
 
 
-struct Template {
+struct TMTemplate {
 	let name: String
 	let details: String
-	let downloadSize: Int
 	let image: UIImage
+	let downloadSize: Int
+	let testPlan: []
+	
 }
 
 
 struct TestMaster {
-	static let Standard = Template(
+	static let Standard = TMTemplate(
 		name: "Standard Test",
 		details: "The basic test format and a good all-rounder. " +
 				"Tests a variety of endpoints; GeoJSON, WMS, WMTS. " +
@@ -29,7 +31,7 @@ struct TestMaster {
 		downloadSize: 1,
 		image: UIImage(named: "Standard Icon")!
 	)
-	static let ExtraLong = Template(
+	static let ExtraLong = TMTemplate(
 		name: "Extra Long Test",
 		details: "A repetitious test over a long period asking for small " +
 				"JSON responses over and over and over. This is a good one " +
@@ -38,7 +40,7 @@ struct TestMaster {
 		downloadSize: 1,
 		image: UIImage(named: "Extra Long Icon")!
 	)
-	static let RemoteArea = Template(
+	static let RemoteArea = TMTemplate(
 		name: "Remote Area Test",
 		details: "A test designed for areas with dodgy signal (some of the " +
 				"best places on Earth, frankly). Has longer time out times " +
@@ -46,7 +48,7 @@ struct TestMaster {
 		downloadSize: 1,
 		image: UIImage(named: "Remote Area Icon")!
 	)
-	static let WMS = Template(
+	static let WMS = TMTemplate(
 		name: "WMS Test",
 		details: "This test calls for image responses rather than XML or JSON." +
 				"It is designed to look for image flaws that may happen when " +
@@ -55,7 +57,7 @@ struct TestMaster {
 		downloadSize: 1,
 		image: UIImage(named: "WMS Icon")!
 	)
-	static let WiFi = Template(
+	static let WiFi = TMTemplate(
 		name: "WiFi Test",
 		details: "Please DON'T use this test on a 3G or 4G connection, if you " +
 				"value your download cap!\nThis is deliberately designed to be " +
