@@ -15,6 +15,7 @@ class ResultObject: Object {
 	dynamic var datetime: Double = 0.0
 	dynamic var success: Bool = false
 	dynamic var comment: String? = ""
+	dynamic var uploaded: Bool = false
 	
 	override static func primaryKey() -> String? {
 		return "testID"
@@ -30,13 +31,14 @@ class TestMasterResult: ResultObject {
 	dynamic var finishDatetime: Double = 0.0
 	dynamic var deviceType: String = ""
 	dynamic var iOSVersion: String = ""
-	let testEndpointResults = List<TestEndpointResult>()
+	dynamic var deviceID: String = ""
+	let testEndpointResults = List<EndpointResult>()
 	let networkResults = List<NetworkResult>()
 	let locationResults = List<LocationResult>()
 	let pingResults = List<PingResult>()
 }
 
-class TestEndpointResult: ResultObject {
+class EndpointResult: ResultObject {
 	dynamic var startDatetime: Double = 0.0
 	dynamic var finishDatetime: Double = 0.0
 	dynamic var testedURL: String = ""

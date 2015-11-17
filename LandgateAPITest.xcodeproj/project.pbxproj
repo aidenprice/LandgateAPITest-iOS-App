@@ -20,6 +20,11 @@
 		47752BB61BEA9B8700A97859 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 47752BB51BEA9B8700A97859 /* Assets.xcassets */; };
 		47752BB91BEA9B8700A97859 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 47752BB71BEA9B8700A97859 /* LaunchScreen.storyboard */; };
 		47752BC11BEA9DC800A97859 /* TestMasterTemplates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47752BC01BEA9DC800A97859 /* TestMasterTemplates.swift */; };
+		47F2AEEE1BF978AC00E70DEB /* LocationTester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47F2AEED1BF978AC00E70DEB /* LocationTester.swift */; };
+		47F2AEF01BFA71F600E70DEB /* NetworkTester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47F2AEEF1BFA71F600E70DEB /* NetworkTester.swift */; };
+		47F2AEF21BFAD0B900E70DEB /* PingTester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47F2AEF11BFAD0B900E70DEB /* PingTester.swift */; };
+		47F2AEF41BFAD0C800E70DEB /* EndpointTester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47F2AEF31BFAD0C800E70DEB /* EndpointTester.swift */; };
+		47F2AEF61BFB1C5D00E70DEB /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47F2AEF51BFB1C5D00E70DEB /* Reachability.swift */; };
 		47FC450B1BEEFAE3005A90E5 /* SingletonTestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47FC450A1BEEFAE3005A90E5 /* SingletonTestManager.swift */; };
 /* End PBXBuildFile section */
 
@@ -39,6 +44,11 @@
 		47752BB81BEA9B8700A97859 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		47752BBA1BEA9B8700A97859 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		47752BC01BEA9DC800A97859 /* TestMasterTemplates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestMasterTemplates.swift; sourceTree = "<group>"; };
+		47F2AEED1BF978AC00E70DEB /* LocationTester.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationTester.swift; sourceTree = "<group>"; };
+		47F2AEEF1BFA71F600E70DEB /* NetworkTester.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkTester.swift; sourceTree = "<group>"; };
+		47F2AEF11BFAD0B900E70DEB /* PingTester.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PingTester.swift; sourceTree = "<group>"; };
+		47F2AEF31BFAD0C800E70DEB /* EndpointTester.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EndpointTester.swift; sourceTree = "<group>"; };
+		47F2AEF51BFB1C5D00E70DEB /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Reachability.swift; path = ../../../Reachability.swift/Reachability/Reachability.swift; sourceTree = "<group>"; };
 		47FC450A1BEEFAE3005A90E5 /* SingletonTestManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingletonTestManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -78,10 +88,15 @@
 		47752BAD1BEA9B8700A97859 /* LandgateAPITest */ = {
 			isa = PBXGroup;
 			children = (
-				4703B47E1BF6DF7000298A03 /* ResultObjects.swift */,
 				47752BAE1BEA9B8700A97859 /* AppDelegate.swift */,
+				47F2AEF51BFB1C5D00E70DEB /* Reachability.swift */,
+				4703B47E1BF6DF7000298A03 /* ResultObjects.swift */,
 				47752BC01BEA9DC800A97859 /* TestMasterTemplates.swift */,
 				47FC450A1BEEFAE3005A90E5 /* SingletonTestManager.swift */,
+				47F2AEED1BF978AC00E70DEB /* LocationTester.swift */,
+				47F2AEEF1BFA71F600E70DEB /* NetworkTester.swift */,
+				47F2AEF11BFAD0B900E70DEB /* PingTester.swift */,
+				47F2AEF31BFAD0C800E70DEB /* EndpointTester.swift */,
 				47752BB01BEA9B8700A97859 /* ViewController.swift */,
 				4703B4721BF3D27B00298A03 /* CreditsViewController.swift */,
 				47752BB21BEA9B8700A97859 /* Main.storyboard */,
@@ -189,10 +204,15 @@
 				47752BAF1BEA9B8700A97859 /* AppDelegate.swift in Sources */,
 				4703B4731BF3D27B00298A03 /* CreditsViewController.swift in Sources */,
 				4703B46D1BF130C000298A03 /* ReferenceObjects.swift in Sources */,
+				47F2AEEE1BF978AC00E70DEB /* LocationTester.swift in Sources */,
 				47752BC11BEA9DC800A97859 /* TestMasterTemplates.swift in Sources */,
 				4703B46B1BF093D600298A03 /* TestingTips.swift in Sources */,
+				47F2AEF41BFAD0C800E70DEB /* EndpointTester.swift in Sources */,
+				47F2AEF01BFA71F600E70DEB /* NetworkTester.swift in Sources */,
 				47FC450B1BEEFAE3005A90E5 /* SingletonTestManager.swift in Sources */,
 				4703B47F1BF6DF7000298A03 /* ResultObjects.swift in Sources */,
+				47F2AEF21BFAD0B900E70DEB /* PingTester.swift in Sources */,
+				47F2AEF61BFB1C5D00E70DEB /* Reachability.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -15,7 +15,7 @@ class CreditsViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		self.textView.text = credits
+		self.textView.text = codeCredits
 		
 	}
 	
@@ -24,6 +24,10 @@ class CreditsViewController: UIViewController {
 		// Dispose of any resources that can be recreated.
 	}
 	
-	let credits:String = "Thanks to these people;\n"
+	let codeCredits = "Thanks to these people;\nDenys Telezhkin\nashleymills\nJens Schwarzer\nThe Realm Team"
+	
+	let supportersCredits = ""
+	
+	let licenceText = ""
 	
 }
