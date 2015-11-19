@@ -20,7 +20,7 @@ class EndpointTester {
 	
 	var pingResult: EndpointResult?
 	
-	func test(delegateObject: TestManager) {
+	func test(delegateObject: TestManager, endpoint: TETemplate) {
 		
 	}
 }

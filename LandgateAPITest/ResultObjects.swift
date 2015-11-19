@@ -32,7 +32,7 @@ class TestMasterResult: ResultObject {
 	dynamic var deviceType: String = ""
 	dynamic var iOSVersion: String = ""
 	dynamic var deviceID: String = ""
-	let testEndpointResults = List<EndpointResult>()
+	let endpointResults = List<EndpointResult>()
 	let networkResults = List<NetworkResult>()
 	let locationResults = List<LocationResult>()
 	let pingResults = List<PingResult>()
@@ -62,5 +62,3 @@ class PingResult: ResultObject {
 	dynamic var pingedURL: String = ""
 	let pingTime = RealmOptional<Double>()
 }
-
-// NSDate().timeIntervalSince1970

@@ -14,6 +14,8 @@ enum HTTPMethod: String {
 	case post = "POST"
 }
 
+// MARK: - TestEndpoint Templates
+
 struct TETemplate {
 	let url: String
 	let method: HTTPMethod
@@ -77,6 +79,8 @@ struct TestEndpoint {
 		method: .get
 	)
 }
+
+// MARK: - TestMaster Templates
 
 struct TMTemplate {
 	let name: String

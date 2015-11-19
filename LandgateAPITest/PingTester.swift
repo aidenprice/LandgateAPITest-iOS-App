@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import SimplePing
 
 protocol PingTesterDelegate: class {
 	func didFinishPing(sender: PingTester, result: PingResult)
@@ -27,17 +26,15 @@ class PingTester {
 		
 		self.pingResult = PingResult()
 		
-		self.pingResult?.datetime = NSDate().timeIntervalSince1970
-		self.pingResult?.testID = "\(self.parent?.testMasterResult?.deviceID)" + "\(self.pingResult?.datetime)"
-		self.pingResult?.parentID = self.parent?.testMasterResult?.testID
+		self.pingResult!.datetime = NSDate().timeIntervalSince1970
+		self.pingResult!.testID = "\(self.parent?.testMasterResult.deviceID)" + "\(self.pingResult?.datetime)"
+		self.pingResult!.parentID = self.parent?.testMasterResult.testID
 		
-		let url = "www.google.com.au"
+		let url = "http://google.com.au"
 		
 		self.pingResult?.pingedURL = url
 		
-		let pinger = SimplePing(hostname: url)
-		pinger.delegate = self
-		pinger.start()
+		
 		
 
 	}
