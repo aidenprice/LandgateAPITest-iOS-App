@@ -7,18 +7,23 @@
 //
 
 import Foundation
-import RealmSwift
-import Transporter
 import UIKit
 
-protocol TestManagerDelegate: class {
-	func didStartTesting()
-	
-	func didFinishTesting()
-	
-	func didFailToStartTest(reason: String)
-	
-	func didFailToInitDefaultRealm(title: String, message: String)
+import RealmSwift
+import Transporter
+
+struct idDetails {
+	let parentID: String
+	let deviceID: String
+}
+
+enum SubTestError: ErrorType {
+	case missingResultObject(reason: String)
+}
+
+enum TestManagerError: ErrorType {
+	case missingTestMasterResultObject(reason: String)
+	case subtestFailure(reason: String)
 }
 
 enum ManagerState {
@@ -38,6 +43,18 @@ struct ManagerEvents {
 	static let Abort = "Abort"
 }
 
+protocol TestManagerDelegate: class {
+	func didStartTesting()
+	
+	func didFinishTesting(realm: Realm, testID: String)
+	
+	func didFailToStartTest(reason: String)
+	
+	func didFailToInitDefaultRealm(title: String, message: String)
+	
+	func didFailWithError(reason: String)
+}
+
 class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDelegate, EndpointTesterDelegate {
 	
 	// MARK: Public Interface
@@ -50,11 +67,9 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 	
 	var campaign: String = "test_campaign"
 	
-	// MARK: Private lazy properties
+	lazy var testMasterResult: TestMasterResult? = TestMasterResult()
 	
-	private lazy var testMasterResult = TestMasterResult()
-	
-	private lazy var stateMachine: StateMachine<ManagerState> = {
+	lazy var stateMachine: StateMachine<ManagerState> = {
 		print("State Machine Started! Check for multiple startups!")
 		let readyState = State(ManagerState.Ready)
 		let preTestState = State(ManagerState.PreTest)
@@ -90,18 +105,19 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 		return stateMachine
 	}()
 	
-	private lazy var realm: Realm = {
+	lazy var realm: Realm = {
 		print("Realm started! Check for multiple startups!")
 		let testRealm: Realm
 		do {
 			try testRealm = Realm()
 			print("Using default Realm")
-		}
-		catch {
+		
+		} catch {
 			self.delegate?.didFailToInitDefaultRealm("Data storage error!", message: "The app is unable to save your test data to disk. We'll save data in memory to allow you to upload it but it will not persist between app launches. Thank you!")
 			
 			try! testRealm = Realm(configuration: Realm.Configuration(inMemoryIdentifier: "InMemoryRealm"))
 			print("Using In Memory Realm")
+			
 		}
 		print(testRealm)
 		return testRealm
@@ -116,83 +132,185 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 	
 	func didEnterPreTestState() {
 		print("Entered Pretest state")
+		
+		guard let testMasterResult = self.testMasterResult else {
+			stateMachine.fireEvent(ManagerEvents.UnableToStart)
+			return
+		}
+		
 		let start = NSDate().timeIntervalSince1970
-		self.testMasterResult.datetime = start
-		self.testMasterResult.startDatetime = start
-		self.testMasterResult.deviceID = (UIDevice.currentDevice().identifierForVendor?.description)!
-		self.testMasterResult.deviceType = self.platform()
-		self.testMasterResult.iOSVersion = UIDevice.currentDevice().systemVersion
-		self.testMasterResult.testID = "\(self.testMasterResult.deviceID)" + "\(start)"
+		testMasterResult.datetime = start
+		testMasterResult.startDatetime = start
+		testMasterResult.deviceID = (UIDevice.currentDevice().identifierForVendor?.description)!
+		testMasterResult.deviceType = self.platform()
+		testMasterResult.iOSVersion = UIDevice.currentDevice().systemVersion
+		testMasterResult.testID = "\(testMasterResult.deviceID)" + "\(start)"
 		
 		if hasConnectivity() {
-			self.testMasterResult.success = true
-			stateMachine.fireEvent("StartTest")
+			testMasterResult.success = true
+			
+			self.delegate?.didStartTesting()
+			stateMachine.fireEvent(ManagerEvents.Start)
+			
 		} else {
-			self.testMasterResult.comment? += "\nNo internet connectivity, aborting test without running any subtests.\n"
-			self.testMasterResult.finishDatetime = NSDate().timeIntervalSince1970
-			stateMachine.fireEvent("UnableToStartTest")
+			testMasterResult.finishDatetime = NSDate().timeIntervalSince1970
+			testMasterResult.comment? += "\nNo internet connectivity, aborting test without running any subtests.\n"
+			
+			self.delegate?.didFailToStartTest("Unable to connect to the internet. Are you outside mobile range entirely?")
+			stateMachine.fireEvent(ManagerEvents.UnableToStart)
 		}
 	}
 	
 	func didEnterEndpointTestingState() {
 		print("Entered Endpoint Test state")
+		
+		guard let testMasterResult = self.testMasterResult else {
+			print("Missing TestMasterResult object.")
+			self.delegate?.didFailWithError("Missing TestMasterResult object.")
+			stateMachine.fireEvent(ManagerEvents.Abort)
+			return
+		}
+		
 		if var remainingTests = self.testPlan where !remainingTests.isEmpty {
 			print("\(self.testPlan!.count)" + " items in self.testPlan before pop operation.")
-			EndpointTester.sharedInstance.test(self, endpoint: remainingTests.removeLast())
+			
+			let id = idDetails(parentID: testMasterResult.testID, deviceID: testMasterResult.deviceID)
+			
+			do {
+				try EndpointTester.sharedInstance.test(self, id: id, endpoint: remainingTests.removeLast())
+				
+			} catch {
+				self.delegate?.didFailWithError("Endpoint test error!")
+				print("Aborting due to error condition")
+				stateMachine.fireEvent(ManagerEvents.Abort)
+			}
+			
+			print("\(self.testPlan!.count)" + " items in self.testPlan after pop operation.")
 			print("\(remainingTests.count)" + " items left in remainingTests. Check for inconsistent counts.")
+			
 		} else {
 			print("Aborting due to an empty testPlan array. How did we end up here? The didFinishPing() method should handle this!")
-			stateMachine.fireEvent("Abort")
+			stateMachine.fireEvent(ManagerEvents.Abort)
 		}
 	}
 	
 	func didEnterLocatingState() {
 		print("Entered Location Test state")
-		LocationTester.sharedInstance.locate(self)
+		
+		guard let testMasterResult = self.testMasterResult else {
+			print("Missing TestMasterResult object.")
+			self.delegate?.didFailWithError("Missing testMasterResult object error!")
+			stateMachine.fireEvent(ManagerEvents.Abort)
+			return
+		}
+		
+		let id = idDetails(parentID: testMasterResult.testID, deviceID: testMasterResult.deviceID)
+		
+		do {
+			try LocationTester.sharedInstance.locate(self, id: id)
+			
+		} catch {
+			self.delegate?.didFailWithError("Location test error!")
+			print("Aborting due to error condition")
+			stateMachine.fireEvent(ManagerEvents.Abort)
+		}
 	}
 	
 	func didEnterNetworkingState() {
 		print("Entered Network Test state")
-		NetworkTester.sharedInstance.network(self)
+		
+		guard let testMasterResult = self.testMasterResult else {
+			print("Missing TestMasterResult object.")
+			self.delegate?.didFailWithError("Missing testMasterResult object error!")
+			stateMachine.fireEvent(ManagerEvents.Abort)
+			return
+		}
+		
+		let id = idDetails(parentID: testMasterResult.testID, deviceID: testMasterResult.deviceID)
+		
+		do {
+			try NetworkTester.sharedInstance.network(self, id: id)
+			
+		} catch {
+			self.delegate?.didFailWithError("Network test error!")
+			print("Aborting due to error condition")
+			stateMachine.fireEvent(ManagerEvents.Abort)
+		}
 	}
 	
 	func didEnterPingingState() {
 		print("Entered Ping Test state")
-		PingTester.sharedInstance.ping(self)
+		
+		guard let testMasterResult = self.testMasterResult else {
+			print("Missing TestMasterResult object.")
+			self.delegate?.didFailWithError("Missing testMasterResult object error!")
+			stateMachine.fireEvent(ManagerEvents.Abort)
+			return
+		}
+		
+		let id = idDetails(parentID: testMasterResult.testID, deviceID: testMasterResult.deviceID)
+		
+		do {
+			try PingTester.sharedInstance.ping(self, id: id)
+		} catch {
+			self.delegate?.didFailWithError("Ping test error!")
+			print("Aborting due to error condition")
+			stateMachine.fireEvent(ManagerEvents.Abort)
+		}
 	}
 	
 	func didEnterPostTestState() {
 		print("Entered Post Test state")
-		self.testMasterResult.finishDatetime = NSDate().timeIntervalSince1970
 		
-		try! realm.write({ _ in
-			self.realm.add(self.testMasterResult)
-		})
+		guard let testMasterResult = self.testMasterResult else {
+			print("Missing TestMasterResult object in PostTestState.")
+			self.delegate?.didFailWithError("Missing testMasterResult object in PostTestState error!")
+			stateMachine.fireEvent(ManagerEvents.Ready)
+			return
+		}
+		
+		testMasterResult.finishDatetime = NSDate().timeIntervalSince1970
+		
+		do {
+			try realm.write({ _ in self.realm.add(testMasterResult) })
+			print("Writing to Realm store.")
+		} catch {
+			self.delegate?.didFailWithError("Unable to write TestMasterResult object to Realm persistent storage!")
+		}
+		
+		self.delegate?.didFinishTesting(realm, testID: testMasterResult.testID)
+		stateMachine.fireEvent(ManagerEvents.Ready)
 	}
 	
 	// MARK: Delegate event methods
 	
 	func didFinishEndpoint(sender: EndpointTester, result: EndpointResult) {
-		self.testMasterResult.endpointResults.append(result)
+		print("Finished testing endpoint!")
+		self.testMasterResult!.endpointResults.append(result)
 		stateMachine.fireEvent(ManagerEvents.Location)
 	}
 	
 	func didFinishLocating(sender: LocationTester, result: LocationResult) {
-		self.testMasterResult.locationResults.append(result)
+		print("Finished testing location!")
+		self.testMasterResult!.locationResults.append(result)
 		stateMachine.fireEvent(ManagerEvents.Network)
 	}
 	
 	func didFinishNetwork(sender: NetworkTester, result: NetworkResult) {
-		self.testMasterResult.networkResults.append(result)
+		print("Finished testing network!")
+		self.testMasterResult!.networkResults.append(result)
 		stateMachine.fireEvent(ManagerEvents.Ping)
 	}
 	
 	func didFinishPing(sender: PingTester, result: PingResult) {
-		self.testMasterResult.pingResults.append(result)
+		print("Finished ping test!")
+		self.testMasterResult!.pingResults.append(result)
 		
 		if let remainingTests = self.testPlan where !remainingTests.isEmpty {
+			print("Still endpoint tests yet to be run!")
 			stateMachine.fireEvent(ManagerEvents.Endpoint)
 		} else {
+			print("Finished all endpoints, heading to PostTestState!")
 			stateMachine.fireEvent(ManagerEvents.Finish)
 		}
 	}

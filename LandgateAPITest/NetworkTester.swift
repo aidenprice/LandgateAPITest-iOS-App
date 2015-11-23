@@ -17,27 +17,37 @@ class NetworkTester {
 	static let sharedInstance = NetworkTester()
 	
 	weak var delegate: NetworkTesterDelegate?
-	weak var parent: TestManager?
 	
 	var networkResult: NetworkResult?
 	
-	func network(delegateObject: TestManager) {
+	func network(delegateObject: TestManager, id: idDetails) throws {
 		self.delegate = delegateObject
-		self.parent = delegateObject
-		
 		self.networkResult = NetworkResult()
-		self.networkResult?.datetime = NSDate().timeIntervalSince1970
-		self.networkResult?.testID = "\(self.parent?.testMasterResult?.deviceID)" + "\(self.networkResult?.datetime)"
-		self.networkResult?.parentID = self.parent?.testMasterResult?.testID
 		
-		let netInfo = CTTelephonyNetworkInfo()
+		guard let delegate = self.delegate, networkResult = self.networkResult else {
+			print("Network method failed. Missing either a delegateObject or a NetworkResult")
+			throw SubTestError.missingResultObject(reason: "Network method failed. Missing either a delegateObject or a NetworkResult")
+		}
 		
-		self.networkResult?.carrierName = netInfo.subscriberCellularProvider?.carrierName
-		self.networkResult?.connectionType = netInfo.currentRadioAccessTechnology!
-		// self.networkResult?.cellID =
+		networkResult.datetime = NSDate().timeIntervalSince1970
+		networkResult.testID = "\(id.deviceID)" + "\(networkResult.datetime)"
+		networkResult.parentID = id.parentID
 		
-		self.networkResult?.success = true
+		let connectionInfo = CTTelephonyNetworkInfo()
 		
+		if let carrier = connectionInfo.subscriberCellularProvider?.carrierName, connection = connectionInfo.currentRadioAccessTechnology {
+			networkResult.carrierName = carrier
+			networkResult.connectionType = connection
+			// networkResult.cellID =
+			
+			networkResult.success = true
+			print("Network successful! Carrier: \(carrier) Connection type: \(connection)")
+			
+		} else {
+			networkResult.comment = "Failed to get connection data!"
+			print("Failed to get network data!")
+		}
 		
+		delegate.didFinishNetwork(self, result: networkResult)
 	}
 }

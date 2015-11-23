@@ -11,9 +11,12 @@
 		4703B46D1BF130C000298A03 /* ReferenceObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4703B46C1BF130C000298A03 /* ReferenceObjects.swift */; };
 		4703B4731BF3D27B00298A03 /* CreditsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4703B4721BF3D27B00298A03 /* CreditsViewController.swift */; };
 		4703B4771BF6C06000298A03 /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4703B4741BF6C06000298A03 /* Realm.framework */; };
-		4703B4781BF6C06000298A03 /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4703B4751BF6C06000298A03 /* RealmSwift.framework */; };
+		4703B4781BF6C06000298A03 /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4703B4751BF6C06000298A03 /* RealmSwift.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		4703B4791BF6C06000298A03 /* Transporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4703B4761BF6C06000298A03 /* Transporter.framework */; };
 		4703B47F1BF6DF7000298A03 /* ResultObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4703B47E1BF6DF7000298A03 /* ResultObjects.swift */; };
+		475A40001C03237C00CC6F2A /* RealmSwift.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4703B4751BF6C06000298A03 /* RealmSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		475A40011C03239200CC6F2A /* Realm.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4703B4741BF6C06000298A03 /* Realm.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		475A40021C0323A400CC6F2A /* Transporter.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4703B4761BF6C06000298A03 /* Transporter.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		47752BAF1BEA9B8700A97859 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47752BAE1BEA9B8700A97859 /* AppDelegate.swift */; };
 		47752BB11BEA9B8700A97859 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47752BB01BEA9B8700A97859 /* ViewController.swift */; };
 		47752BB41BEA9B8700A97859 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 47752BB21BEA9B8700A97859 /* Main.storyboard */; };
@@ -27,6 +30,21 @@
 		47F2AEF61BFB1C5D00E70DEB /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47F2AEF51BFB1C5D00E70DEB /* Reachability.swift */; };
 		47FC450B1BEEFAE3005A90E5 /* SingletonTestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47FC450A1BEEFAE3005A90E5 /* SingletonTestManager.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		475A3FFF1C03233300CC6F2A /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				475A40021C0323A400CC6F2A /* Transporter.framework in CopyFiles */,
+				475A40011C03239200CC6F2A /* Realm.framework in CopyFiles */,
+				475A40001C03237C00CC6F2A /* RealmSwift.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		4703B46A1BF093D600298A03 /* TestingTips.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestingTips.swift; sourceTree = "<group>"; };
@@ -57,8 +75,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4703B4771BF6C06000298A03 /* Realm.framework in Frameworks */,
 				4703B4781BF6C06000298A03 /* RealmSwift.framework in Frameworks */,
+				4703B4771BF6C06000298A03 /* Realm.framework in Frameworks */,
 				4703B4791BF6C06000298A03 /* Transporter.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -99,11 +117,11 @@
 				47F2AEF11BFAD0B900E70DEB /* PingTester.swift */,
 				47752BB01BEA9B8700A97859 /* ViewController.swift */,
 				4703B4721BF3D27B00298A03 /* CreditsViewController.swift */,
-				47752BB21BEA9B8700A97859 /* Main.storyboard */,
 				4703B46C1BF130C000298A03 /* ReferenceObjects.swift */,
 				4703B46A1BF093D600298A03 /* TestingTips.swift */,
-				47752BB51BEA9B8700A97859 /* Assets.xcassets */,
 				47752BB71BEA9B8700A97859 /* LaunchScreen.storyboard */,
+				47752BB21BEA9B8700A97859 /* Main.storyboard */,
+				47752BB51BEA9B8700A97859 /* Assets.xcassets */,
 				47752BBA1BEA9B8700A97859 /* Info.plist */,
 			);
 			path = LandgateAPITest;
@@ -120,6 +138,7 @@
 				47752BA81BEA9B8700A97859 /* Frameworks */,
 				47752BA91BEA9B8700A97859 /* Resources */,
 				4703B47A1BF6C08D00298A03 /* ShellScript */,
+				475A3FFF1C03233300CC6F2A /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -142,6 +161,7 @@
 				TargetAttributes = {
 					47752BAA1BEA9B8700A97859 = {
 						CreatedOnToolsVersion = 7.1;
+						DevelopmentTeam = 66PQ4DSJ2W;
 					};
 				};
 			};
@@ -179,17 +199,17 @@
 /* Begin PBXShellScriptBuildPhase section */
 		4703B47A1BF6C08D00298A03 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			files = (
 			);
 			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/Realm.framework ",
 				"$(SRCROOT)/Carthage/Build/iOS/RealmSwift.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/Transporter.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/Realm.framework",
 			);
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
+			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
 			shellScript = "/usr/local/bin/carthage copy-frameworks";
 		};
@@ -326,6 +346,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
@@ -334,6 +356,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.endeavourapps.LandgateAPITest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -343,6 +366,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
@@ -351,6 +376,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.endeavourapps.LandgateAPITest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};

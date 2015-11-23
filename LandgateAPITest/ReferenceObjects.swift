@@ -13,7 +13,7 @@ import Foundation
 // Differences between the two will be highlighted for future analysis.
 
 struct Reference {
-	let test: Template
+	let test: TETemplate
 	let validDate: NSDate
 	let response: String
 }

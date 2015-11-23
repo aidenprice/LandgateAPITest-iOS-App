@@ -30,8 +30,9 @@ struct Tip {
 								"total downloads, except for the WiFi test. The WiFi test deliberately " +
 								"asks for larger downloads and more of them. Avoid running this test " +
 								"when on a 3G or 4G connection.\nIf you want to go over your download cap " +
-								"to help with this research approach me and I'll see what I can do to help " +
-								"you financially. Keep in mind that the budget for this research is $0."
+								"to help with this research approach me at aiden.price@postgrad.curtin.edu.au " +
+								"and I'll see what I can do to help you financially.\nKeep in mind that " +
+								"the budget for this research is $0."
 	
 	static let Number5: String = "The test will not start if you do not have a connection to the internet.\n" +
 								"That much is straight-forward. The interesting part of this research is " +
@@ -55,4 +56,9 @@ struct Tip {
 	static let Number9: String = "Remember that uploading test results will use just as much data as " +
 								"downloading them in the first place. You can always upload at a later date " +
 								"on a wifi connection."
+	static let Number10: String = "Landgate are in no way affliated with this research project.\n" +
+								"They are in no way responsible for the design, functionality or code " +
+								"in this app.\nNeither are they required to provide support to users of this app. " +
+								"Please contact aiden.price@postgrad.curtin.edu.au for all support requests.\n" +
+								"They have been very encouraging and most willing to help. Thank you to the Landgate team."
 }

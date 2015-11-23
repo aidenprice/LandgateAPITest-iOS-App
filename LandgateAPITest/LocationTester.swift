@@ -13,55 +13,52 @@ protocol LocationTesterDelegate: class {
 	func didFinishLocating(sender: LocationTester, result: LocationResult)
 }
 
-class LocationTester: CLLocationManagerDelegate {
+class LocationTester: NSObject, CLLocationManagerDelegate {
 	static let sharedInstance = LocationTester()
 	
 	weak var delegate: LocationTesterDelegate?
-	weak var parent: TestManager?
 	
 	let locationManager: CLLocationManager = CLLocationManager()
 	
 	var locationResult: LocationResult?
 	
-	func locate(delegateObject: TestManager) {
+	func locate(delegateObject: TestManager, id: idDetails) throws {
 		self.delegate = delegateObject
-		self.parent = delegateObject
-		
 		self.locationResult = LocationResult()
-		self.locationResult?.datetime = NSDate().timeIntervalSince1970
-		self.locationResult?.testID = "\(self.parent?.testMasterResult?.deviceID)" + "\(self.locationResult?.datetime)"
-		self.locationResult?.parentID = self.parent?.testMasterResult?.testID
+		
+		guard let _ = self.delegate, locationResult = self.locationResult else {
+			print("Locate method failed. Missing either a delegateObject or a LocationResult")
+			throw SubTestError.missingResultObject(reason: "Locate method failed. Missing either a delegateObject or a LocationResult")
+		}
+		
+		locationResult.datetime = NSDate().timeIntervalSince1970
+		locationResult.testID = "\(id.deviceID)" + "\(locationResult.datetime)"
+		locationResult.parentID = id.parentID
 		
 		locationManager.delegate = self
 		locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
 		locationManager.requestWhenInUseAuthorization()		
 		locationManager.requestLocation()
-		
 	}
 	
 	func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-		if let location = locations.first {
-			print("Current location: \(location)")
-			self.locationResult?.latitude.value = location.coordinate.latitude
-			self.locationResult?.longitude.value = location.coordinate.longitude
-			self.locationResult?.datetime = location.timestamp.timeIntervalSince1970
-			self.locationResult?.success = true
-			
-		} else {
-			print("Failed to locate device.")
-			self.locationResult?.comment = "Failed to locate device."
+		guard let delegate = self.delegate, locationResult = self.locationResult else {
+			fatalError("LocationManager didUpdateLocations delegate method failed. Missing either a delegateObject or a LocationResult")
 		}
 		
-		self.delegate?.didFinishLocating(self, result: self.locationResult!)
-	}
-	
-	func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
-		print("Error while updating location " + error.localizedDescription)
-		self.locationResult?.comment = error.localizedDescription
+		guard let location = locations.first else {
+			print("Failed to locate device.")
+			locationResult.comment = "Failed to locate device."
+			delegate.didFinishLocating(self, result: locationResult)
+			return
+		}
 		
-		self.delegate?.didFinishLocating(self, result: self.locationResult!)
-
+		print("Location successful! Current location: \(location)")
+		locationResult.latitude.value = location.coordinate.latitude
+		locationResult.longitude.value = location.coordinate.longitude
+		locationResult.datetime = location.timestamp.timeIntervalSince1970
+		locationResult.success = true
+		
+		delegate.didFinishLocating(self, result: locationResult)
 	}
-	
-	
 }
