@@ -15,7 +15,7 @@ class TipsViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		//self.textView.text
+		self.textView.text = Tips.tipList.joinWithSeparator(", \n")
 		
 		
 	}

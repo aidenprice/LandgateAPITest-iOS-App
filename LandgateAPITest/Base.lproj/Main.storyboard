@@ -56,7 +56,6 @@
                                 <connections>
                                     <outlet property="detailText" destination="3hD-YC-ix7" id="aHn-CD-gPx"/>
                                     <outlet property="titleText" destination="3uo-Rc-Ufu" id="wYE-az-C3r"/>
-                                    <segue destination="aXu-6K-COB" kind="show" id="Niy-0S-cAy"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -69,6 +68,8 @@
                     <navigationItem key="navigationItem" id="xzc-Lp-kKd"/>
                     <connections>
                         <outlet property="tipsLabel" destination="3hD-YC-ix7" id="Vvd-8h-gaX"/>
+                        <segue destination="aXu-6K-COB" kind="show" identifier="TipsSegue" id="z4Y-kV-3fJ"/>
+                        <segue destination="UMo-Uq-NQJ" kind="show" identifier="CreditsSegue" id="hhF-hc-NMa"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qkf-aS-gN0" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -125,7 +126,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="IZV-NC-vQy">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="IZV-NC-vQy">
                                 <rect key="frame" x="20" y="72" width="560" height="508"/>
                                 <animations/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>

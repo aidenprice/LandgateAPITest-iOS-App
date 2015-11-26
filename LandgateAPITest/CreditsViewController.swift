@@ -15,7 +15,7 @@ class CreditsViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		self.textView.text = codeCredits
+		self.textView.text = Credits.helpers.joinWithSeparator(",\n")
 		
 	}
 	
@@ -23,11 +23,4 @@ class CreditsViewController: UIViewController {
 		super.didReceiveMemoryWarning()
 		// Dispose of any resources that can be recreated.
 	}
-	
-	let codeCredits = "Thanks to these people;\nDenys Telezhkin\nashleymills\nJens Schwarzer\nThe Realm Team"
-	
-	let supportersCredits = ""
-	
-	let licenceText = ""
-	
 }
