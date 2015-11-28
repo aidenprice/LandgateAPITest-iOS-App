@@ -14,12 +14,14 @@
 		4703B4781BF6C06000298A03 /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4703B4751BF6C06000298A03 /* RealmSwift.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		4703B4791BF6C06000298A03 /* Transporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4703B4761BF6C06000298A03 /* Transporter.framework */; };
 		4703B47F1BF6DF7000298A03 /* ResultObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4703B47E1BF6DF7000298A03 /* ResultObjects.swift */; };
+		47120BDD1C0942A6004D11A7 /* NewTestTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47120BDC1C0942A6004D11A7 /* NewTestTableViewController.swift */; };
+		47120BDF1C0942C6004D11A7 /* OldTestsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47120BDE1C0942C6004D11A7 /* OldTestsTableViewController.swift */; };
 		471E6E461C071598002C43C5 /* Credits.swift in Sources */ = {isa = PBXBuildFile; fileRef = 471E6E451C071598002C43C5 /* Credits.swift */; };
 		475A40001C03237C00CC6F2A /* RealmSwift.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4703B4751BF6C06000298A03 /* RealmSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		475A40011C03239200CC6F2A /* Realm.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4703B4741BF6C06000298A03 /* Realm.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		475A40021C0323A400CC6F2A /* Transporter.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4703B4761BF6C06000298A03 /* Transporter.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		475A40041C04026000CC6F2A /* TipsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475A40031C04026000CC6F2A /* TipsViewController.swift */; };
-		475A40081C05597600CC6F2A /* FirstTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475A40071C05597600CC6F2A /* FirstTableViewController.swift */; };
+		475A40081C05597600CC6F2A /* HomeTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475A40071C05597600CC6F2A /* HomeTableViewController.swift */; };
 		47752BAF1BEA9B8700A97859 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47752BAE1BEA9B8700A97859 /* AppDelegate.swift */; };
 		47752BB11BEA9B8700A97859 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47752BB01BEA9B8700A97859 /* ViewController.swift */; };
 		47752BB41BEA9B8700A97859 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 47752BB21BEA9B8700A97859 /* Main.storyboard */; };
@@ -57,9 +59,11 @@
 		4703B4751BF6C06000298A03 /* RealmSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RealmSwift.framework; path = Carthage/Build/iOS/RealmSwift.framework; sourceTree = "<group>"; };
 		4703B4761BF6C06000298A03 /* Transporter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Transporter.framework; path = Carthage/Build/iOS/Transporter.framework; sourceTree = "<group>"; };
 		4703B47E1BF6DF7000298A03 /* ResultObjects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResultObjects.swift; sourceTree = "<group>"; };
+		47120BDC1C0942A6004D11A7 /* NewTestTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewTestTableViewController.swift; sourceTree = "<group>"; };
+		47120BDE1C0942C6004D11A7 /* OldTestsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OldTestsTableViewController.swift; sourceTree = "<group>"; };
 		471E6E451C071598002C43C5 /* Credits.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Credits.swift; sourceTree = "<group>"; };
 		475A40031C04026000CC6F2A /* TipsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TipsViewController.swift; sourceTree = "<group>"; };
-		475A40071C05597600CC6F2A /* FirstTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirstTableViewController.swift; sourceTree = "<group>"; };
+		475A40071C05597600CC6F2A /* HomeTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeTableViewController.swift; sourceTree = "<group>"; };
 		47752BAB1BEA9B8700A97859 /* LandgateAPITest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LandgateAPITest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		47752BAE1BEA9B8700A97859 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		47752BB01BEA9B8700A97859 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -122,9 +126,11 @@
 				47F2AEEF1BFA71F600E70DEB /* NetworkTester.swift */,
 				47F2AEF11BFAD0B900E70DEB /* PingTester.swift */,
 				47752BB01BEA9B8700A97859 /* ViewController.swift */,
-				475A40071C05597600CC6F2A /* FirstTableViewController.swift */,
-				4703B46A1BF093D600298A03 /* TestingTips.swift */,
+				475A40071C05597600CC6F2A /* HomeTableViewController.swift */,
+				47120BDC1C0942A6004D11A7 /* NewTestTableViewController.swift */,
+				47120BDE1C0942C6004D11A7 /* OldTestsTableViewController.swift */,
 				475A40031C04026000CC6F2A /* TipsViewController.swift */,
+				4703B46A1BF093D600298A03 /* TestingTips.swift */,
 				4703B4721BF3D27B00298A03 /* CreditsViewController.swift */,
 				471E6E451C071598002C43C5 /* Credits.swift */,
 				4703B46C1BF130C000298A03 /* ReferenceObjects.swift */,
@@ -234,6 +240,7 @@
 				475A40041C04026000CC6F2A /* TipsViewController.swift in Sources */,
 				4703B4731BF3D27B00298A03 /* CreditsViewController.swift in Sources */,
 				4703B46D1BF130C000298A03 /* ReferenceObjects.swift in Sources */,
+				47120BDD1C0942A6004D11A7 /* NewTestTableViewController.swift in Sources */,
 				47F2AEEE1BF978AC00E70DEB /* LocationTester.swift in Sources */,
 				471E6E461C071598002C43C5 /* Credits.swift in Sources */,
 				47752BC11BEA9DC800A97859 /* TestMasterTemplates.swift in Sources */,
@@ -243,8 +250,9 @@
 				47FC450B1BEEFAE3005A90E5 /* SingletonTestManager.swift in Sources */,
 				4703B47F1BF6DF7000298A03 /* ResultObjects.swift in Sources */,
 				47F2AEF21BFAD0B900E70DEB /* PingTester.swift in Sources */,
+				47120BDF1C0942C6004D11A7 /* OldTestsTableViewController.swift in Sources */,
 				47F2AEF61BFB1C5D00E70DEB /* Reachability.swift in Sources */,
-				475A40081C05597600CC6F2A /* FirstTableViewController.swift in Sources */,
+				475A40081C05597600CC6F2A /* HomeTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -15,8 +15,16 @@ class CreditsViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		self.textView.text = Credits.helpers.joinWithSeparator(",\n")
+		self.textView.text = Credits.helpers.joinWithSeparator("\n\n")
 		
+		self.textView.scrollRangeToVisible(NSMakeRange(0, 0))
+		
+	}
+	
+	override func viewDidLayoutSubviews() {
+		super.viewDidLayoutSubviews()
+		
+		self.textView.contentOffset.y = 0
 	}
 	
 	override func didReceiveMemoryWarning() {

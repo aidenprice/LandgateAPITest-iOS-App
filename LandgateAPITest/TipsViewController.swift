@@ -15,9 +15,14 @@ class TipsViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		self.textView.text = Tips.tipList.joinWithSeparator(", \n")
+		self.textView.text = Tips.tipList.joinWithSeparator("\n\n")
 		
+	}
+	
+	override func viewDidLayoutSubviews() {
+		super.viewDidLayoutSubviews()
 		
+		self.textView.contentOffset.y = 0
 	}
 	
 	override func didReceiveMemoryWarning() {
