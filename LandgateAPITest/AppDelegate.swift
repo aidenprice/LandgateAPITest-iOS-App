@@ -25,6 +25,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		TestManager.sharedInstance.stateMachine.fireEvent(ManagerEvents.Abort)
 	}
+	
+	func application(application: UIApplication, willChangeStatusBarFrame newStatusBarFrame: CGRect) {
+		let windows = UIApplication.sharedApplication().windows
+		
+		for window in windows {
+			window.removeConstraints(window.constraints)
+		}
+	}
+	
+	
 
 	func applicationDidEnterBackground(application: UIApplication) {
 		// Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.

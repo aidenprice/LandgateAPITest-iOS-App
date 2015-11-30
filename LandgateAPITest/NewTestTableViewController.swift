@@ -10,6 +10,20 @@ import UIKit
 
 struct NewTestConstants {
 	static let newTestCellReuse = "NewTestTableViewCell"
+	
+	static let testDetailsSegueID = "testDetailsSegue"
+}
+
+class NewTestTableViewCell: UITableViewCell {
+	
+	@IBOutlet weak var titleLabel: UILabel!
+	
+	@IBOutlet weak var detailLabel: UILabel!
+	
+	@IBOutlet weak var testImage: UIImageView!
+	
+	var template: TMTemplate?
+	
 }
 
 class NewTestTableViewController: UITableViewController {
@@ -32,68 +46,45 @@ class NewTestTableViewController: UITableViewController {
     // MARK: - Table view data source
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 0
+        return 1
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return 0
+        return TestMaster.Templates.count
     }
-
-    /*
+	
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("reuseIdentifier", forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCellWithIdentifier(NewTestConstants.newTestCellReuse, forIndexPath: indexPath) as! NewTestTableViewCell
 
-        // Configure the cell...
+		print(cell)
+		
+		cell.template = TestMaster.Templates[indexPath.row]
+		
+		cell.titleLabel.text = TestMaster.Templates[indexPath.row].name
+		cell.detailLabel.text = TestMaster.Templates[indexPath.row].details
+		cell.testImage.image = TestMaster.Templates[indexPath.row].image
 
         return cell
     }
-    */
 
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
 
-    /*
-    // Override to support editing the table view.
-    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        if editingStyle == .Delete {
-            // Delete the row from the data source
-            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-        } else if editingStyle == .Insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(tableView: UITableView, moveRowAtIndexPath fromIndexPath: NSIndexPath, toIndexPath: NSIndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
+	
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
+		
+		guard let destination = segue.destinationViewController as? TestViewController else {
+			return
+		}
+		
+		guard let cell = sender as? NewTestTableViewCell else {
+			return
+		}
+		
+		destination.template = cell.template
+		
     }
-    */
-
 }

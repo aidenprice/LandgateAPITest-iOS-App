@@ -34,9 +34,13 @@ struct HomeConstants {
 	static let errorCaseDetail = "Something is the matter, there should be helpful text here and not an error message!"
 }
 
-//class HomeTableViewCell: UITableViewCell {
-//	
-//}
+class HomeTableViewCell: UITableViewCell {
+	
+	@IBOutlet weak var titleLabel: UILabel!
+	
+	@IBOutlet weak var detailLabel: UILabel!
+	
+}
 
 class HomeTableViewController: UITableViewController {
 	var testsComplete = 0
@@ -98,24 +102,24 @@ class HomeTableViewController: UITableViewController {
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(HomeConstants.homeCellReuse, forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCellWithIdentifier(HomeConstants.homeCellReuse, forIndexPath: indexPath) as! HomeTableViewCell
 
 		switch indexPath.section {
 			case 0:
-				cell.textLabel?.text = HomeConstants.tipsTitle
-				cell.detailTextLabel?.text = Tips.tipList.randomElement()
+				cell.titleLabel.text = HomeConstants.tipsTitle
+				cell.detailLabel.text = Tips.tipList.randomElement()
 			case 1 where indexPath.row == 0:
-				cell.textLabel?.text = HomeConstants.newTestTitle
-				cell.detailTextLabel?.text = HomeConstants.newTestDetail
+				cell.titleLabel.text = HomeConstants.newTestTitle
+				cell.detailLabel.text = HomeConstants.newTestDetail
 			case 1 where indexPath.row == 1:
-				cell.textLabel?.text = HomeConstants.oldTestTitle
-				cell.detailTextLabel?.text = "Completed tests: \(self.testsComplete)\nTests yet to upload: \(self.testsYetToUpload)\nYou can upload later over WiFi to save data."
+				cell.titleLabel.text = HomeConstants.oldTestTitle
+				cell.detailLabel.text = "Completed tests: \(self.testsComplete)\nTests yet to upload: \(self.testsYetToUpload)\nYou can upload later over WiFi to save data."
 			case 2:
-				cell.textLabel?.text = HomeConstants.creditsTitle
-				cell.detailTextLabel?.text = "Thank you to \(Credits.helpers.randomElement())"
+				cell.titleLabel.text = HomeConstants.creditsTitle
+				cell.detailLabel.text = "Thank you to \(Credits.helpers.randomElement())"
 			default:
-				cell.textLabel?.text = HomeConstants.errorCaseTitle
-				cell.detailTextLabel?.text = HomeConstants.errorCaseDetail
+				cell.titleLabel.text = HomeConstants.errorCaseTitle
+				cell.detailLabel.text = HomeConstants.errorCaseDetail
 		}
 
         return cell
