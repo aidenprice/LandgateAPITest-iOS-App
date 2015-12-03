@@ -44,15 +44,24 @@ struct ManagerEvents {
 }
 
 protocol TestManagerDelegate: class {
-	func didStartTesting()
 	
-	func didFinishTesting(realm: Realm, testID: String)
+	func didStartTesting()
 	
 	func didFailToStartTest(reason: String)
 	
 	func didFailToInitDefaultRealm(title: String, message: String)
 	
 	func didFailWithError(reason: String)
+}
+
+protocol TestManagerProgressDelegate: class {
+	
+	func progressReport(progress: Double)
+	
+	func didFinishTesting(testID: String)
+	
+	func didFailWithError(reason: String)
+	
 }
 
 class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDelegate, EndpointTesterDelegate {
@@ -63,7 +72,24 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 	
 	var delegate: TestManagerDelegate?
 	
-	var testPlan: [TETemplate]?
+	var progressDelegate: TestManagerProgressDelegate?
+	
+	var originalTestCount: Int?
+	var progressTarget: Double?
+	
+	var testPlan: [TETemplate]? {
+		didSet(newPlan) {
+			guard let plan = newPlan where plan.count > 0 else { return }
+			
+			print("New Plan! Count: \(plan.count)")
+			
+			self.originalTestCount = plan.count
+			self.progressTarget = Double((plan.count * 4) + 3)
+			
+			print("Total tests to perform: \(progressTarget)")
+			self.stateMachine.fireEvent(ManagerEvents.Prepare)
+		}
+	}
 	
 	var campaign: String = "test_campaign"
 	
@@ -122,6 +148,13 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 		print(testRealm)
 		return testRealm
 	}()
+	
+	func startWithTestPlan(testplan: [TETemplate]) -> TestManager {
+		
+		self.testPlan = testplan
+		
+		return TestManager.sharedInstance
+	}
 
 	// MARK: State Change Methods
 	
@@ -166,21 +199,23 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 		
 		guard let testMasterResult = self.testMasterResult else {
 			print("Missing TestMasterResult object.")
-			self.delegate?.didFailWithError("Missing TestMasterResult object.")
+			self.progressDelegate?.didFailWithError("Missing TestMasterResult object.")
 			stateMachine.fireEvent(ManagerEvents.Abort)
 			return
 		}
 		
-		if var remainingTests = self.testPlan where !remainingTests.isEmpty {
+		if let remainingTests = self.testPlan where !remainingTests.isEmpty {
 			print("\(self.testPlan!.count)" + " items in self.testPlan before pop operation.")
 			
 			let id = idDetails(parentID: testMasterResult.testID, deviceID: testMasterResult.deviceID)
 			
 			do {
-				try EndpointTester.sharedInstance.test(self, id: id, endpoint: remainingTests.removeLast())
+				try EndpointTester.sharedInstance.test(self, id: id, endpoint: (self.testPlan?.removeLast())!)
+				
+//				self.testPlan = remainingTests
 				
 			} catch {
-				self.delegate?.didFailWithError("Endpoint test error!")
+				self.progressDelegate?.didFailWithError("Endpoint test error!")
 				print("Aborting due to error condition")
 				stateMachine.fireEvent(ManagerEvents.Abort)
 			}
@@ -199,7 +234,7 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 		
 		guard let testMasterResult = self.testMasterResult else {
 			print("Missing TestMasterResult object.")
-			self.delegate?.didFailWithError("Missing testMasterResult object error!")
+			self.progressDelegate?.didFailWithError("Missing testMasterResult object error!")
 			stateMachine.fireEvent(ManagerEvents.Abort)
 			return
 		}
@@ -210,7 +245,7 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 			try LocationTester.sharedInstance.locate(self, id: id)
 			
 		} catch {
-			self.delegate?.didFailWithError("Location test error!")
+			self.progressDelegate?.didFailWithError("Location test error!")
 			print("Aborting due to error condition")
 			stateMachine.fireEvent(ManagerEvents.Abort)
 		}
@@ -221,7 +256,7 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 		
 		guard let testMasterResult = self.testMasterResult else {
 			print("Missing TestMasterResult object.")
-			self.delegate?.didFailWithError("Missing testMasterResult object error!")
+			self.progressDelegate?.didFailWithError("Missing testMasterResult object error!")
 			stateMachine.fireEvent(ManagerEvents.Abort)
 			return
 		}
@@ -232,7 +267,7 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 			try NetworkTester.sharedInstance.network(self, id: id)
 			
 		} catch {
-			self.delegate?.didFailWithError("Network test error!")
+			self.progressDelegate?.didFailWithError("Network test error!")
 			print("Aborting due to error condition")
 			stateMachine.fireEvent(ManagerEvents.Abort)
 		}
@@ -243,7 +278,7 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 		
 		guard let testMasterResult = self.testMasterResult else {
 			print("Missing TestMasterResult object.")
-			self.delegate?.didFailWithError("Missing testMasterResult object error!")
+			self.progressDelegate?.didFailWithError("Missing testMasterResult object error!")
 			stateMachine.fireEvent(ManagerEvents.Abort)
 			return
 		}
@@ -253,7 +288,7 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 		do {
 			try PingTester.sharedInstance.ping(self, id: id)
 		} catch {
-			self.delegate?.didFailWithError("Ping test error!")
+			self.progressDelegate?.didFailWithError("Ping test error!")
 			print("Aborting due to error condition")
 			stateMachine.fireEvent(ManagerEvents.Abort)
 		}
@@ -264,7 +299,7 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 		
 		guard let testMasterResult = self.testMasterResult else {
 			print("Missing TestMasterResult object in PostTestState.")
-			self.delegate?.didFailWithError("Missing testMasterResult object in PostTestState error!")
+			self.progressDelegate?.didFailWithError("Missing testMasterResult object in PostTestState error!")
 			stateMachine.fireEvent(ManagerEvents.Ready)
 			return
 		}
@@ -278,7 +313,7 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 			self.delegate?.didFailWithError("Unable to write TestMasterResult object to Realm persistent storage!")
 		}
 		
-		self.delegate?.didFinishTesting(realm, testID: testMasterResult.testID)
+		self.progressDelegate?.didFinishTesting(testMasterResult.testID)
 		stateMachine.fireEvent(ManagerEvents.Ready)
 	}
 	
@@ -287,24 +322,67 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 	func didFinishEndpoint(sender: EndpointTester, result: EndpointResult) {
 		print("Finished testing endpoint!")
 		self.testMasterResult!.endpointResults.append(result)
+		
+		if let progressDelegate = self.progressDelegate,
+			let remainingTests = self.testPlan?.count,
+			let originalTests = self.originalTestCount,
+			let target = self.progressTarget {
+		
+			let progress = Double(abs(remainingTests - originalTests) * 4) / target
+			
+			progressDelegate.progressReport(progress)
+		}
+		
 		stateMachine.fireEvent(ManagerEvents.Location)
 	}
 	
 	func didFinishLocating(sender: LocationTester, result: LocationResult) {
 		print("Finished testing location!")
 		self.testMasterResult!.locationResults.append(result)
+		
+		if let progressDelegate = self.progressDelegate,
+			let remainingTests = self.testPlan?.count,
+			let originalTests = self.originalTestCount,
+			let target = self.progressTarget {
+				
+				let progress = Double((abs(remainingTests - originalTests) * 4) + 1) / target
+				
+				progressDelegate.progressReport(progress)
+		}
+		
 		stateMachine.fireEvent(ManagerEvents.Network)
 	}
 	
 	func didFinishNetwork(sender: NetworkTester, result: NetworkResult) {
 		print("Finished testing network!")
 		self.testMasterResult!.networkResults.append(result)
+		
+		if let progressDelegate = self.progressDelegate,
+			let remainingTests = self.testPlan?.count,
+			let originalTests = self.originalTestCount,
+			let target = self.progressTarget {
+				
+				let progress = Double((abs(remainingTests - originalTests) * 4) + 2) / target
+				
+				progressDelegate.progressReport(progress)
+		}
+		
 		stateMachine.fireEvent(ManagerEvents.Ping)
 	}
 	
 	func didFinishPing(sender: PingTester, result: PingResult) {
 		print("Finished ping test!")
 		self.testMasterResult!.pingResults.append(result)
+		
+		if let progressDelegate = self.progressDelegate,
+			let remainingTests = self.testPlan?.count,
+			let originalTests = self.originalTestCount,
+			let target = self.progressTarget {
+				
+				let progress = Double((abs(remainingTests - originalTests) * 4) + 3) / target
+				
+				progressDelegate.progressReport(progress)
+		}
 		
 		if let remainingTests = self.testPlan where !remainingTests.isEmpty {
 			print("Still endpoint tests yet to be run!")

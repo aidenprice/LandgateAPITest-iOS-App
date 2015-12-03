@@ -28,7 +28,7 @@ class PingTester {
 			throw SubTestError.missingResultObject(reason: "Ping method failed. Missing either a delegateObject or a PingResult")
 		}
 		
-		let urlString = "http://google.com.au"
+		let urlString = "https://google.com.au"
 		pingResult.pingedURL = urlString
 		
 		let url = NSURL(string: urlString)!

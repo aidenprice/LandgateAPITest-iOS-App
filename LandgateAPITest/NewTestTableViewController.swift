@@ -30,6 +30,9 @@ class NewTestTableViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+				
+		tableView.estimatedRowHeight = 70.0
+		tableView.rowHeight = UITableViewAutomaticDimension
 		
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
@@ -54,9 +57,7 @@ class NewTestTableViewController: UITableViewController {
     }
 	
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(NewTestConstants.newTestCellReuse, forIndexPath: indexPath) as! NewTestTableViewCell
-
-		print(cell)
+		let cell = tableView.dequeueReusableCellWithIdentifier(NewTestConstants.newTestCellReuse, forIndexPath: indexPath) as! NewTestTableViewCell
 		
 		cell.template = TestMaster.Templates[indexPath.row]
 		
@@ -67,7 +68,9 @@ class NewTestTableViewController: UITableViewController {
         return cell
     }
 
-
+	override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+		return UITableViewAutomaticDimension
+	}
 	
     // MARK: - Navigation
 

@@ -26,13 +26,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		TestManager.sharedInstance.stateMachine.fireEvent(ManagerEvents.Abort)
 	}
 	
-	func application(application: UIApplication, willChangeStatusBarFrame newStatusBarFrame: CGRect) {
-		let windows = UIApplication.sharedApplication().windows
-		
-		for window in windows {
-			window.removeConstraints(window.constraints)
-		}
-	}
+//	func application(application: UIApplication, willChangeStatusBarFrame newStatusBarFrame: CGRect) {
+//		let windows = UIApplication.sharedApplication().windows
+//		
+//		for window in windows {
+//			window.removeConstraints(window.constraints)
+//		}
+//	}
 	
 	
 

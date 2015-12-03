@@ -61,4 +61,10 @@ class LocationTester: NSObject, CLLocationManagerDelegate {
 		
 		delegate.didFinishLocating(self, result: locationResult)
 	}
+	
+	func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
+		
+		print(error.localizedDescription)
+		
+	}
 }

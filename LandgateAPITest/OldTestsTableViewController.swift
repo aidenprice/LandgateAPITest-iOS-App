@@ -55,6 +55,9 @@ class OldTestsTableViewController: UITableViewController {
 		
 		completedTests = realm.objects(TestMasterResult)
 		
+		tableView.estimatedRowHeight = 70.0
+		tableView.rowHeight = UITableViewAutomaticDimension
+		
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
@@ -74,7 +77,12 @@ class OldTestsTableViewController: UITableViewController {
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return (completedTests?.count)!
+		
+		guard let tests = completedTests else {
+			return 0
+		}
+		
+        return tests.count
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {

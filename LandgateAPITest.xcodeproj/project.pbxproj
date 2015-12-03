@@ -27,6 +27,8 @@
 		47752BB61BEA9B8700A97859 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 47752BB51BEA9B8700A97859 /* Assets.xcassets */; };
 		47752BB91BEA9B8700A97859 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 47752BB71BEA9B8700A97859 /* LaunchScreen.storyboard */; };
 		47752BC11BEA9DC800A97859 /* TestMasterTemplates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47752BC01BEA9DC800A97859 /* TestMasterTemplates.swift */; };
+		479E7E0F1C0E378E001F735D /* KDCircularProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 479E7E0E1C0E378E001F735D /* KDCircularProgress.swift */; };
+		479E7E111C0E38FE001F735D /* ModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 479E7E101C0E38FE001F735D /* ModalViewController.swift */; };
 		47D8F7111C0BF3E700E4ED9C /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47D8F7101C0BF3E700E4ED9C /* TestViewController.swift */; };
 		47F2AEEE1BF978AC00E70DEB /* LocationTester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47F2AEED1BF978AC00E70DEB /* LocationTester.swift */; };
 		47F2AEF01BFA71F600E70DEB /* NetworkTester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47F2AEEF1BFA71F600E70DEB /* NetworkTester.swift */; };
@@ -71,6 +73,8 @@
 		47752BB81BEA9B8700A97859 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		47752BBA1BEA9B8700A97859 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		47752BC01BEA9DC800A97859 /* TestMasterTemplates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestMasterTemplates.swift; sourceTree = "<group>"; };
+		479E7E0E1C0E378E001F735D /* KDCircularProgress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KDCircularProgress.swift; sourceTree = "<group>"; };
+		479E7E101C0E38FE001F735D /* ModalViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModalViewController.swift; sourceTree = "<group>"; };
 		47D8F7101C0BF3E700E4ED9C /* TestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
 		47F2AEED1BF978AC00E70DEB /* LocationTester.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationTester.swift; sourceTree = "<group>"; };
 		47F2AEEF1BFA71F600E70DEB /* NetworkTester.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkTester.swift; sourceTree = "<group>"; };
@@ -128,6 +132,8 @@
 				475A40071C05597600CC6F2A /* HomeTableViewController.swift */,
 				47120BDC1C0942A6004D11A7 /* NewTestTableViewController.swift */,
 				47D8F7101C0BF3E700E4ED9C /* TestViewController.swift */,
+				479E7E0E1C0E378E001F735D /* KDCircularProgress.swift */,
+				479E7E101C0E38FE001F735D /* ModalViewController.swift */,
 				47120BDE1C0942C6004D11A7 /* OldTestsTableViewController.swift */,
 				475A40031C04026000CC6F2A /* TipsViewController.swift */,
 				4703B46A1BF093D600298A03 /* TestingTips.swift */,
@@ -235,6 +241,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				479E7E0F1C0E378E001F735D /* KDCircularProgress.swift in Sources */,
 				47752BAF1BEA9B8700A97859 /* AppDelegate.swift in Sources */,
 				475A40041C04026000CC6F2A /* TipsViewController.swift in Sources */,
 				4703B4731BF3D27B00298A03 /* CreditsViewController.swift in Sources */,
@@ -250,6 +257,7 @@
 				4703B47F1BF6DF7000298A03 /* ResultObjects.swift in Sources */,
 				47F2AEF21BFAD0B900E70DEB /* PingTester.swift in Sources */,
 				47120BDF1C0942C6004D11A7 /* OldTestsTableViewController.swift in Sources */,
+				479E7E111C0E38FE001F735D /* ModalViewController.swift in Sources */,
 				47F2AEF61BFB1C5D00E70DEB /* Reachability.swift in Sources */,
 				47D8F7111C0BF3E700E4ED9C /* TestViewController.swift in Sources */,
 				475A40081C05597600CC6F2A /* HomeTableViewController.swift in Sources */,

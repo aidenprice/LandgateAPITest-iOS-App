@@ -17,28 +17,31 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFill" ambiguous="YES" misplaced="YES" image="StoneTabletIcon" translatesAutoresizingMaskIntoConstraints="NO" id="aKq-Md-e4Z">
+                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFill" image="StoneTabletIcon" translatesAutoresizingMaskIntoConstraints="NO" id="aKq-Md-e4Z">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <animations/>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="LandgateAPITest" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HTL-S9-5MK">
-                                <rect key="frame" x="179" y="391" width="242" height="35"/>
+                                <rect key="frame" x="179" y="545" width="242" height="35"/>
                                 <animations/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="242" id="uZh-0E-sed"/>
+                                    <constraint firstAttribute="height" constant="35" id="Fs9-oL-jbI"/>
+                                    <constraint firstAttribute="width" constant="242" id="ehw-PY-Nd6"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="32"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="HTL-S9-5MK" secondAttribute="bottom" constant="174" id="1EF-GV-kzm"/>
-                            <constraint firstItem="HTL-S9-5MK" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="37u-Y6-nBy"/>
-                            <constraint firstItem="HTL-S9-5MK" firstAttribute="top" secondItem="Llm-lL-Icb" secondAttribute="bottom" constant="371" id="4eZ-06-5Gq"/>
-                            <constraint firstItem="HTL-S9-5MK" firstAttribute="centerX" secondItem="aKq-Md-e4Z" secondAttribute="centerX" id="vB1-cB-2Hf"/>
+                            <constraint firstItem="aKq-Md-e4Z" firstAttribute="centerX" secondItem="HTL-S9-5MK" secondAttribute="centerX" id="5io-xJ-y3g"/>
+                            <constraint firstItem="aKq-Md-e4Z" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="7Yd-yO-Vag"/>
+                            <constraint firstItem="aKq-Md-e4Z" firstAttribute="bottom" secondItem="xb3-aO-Qok" secondAttribute="top" id="DPY-p8-jG3"/>
+                            <constraint firstAttribute="trailing" secondItem="aKq-Md-e4Z" secondAttribute="trailing" id="McI-t2-CoZ"/>
+                            <constraint firstAttribute="bottom" secondItem="HTL-S9-5MK" secondAttribute="bottom" constant="20" symbolic="YES" id="f8Y-k5-noL"/>
+                            <constraint firstItem="aKq-Md-e4Z" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="wut-yo-3GS"/>
                         </constraints>
                     </view>
                 </viewController>
