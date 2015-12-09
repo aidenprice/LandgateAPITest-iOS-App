@@ -8,6 +8,9 @@
 
 import UIKit
 
+import Realm
+import RealmSwift
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -16,6 +19,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
 		// Override point for customization after application launch.
+		
+		let testManager = TestManager.sharedInstance
+		
+		testManager.stateMachine.fireEvent(ManagerEvents.Awake)
+//		testManager.isNewPlan = false
+		
+//		if let path = Realm.Configuration.defaultConfiguration.path {
+//			try! NSFileManager().removeItemAtPath(path)
+//		}
+		
 		return true
 	}
 
@@ -24,17 +37,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		// Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
 		
 		TestManager.sharedInstance.stateMachine.fireEvent(ManagerEvents.Abort)
-	}
-	
-//	func application(application: UIApplication, willChangeStatusBarFrame newStatusBarFrame: CGRect) {
-//		let windows = UIApplication.sharedApplication().windows
-//		
-//		for window in windows {
-//			window.removeConstraints(window.constraints)
-//		}
-//	}
-	
-	
+	}	
 
 	func applicationDidEnterBackground(application: UIApplication) {
 		// Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.

@@ -9,7 +9,7 @@
 import Foundation
 
 protocol EndpointTesterDelegate: class {
-	func didFinishEndpoint(sender: EndpointTester, result: EndpointResult)
+	func didFinishEndpoint(sender: EndpointTester, result: EndpointResult, size: Int)
 }
 
 class EndpointTester {
@@ -25,12 +25,12 @@ class EndpointTester {
 		
 		guard let delegate = self.delegate, endpointResult = self.endpointResult else {
 			print("Test method on EnpointTester failed. Missing either a delegateObject or an EndpointResult")
-			throw SubTestError.missingResultObject(reason: "Test method on EnpointTester failed. Missing either a delegateObject or an EndpointResult")
+			throw SubTestError.missingResultObject(reason: "Test method on EndpointTester failed. Missing either a delegateObject or an EndpointResult")
 		}
-
-		endpointResult.testID = "\(id.deviceID)" + "\(endpointResult.datetime)"
-		endpointResult.parentID = id.parentID
+		
 		endpointResult.datetime = NSDate().timeIntervalSince1970
+		endpointResult.testID = "\(id.deviceID)/\(endpointResult.datetime)"
+		endpointResult.parentID = id.parentID
 		endpointResult.testedURL = endpoint.url
 		
 		let url = NSURL(string: endpoint.url)!
@@ -49,28 +49,28 @@ class EndpointTester {
 			guard error == nil else {
 				let httpError = error!
 				print("Endpoint test error; \(httpError.localizedDescription)")
-				endpointResult.errorResponse? = httpError.localizedDescription
+				endpointResult.errorResponse = httpError.localizedDescription
 				
-				delegate.didFinishEndpoint(self, result: endpointResult)
+				delegate.didFinishEndpoint(self, result: endpointResult, size: 0)
 				return
 			}
 				
 			guard let httpResponse = response as? NSHTTPURLResponse where httpResponse.statusCode == 200 else {
 				let httpResponse = response as! NSHTTPURLResponse
 				print("Endpoint test error; \(NSHTTPURLResponse.localizedStringForStatusCode(httpResponse.statusCode))")
-				endpointResult.errorResponse? = NSHTTPURLResponse.localizedStringForStatusCode(httpResponse.statusCode)
-				endpointResult.responseCode.value = httpResponse.statusCode
+				endpointResult.errorResponse = NSHTTPURLResponse.localizedStringForStatusCode(httpResponse.statusCode)
+				endpointResult.responseCode = httpResponse.statusCode
 				
-				delegate.didFinishEndpoint(self, result: endpointResult)
+				delegate.didFinishEndpoint(self, result: endpointResult, size: 0)
 				return
 			}
 			
 			print("Endpoint test successful! Response time; \(endpointResult.finishDatetime - endpointResult.startDatetime)")
 			endpointResult.success = true
-			endpointResult.responseCode.value = httpResponse.statusCode
+			endpointResult.responseCode = httpResponse.statusCode
 			endpointResult.responseData = data
 			
-			delegate.didFinishEndpoint(self, result: endpointResult)
+			delegate.didFinishEndpoint(self, result: endpointResult, size: data!.length)
 		}
 		
 		task.resume()

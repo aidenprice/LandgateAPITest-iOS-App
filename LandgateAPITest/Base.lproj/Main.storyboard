@@ -15,7 +15,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <animations/>
-                        <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" red="0.96093779802322388" green="0.96104902029037476" blue="0.9608878493309021" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="sectionIndexBackgroundColor" red="0.99714630842208862" green="0.25131428241729736" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" indentationWidth="10" shouldIndentWhileEditing="NO" reuseIdentifier="HomeTableViewCell" rowHeight="68" id="9Wq-ib-LaN" customClass="HomeTableViewCell" customModule="LandgateAPITest" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="114" width="600" height="68"/>
@@ -190,7 +191,7 @@
         <!--Modal View Controller-->
         <scene sceneID="49C-nb-00a">
             <objects>
-                <viewController id="WSH-r1-l2W" customClass="ModalViewController" customModule="LandgateAPITest" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="testingUnderway" id="WSH-r1-l2W" customClass="ModalViewController" customModule="LandgateAPITest" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="fmb-mu-igM"/>
                         <viewControllerLayoutGuide type="bottom" id="NxD-b3-9v8"/>
@@ -212,10 +213,10 @@
                                         <real key="value" value="0.0"/>
                                     </userDefinedRuntimeAttribute>
                                     <userDefinedRuntimeAttribute type="color" keyPath="trackColor">
-                                        <color key="value" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        <color key="value" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                     </userDefinedRuntimeAttribute>
                                     <userDefinedRuntimeAttribute type="color" keyPath="IBColor1">
-                                        <color key="value" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="value" red="0.99714630842208862" green="0.25131428241729736" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     </userDefinedRuntimeAttribute>
                                     <userDefinedRuntimeAttribute type="number" keyPath="startAngle">
                                         <integer key="value" value="-90"/>
@@ -225,19 +226,6 @@
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wmf-5x-ShA">
-                                <rect key="frame" x="245" y="550" width="110" height="30"/>
-                                <animations/>
-                                <constraints>
-                                    <constraint firstAttribute="width" secondItem="wmf-5x-ShA" secondAttribute="height" multiplier="11:3" id="TF7-lF-OYB"/>
-                                    <constraint firstAttribute="width" constant="110" id="f0J-oE-6Oo"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                <state key="normal" title="Cancel Test"/>
-                                <connections>
-                                    <action selector="cancel:" destination="WSH-r1-l2W" eventType="touchUpInside" id="tCk-bB-2mN"/>
-                                </connections>
-                            </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Testing Underway..." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9MM-d6-78X">
                                 <rect key="frame" x="212" y="198" width="177" height="24"/>
                                 <animations/>
@@ -255,6 +243,19 @@ the test partway through.</string>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wmf-5x-ShA">
+                                <rect key="frame" x="220" y="520" width="160" height="60"/>
+                                <animations/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="wmf-5x-ShA" secondAttribute="height" multiplier="11:3" constant="-60" id="TF7-lF-OYB"/>
+                                    <constraint firstAttribute="width" constant="160" id="f0J-oE-6Oo"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <state key="normal" title="Cancel Test"/>
+                                <connections>
+                                    <action selector="cancel:" destination="WSH-r1-l2W" eventType="touchUpInside" id="tCk-bB-2mN"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -305,7 +306,7 @@ the test partway through.</string>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Details" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FL6-dk-JmK">
-                                <rect key="frame" x="20" y="208" width="560" height="328"/>
+                                <rect key="frame" x="20" y="208" width="560" height="315"/>
                                 <animations/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -319,17 +320,16 @@ the test partway through.</string>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ctf-A9-eGH">
-                                <rect key="frame" x="236" y="544" width="128" height="36"/>
+                                <rect key="frame" x="220" y="520" width="160" height="60"/>
                                 <animations/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="36" id="PpT-FA-3BI"/>
-                                    <constraint firstAttribute="width" constant="128" id="zRt-yr-Q45"/>
+                                    <constraint firstAttribute="height" constant="60" id="PpT-FA-3BI"/>
+                                    <constraint firstAttribute="width" constant="160" id="zRt-yr-Q45"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                 <state key="normal" title="Start Test"/>
                                 <connections>
                                     <action selector="startButtonPressed:" destination="PGG-I6-qOH" eventType="touchUpInside" id="0Dx-cZ-EUS"/>
-                                    <segue destination="WSH-r1-l2W" kind="presentation" id="NYf-6t-HHD"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -342,7 +342,7 @@ the test partway through.</string>
                             <constraint firstItem="FL6-dk-JmK" firstAttribute="trailing" secondItem="l5l-1h-xEX" secondAttribute="trailing" id="WFw-mS-XAG"/>
                             <constraint firstAttribute="trailingMargin" secondItem="7gg-IZ-b0h" secondAttribute="trailing" id="WeM-lc-sI5"/>
                             <constraint firstItem="l5l-1h-xEX" firstAttribute="leading" secondItem="7gg-IZ-b0h" secondAttribute="leading" id="WfL-k0-QmF"/>
-                            <constraint firstItem="Ctf-A9-eGH" firstAttribute="top" secondItem="FL6-dk-JmK" secondAttribute="bottom" constant="8" id="blo-Xp-mZR"/>
+                            <constraint firstItem="Ctf-A9-eGH" firstAttribute="top" secondItem="FL6-dk-JmK" secondAttribute="bottom" constant="-3" id="blo-Xp-mZR"/>
                             <constraint firstItem="rnn-Pv-1M2" firstAttribute="top" secondItem="wAe-c2-i5N" secondAttribute="bottom" constant="8" id="ie6-Qv-el5"/>
                             <constraint firstItem="FL6-dk-JmK" firstAttribute="leading" secondItem="rnn-Pv-1M2" secondAttribute="leading" id="n9D-Rj-utm"/>
                             <constraint firstItem="l5l-1h-xEX" firstAttribute="top" secondItem="7gg-IZ-b0h" secondAttribute="bottom" constant="29" id="nzP-Sl-jZ0"/>
@@ -465,10 +465,12 @@ the test partway through.</string>
         <scene sceneID="PTZ-bN-shn">
             <objects>
                 <navigationController id="EEW-td-PVU" sceneMemberID="viewController">
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Gn2-IQ-xMv">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" id="Gn2-IQ-xMv">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <animations/>
+                        <color key="tintColor" red="0.96862745100000003" green="0.96862745100000003" blue="0.96862745100000003" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="barTintColor" red="0.99714630842208862" green="0.25131428241729736" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </navigationBar>
                     <connections>
                         <segue destination="Q5o-EX-Tqb" kind="relationship" relationship="rootViewController" id="Meg-u0-zY4"/>

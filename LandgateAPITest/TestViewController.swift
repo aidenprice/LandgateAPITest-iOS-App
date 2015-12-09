@@ -8,7 +8,13 @@
 
 import UIKit
 
+//import Realm
 import RealmSwift
+
+struct TestViewControllerConstants {
+	static let storyboardID = "Main"
+	static let viewControllerID = "testingUnderway"
+}
 
 class TestViewController: UIViewController, TestManagerDelegate {
 	
@@ -22,21 +28,23 @@ class TestViewController: UIViewController, TestManagerDelegate {
 	@IBAction func startButtonPressed(sender: UIButton) {
 		
 		guard let testTemplate = self.template else {
+			print("Start button pressed! But there's no test plan here!")
 			self.didFailToStartTest("No test plan to pass to Statemachine!")
 			return
 		}
 		
-		let testManager = TestManager.sharedInstance
+		print("Start button pressed! Something should happen from here on!")
+//		print("\(testTemplate.testPlan)")
 		
-		testManager.testPlan = testTemplate.testPlan//[0..<testTemplate.testPlan.count]
+		TestManager.sharedInstance.startWithTestPlan(testTemplate.testPlan)
 		
 	}
 	
 	func didStartTesting() {
 		
-		// Segue-ing from the storyboard instead of here, need to fix that.
-		
-		//popup or modal view with progress indicator
+		let storyboard = UIStoryboard(name: TestViewControllerConstants.storyboardID, bundle: nil)
+		let modalViewController = storyboard.instantiateViewControllerWithIdentifier(TestViewControllerConstants.viewControllerID)
+		self.presentViewController(modalViewController, animated: true, completion: nil)
 		
 	}
 	
@@ -101,16 +109,5 @@ class TestViewController: UIViewController, TestManagerDelegate {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }

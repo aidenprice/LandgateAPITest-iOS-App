@@ -13,7 +13,7 @@ class ModalViewController: UIViewController, TestManagerProgressDelegate {
 	@IBOutlet weak var progressView: KDCircularProgress!
 
 	@IBAction func cancel(sender: UIButton) {
-	TestManager.sharedInstance.stateMachine.fireEvent(ManagerEvents.Abort)
+		TestManager.sharedInstance.stateMachine.fireEvent(ManagerEvents.Abort)
 		
 		progressView.animateFromAngle(progressView.angle, toAngle: 0, duration: 0.5, completion: nil)
 		
@@ -65,20 +65,4 @@ class ModalViewController: UIViewController, TestManagerProgressDelegate {
         super.didReceiveMemoryWarning()
 
     }
-    
-
-	
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-//    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-//		
-//		guard let testViewController = segue.destinationViewController as? TestViewController else { return }
-//		
-	
-		
-        // Pass the selected object to the new view controller.
-    }
-	
-
 }

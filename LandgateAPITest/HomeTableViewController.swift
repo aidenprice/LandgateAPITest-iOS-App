@@ -8,6 +8,7 @@
 
 import UIKit
 
+//import Realm
 import RealmSwift
 
 extension Array {
@@ -48,12 +49,17 @@ class HomeTableViewController: UITableViewController {
 	
 	lazy var realm: Realm = {
 		print("Realm started! Check for multiple startups!")
+
+		//NSFileManager.defaultManager().removeItemAtPath(RLMRealm.defaultRealmPath(), error: nil)
+		
 		var testRealm: Realm
 		do {
 			try testRealm = Realm()
 			print("Using default Realm")
 			
 		} catch {
+			
+			print(error)
 			
 			var realmFailAlert = UIAlertController(title: "Data storage error!", message: "The app is unable to save your test data to disk. We'll save data in memory to allow you to upload it but it will not persist between app launches. Thank you!", preferredStyle: UIAlertControllerStyle.Alert)
 			
@@ -72,6 +78,8 @@ class HomeTableViewController: UITableViewController {
 	
 	override func viewDidLoad() {
         super.viewDidLoad()
+		
+		tableView.backgroundView = nil
 		
 		tableView.estimatedRowHeight = 70.0
 		tableView.rowHeight = UITableViewAutomaticDimension

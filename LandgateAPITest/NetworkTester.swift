@@ -30,12 +30,19 @@ class NetworkTester {
 		}
 		
 		networkResult.datetime = NSDate().timeIntervalSince1970
-		networkResult.testID = "\(id.deviceID)" + "\(networkResult.datetime)"
+		networkResult.testID = "\(id.deviceID)/\(networkResult.datetime)"
 		networkResult.parentID = id.parentID
 		
 		let connectionInfo = CTTelephonyNetworkInfo()
 		
-		if let carrier = connectionInfo.subscriberCellularProvider?.carrierName, connection = connectionInfo.currentRadioAccessTechnology {
+		if let reachability = try? Reachability.reachabilityForInternetConnection() where reachability.currentReachabilityStatus.description == "WiFi" {
+			
+			networkResult.connectionType = "WiFi"
+			networkResult.success = true
+			print("Network successful! Connection type: WiFi")
+			
+		} else if let carrier = connectionInfo.subscriberCellularProvider?.carrierName, connection = connectionInfo.currentRadioAccessTechnology {
+			
 			networkResult.carrierName = carrier
 			networkResult.connectionType = connection
 			// networkResult.cellID =

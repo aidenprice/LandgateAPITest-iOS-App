@@ -8,6 +8,7 @@
 
 import UIKit
 
+//import Realm
 import RealmSwift
 
 struct OldTestConstants {
@@ -50,19 +51,29 @@ class OldTestsTableViewController: UITableViewController {
 		return testRealm
 	}()
 	
+	func uploadAll() {
+		print("Upload All button pressed!")
+		guard let allTests = self.completedTests where allTests.count > 0 else { return }
+		print("There are tests not yet uploaded!")
+		let tests = allTests.filter("uploaded == false")
+		
+		for test in tests {
+			
+			print(test)
+		}
+		
+	}
+	
     override func viewDidLoad() {
         super.viewDidLoad()
+		
+		navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Upload All", style: .Plain, target: self, action: "uploadAll")
 		
 		completedTests = realm.objects(TestMasterResult)
 		
 		tableView.estimatedRowHeight = 70.0
 		tableView.rowHeight = UITableViewAutomaticDimension
 		
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem()
     }
 
     override func didReceiveMemoryWarning() {
@@ -99,15 +110,4 @@ class OldTestsTableViewController: UITableViewController {
 		
         return cell
     }
-
-        /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

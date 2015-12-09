@@ -101,7 +101,7 @@ struct TestMaster {
 					"data downloads. One in 10 requests is much larger as a " +
 					"control on network latency on response time.",
 			image: UIImage(named: "Standard Icon")!,
-			downloadSize: 1,
+			downloadSize: 2100,
 			testPlan: [
 				TestEndpoint.GME_GET_BusStops_Small,
 				TestEndpoint.GME_GET_BusStops_Big,
@@ -126,7 +126,7 @@ struct TestMaster {
 					"for those times when you're planning on moving about a lot, " +
 					"say on the train or bus.",
 			image: UIImage(named: "Extra Long Icon")!,
-			downloadSize: 1,
+			downloadSize: 394,
 			testPlan: [
 				TestEndpoint.GME_GET_BusStops_Small,
 				TestEndpoint.GME_GET_BusStops_FeatureByID,
@@ -181,7 +181,7 @@ struct TestMaster {
 					"best places on Earth, frankly). Has longer time out times " +
 					"and calls for smaller responses.",
 			image: UIImage(named: "Remote Area Icon")!,
-			downloadSize: 1,
+			downloadSize: 182,
 			testPlan: [
 				TestEndpoint.GME_GET_BusStops_Small,
 				TestEndpoint.GME_GET_BusStops_FeatureByID,
@@ -199,7 +199,7 @@ struct TestMaster {
 					"your signal drops out partway through a response.\nImportantly, " +
 					"this test can lead to big downloads. Please use it sparingly.",
 			image: UIImage(named: "WMS Icon")!,
-			downloadSize: 1,
+			downloadSize: 5843,
 			testPlan: [
 				TestEndpoint.GME_GET_WMS_GetMap_Small,
 				TestEndpoint.GME_GET_WMS_GetMap_Big,

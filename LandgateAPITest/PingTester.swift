@@ -31,6 +31,8 @@ class PingTester {
 		let urlString = "https://google.com.au"
 		pingResult.pingedURL = urlString
 		
+		pingResult.parentID = id.parentID
+		
 		let url = NSURL(string: urlString)!
 		let cachePolicy = NSURLRequestCachePolicy.ReloadIgnoringLocalCacheData
 		let request = NSMutableURLRequest(URL: url, cachePolicy: cachePolicy, timeoutInterval: 10.0)
@@ -43,22 +45,21 @@ class PingTester {
 		
 		let task = session.dataTaskWithRequest(request) { data, response, error in
 			if let httpError = error {
-				pingResult.comment? += httpError.localizedDescription
+				pingResult.comment += httpError.localizedDescription
 				print("Ping error; \(httpError.localizedDescription)")
 				
 			} else if let httpResponse = response as? NSHTTPURLResponse where httpResponse.statusCode >= 400 {
-				pingResult.comment? += NSHTTPURLResponse.localizedStringForStatusCode(httpResponse.statusCode)
+				pingResult.comment += NSHTTPURLResponse.localizedStringForStatusCode(httpResponse.statusCode)
 				print("Ping error; \(NSHTTPURLResponse.localizedStringForStatusCode(httpResponse.statusCode))")
 				
 			} else {
-				pingResult.pingTime.value = NSDate().timeIntervalSince1970 - pingResult.datetime
-				print("Ping successful! Time; \(self.pingResult?.pingTime.value)")
+				pingResult.pingTime = NSDate().timeIntervalSince1970 - pingResult.datetime
+				print("Ping successful! Time; \(pingResult.pingTime)")
 				pingResult.success = true
 				
 			}
 			
-			pingResult.testID = "\(id.deviceID)" + "\(pingResult.datetime)"
-			pingResult.parentID = id.parentID
+			pingResult.testID = "\(id.deviceID)/\(pingResult.datetime)"
 			
 			delegate.didFinishPing(self, result: pingResult)
 		}

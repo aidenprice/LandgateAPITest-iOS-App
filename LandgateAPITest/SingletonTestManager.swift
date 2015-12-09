@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 
+import Realm
 import RealmSwift
 import Transporter
 
@@ -41,6 +42,7 @@ struct ManagerEvents {
 	static let UnableToStart = "UnableToStartTest"
 	static let Ready = "ReturnToReadyState"
 	static let Abort = "Abort"
+	static let Awake = "Awake"
 }
 
 protocol TestManagerDelegate: class {
@@ -74,12 +76,34 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 	
 	var progressDelegate: TestManagerProgressDelegate?
 	
-	var originalTestCount: Int?
-	var progressTarget: Double?
+	var campaign: String = "test_campaign"
+	
+	var testMasterResult: TestMasterResult?
+	
+	let stateMachine: StateMachine<ManagerState>
+	
+	let realm: Realm
+	
+	var downloadTotal: Int = 0
+	
+	var originalTestCount: Int = 0
+	var progressTarget: Double = 0.0
+	
+	var isNewPlan: Bool = false {
+		willSet {
+			print("isNewPlan flag about to be set to \(newValue)")
+		}
+		
+		didSet {
+			print("isNewPlan flag set to \(isNewPlan)")
+		}
+	}
 	
 	var testPlan: [TETemplate]? {
-		didSet(newPlan) {
-			guard let plan = newPlan where plan.count > 0 else { return }
+		didSet {
+//			print("newPlan = \(self.testPlan)")
+			
+			guard let plan = self.testPlan where plan.count > 0 && self.isNewPlan == true else { return }
 			
 			print("New Plan! Count: \(plan.count)")
 			
@@ -88,15 +112,16 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 			
 			print("Total tests to perform: \(progressTarget)")
 			self.stateMachine.fireEvent(ManagerEvents.Prepare)
+			
+			self.isNewPlan = false
 		}
 	}
 	
-	var campaign: String = "test_campaign"
+	// MARK: Init and Start Methods
 	
-	lazy var testMasterResult: TestMasterResult? = TestMasterResult()
-	
-	lazy var stateMachine: StateMachine<ManagerState> = {
-		print("State Machine Started! Check for multiple startups!")
+	init() {
+		
+		print("State Machine Started!")
 		let readyState = State(ManagerState.Ready)
 		let preTestState = State(ManagerState.PreTest)
 		let endpointTestingState = State(ManagerState.EndpointTesting)
@@ -104,14 +129,6 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 		let networkingState = State(ManagerState.Networking)
 		let pingingState = State(ManagerState.Pinging)
 		let postTestState = State(ManagerState.PostTest)
-		
-		readyState.didEnterState = { _ in self.didEnterReadyState() }
-		preTestState.didEnterState = { _ in self.didEnterPreTestState() }
-		endpointTestingState.didEnterState = { _ in self.didEnterEndpointTestingState() }
-		locatingState.didEnterState = { _ in self.didEnterLocatingState() }
-		networkingState.didEnterState = { _ in self.didEnterNetworkingState() }
-		pingingState.didEnterState = { _ in self.didEnterPingingState() }
-		postTestState.didEnterState = { _ in self.didEnterPostTestState() }
 		
 		let stateMachine = StateMachine(initialState: readyState, states: [preTestState, endpointTestingState, locatingState, networkingState, pingingState, postTestState])
 		
@@ -125,46 +142,56 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 		let unableToTestEvent = Event(name: ManagerEvents.UnableToStart, sourceStates: [ManagerState.PreTest], destinationState: ManagerState.PostTest)
 		let backToReadyEvent = Event(name: ManagerEvents.Ready, sourceStates: [ManagerState.PostTest], destinationState: ManagerState.Ready)
 		let abortEvent = Event(name: ManagerEvents.Abort, sourceStates: [ManagerState.PreTest, ManagerState.EndpointTesting, ManagerState.Locating, ManagerState.Networking, ManagerState.Pinging], destinationState: ManagerState.PostTest)
+		let awakeEvent = Event(name: ManagerEvents.Awake, sourceStates: [ManagerState.PreTest, ManagerState.EndpointTesting, ManagerState.Locating, ManagerState.Networking, ManagerState.Pinging, ManagerState.PostTest, ManagerState.Ready], destinationState: ManagerState.Ready)
 		
-		stateMachine.addEvents([prepareForTestEvent, startTestEvent, networkTestEvent, pingTestEvent, endpointTestEvent, locationTestEvent, finishTestEvent, unableToTestEvent, backToReadyEvent, abortEvent])
-		print(stateMachine)
-		return stateMachine
-	}()
-	
-	lazy var realm: Realm = {
-		print("Realm started! Check for multiple startups!")
-		let testRealm: Realm
+		stateMachine.addEvents([prepareForTestEvent, startTestEvent, networkTestEvent, pingTestEvent, endpointTestEvent, locationTestEvent, finishTestEvent, unableToTestEvent, backToReadyEvent, abortEvent, awakeEvent])
+		
+		self.stateMachine = stateMachine
+		
+		var testRealm: Realm? = nil
 		do {
 			try testRealm = Realm()
 			print("Using default Realm")
-		
+			
 		} catch {
 			self.delegate?.didFailToInitDefaultRealm("Data storage error!", message: "The app is unable to save your test data to disk. We'll save data in memory to allow you to upload it but it will not persist between app launches. Thank you!")
 			
 			try! testRealm = Realm(configuration: Realm.Configuration(inMemoryIdentifier: "InMemoryRealm"))
 			print("Using In Memory Realm")
-			
 		}
-		print(testRealm)
-		return testRealm
-	}()
+		self.realm = testRealm!
+		
+		readyState.didEnterState = { _ in self.didEnterReadyState() }
+		preTestState.didEnterState = { _ in self.didEnterPreTestState() }
+		endpointTestingState.didEnterState = { _ in self.didEnterEndpointTestingState() }
+		locatingState.didEnterState = { _ in self.didEnterLocatingState() }
+		networkingState.didEnterState = { _ in self.didEnterNetworkingState() }
+		pingingState.didEnterState = { _ in self.didEnterPingingState() }
+		postTestState.didEnterState = { _ in self.didEnterPostTestState() }
+		
+	}
 	
-	func startWithTestPlan(testplan: [TETemplate]) -> TestManager {
+	func startWithTestPlan(plan: [TETemplate]) {
 		
-		self.testPlan = testplan
+		print("startWithTestPlan function called!")
+//		print("\(plan)")
 		
-		return TestManager.sharedInstance
+		self.isNewPlan = true
+		self.testPlan = plan
+		
+//		print("\(self.testPlan)")
 	}
 
 	// MARK: State Change Methods
 	
 	func didEnterReadyState() {
 		print("Entered Ready state")
-		self.testMasterResult = TestMasterResult()
 	}
 	
 	func didEnterPreTestState() {
 		print("Entered Pretest state")
+		
+		self.testMasterResult = TestMasterResult()
 		
 		guard let testMasterResult = self.testMasterResult else {
 			stateMachine.fireEvent(ManagerEvents.UnableToStart)
@@ -173,21 +200,24 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 		
 		let start = NSDate().timeIntervalSince1970
 		testMasterResult.datetime = start
+		print("Start time: \(start)")
 		testMasterResult.startDatetime = start
-		testMasterResult.deviceID = (UIDevice.currentDevice().identifierForVendor?.description)!
+		testMasterResult.deviceID = UIDevice.currentDevice().identifierForVendor!.UUIDString
+		print("Device ID: \(testMasterResult.deviceID)")
 		testMasterResult.deviceType = self.platform()
 		testMasterResult.iOSVersion = UIDevice.currentDevice().systemVersion
-		testMasterResult.testID = "\(testMasterResult.deviceID)" + "\(start)"
+		testMasterResult.testID = "\(testMasterResult.deviceID)/\(start)"
+		print("Test ID: \(testMasterResult.testID)")
 		
 		if hasConnectivity() {
 			testMasterResult.success = true
-			
+			print("didStartTesting about to be called on delegate: \(self.delegate)")
 			self.delegate?.didStartTesting()
 			stateMachine.fireEvent(ManagerEvents.Start)
 			
 		} else {
 			testMasterResult.finishDatetime = NSDate().timeIntervalSince1970
-			testMasterResult.comment? += "\nNo internet connectivity, aborting test without running any subtests.\n"
+			testMasterResult.comment += "\nNo internet connectivity, aborting test without running any subtests.\n"
 			
 			self.delegate?.didFailToStartTest("Unable to connect to the internet. Are you outside mobile range entirely?")
 			stateMachine.fireEvent(ManagerEvents.UnableToStart)
@@ -221,7 +251,6 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 			}
 			
 			print("\(self.testPlan!.count)" + " items in self.testPlan after pop operation.")
-			print("\(remainingTests.count)" + " items left in remainingTests. Check for inconsistent counts.")
 			
 		} else {
 			print("Aborting due to an empty testPlan array. How did we end up here? The didFinishPing() method should handle this!")
@@ -297,38 +326,71 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 	func didEnterPostTestState() {
 		print("Entered Post Test state")
 		
+		guard let progressDelegate = self.progressDelegate else {
+			return
+		}
+		
+		print("Progress delegate found")
+		
 		guard let testMasterResult = self.testMasterResult else {
 			print("Missing TestMasterResult object in PostTestState.")
-			self.progressDelegate?.didFailWithError("Missing testMasterResult object in PostTestState error!")
+			progressDelegate.didFailWithError("Missing testMasterResult object in PostTestState error!")
 			stateMachine.fireEvent(ManagerEvents.Ready)
 			return
 		}
 		
+		print("testMasterResult found")
+		
 		testMasterResult.finishDatetime = NSDate().timeIntervalSince1970
 		
+		print("testMasterResult finishDatetime set")
+		
 		do {
-			try realm.write({ _ in self.realm.add(testMasterResult) })
 			print("Writing to Realm store.")
+			print("testMasterResult in this Realm before write: \(testMasterResult.realm)")
+			
+			let writeRealm = try Realm()
+			try writeRealm.write {
+				writeRealm.add(testMasterResult)
+			}
+		
+			print("testMasterResult in this Realm after write: \(testMasterResult.realm)")
+			print("testMasterResult write complete!")
+			
 		} catch {
-			self.delegate?.didFailWithError("Unable to write TestMasterResult object to Realm persistent storage!")
+			print("Can't write testMasterResult to Realm!")
+			progressDelegate.didFailWithError("Unable to write TestMasterResult object to Realm persistent storage!")
 		}
 		
-		self.progressDelegate?.didFinishTesting(testMasterResult.testID)
+		print("Final download size \(self.downloadTotal)")
+		
+		progressDelegate.progressReport(1.0)
+		progressDelegate.didFinishTesting(testMasterResult.testID)
+		
+		print("progressDelegate sent didFinishTesting with testID")
+		
 		stateMachine.fireEvent(ManagerEvents.Ready)
 	}
 	
 	// MARK: Delegate event methods
 	
-	func didFinishEndpoint(sender: EndpointTester, result: EndpointResult) {
+	func didFinishEndpoint(sender: EndpointTester, result: EndpointResult, size: Int) {
 		print("Finished testing endpoint!")
-		self.testMasterResult!.endpointResults.append(result)
+		
+		guard let testMasterResult = self.testMasterResult where self.stateMachine.isInState(ManagerState.EndpointTesting) else {
+			print("There's either no testMasterResult or we're not in the EndpointTesting state anymore! No actions taken, nothing saved.")
+			return
+		}
+		
+		testMasterResult.endpointResults.append(result)
+		
+		self.downloadTotal += size
+		print("Download size thus far: \(self.downloadTotal)")
 		
 		if let progressDelegate = self.progressDelegate,
-			let remainingTests = self.testPlan?.count,
-			let originalTests = self.originalTestCount,
-			let target = self.progressTarget {
+			let remainingTests = self.testPlan?.count {
 		
-			let progress = Double(abs(remainingTests - originalTests) * 4) / target
+			let progress = Double(abs(remainingTests - self.originalTestCount) * 4) / self.progressTarget
 			
 			progressDelegate.progressReport(progress)
 		}
@@ -338,14 +400,18 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 	
 	func didFinishLocating(sender: LocationTester, result: LocationResult) {
 		print("Finished testing location!")
-		self.testMasterResult!.locationResults.append(result)
+		
+		guard let testMasterResult = self.testMasterResult where self.stateMachine.isInState(ManagerState.Locating) else {
+			print("There's either no testMasterResult or we're not in the Locating state anymore! No actions taken, nothing saved.")
+			return
+		}
+		
+		testMasterResult.locationResults.append(result)
 		
 		if let progressDelegate = self.progressDelegate,
-			let remainingTests = self.testPlan?.count,
-			let originalTests = self.originalTestCount,
-			let target = self.progressTarget {
+			let remainingTests = self.testPlan?.count {
 				
-				let progress = Double((abs(remainingTests - originalTests) * 4) + 1) / target
+				let progress = Double((abs(remainingTests - self.originalTestCount) * 4) + 1) / self.progressTarget
 				
 				progressDelegate.progressReport(progress)
 		}
@@ -355,14 +421,18 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 	
 	func didFinishNetwork(sender: NetworkTester, result: NetworkResult) {
 		print("Finished testing network!")
-		self.testMasterResult!.networkResults.append(result)
+		
+		guard let testMasterResult = self.testMasterResult where self.stateMachine.isInState(ManagerState.Networking) else {
+			print("There's either no testMasterResult or we're not in the Networking state anymore! No actions taken, nothing saved.")
+			return
+		}
+		
+		testMasterResult.networkResults.append(result)
 		
 		if let progressDelegate = self.progressDelegate,
-			let remainingTests = self.testPlan?.count,
-			let originalTests = self.originalTestCount,
-			let target = self.progressTarget {
+			let remainingTests = self.testPlan?.count {
 				
-				let progress = Double((abs(remainingTests - originalTests) * 4) + 2) / target
+				let progress = Double((abs(remainingTests - self.originalTestCount) * 4) + 2) / self.progressTarget
 				
 				progressDelegate.progressReport(progress)
 		}
@@ -372,14 +442,18 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 	
 	func didFinishPing(sender: PingTester, result: PingResult) {
 		print("Finished ping test!")
-		self.testMasterResult!.pingResults.append(result)
+		
+		guard let testMasterResult = self.testMasterResult where self.stateMachine.isInState(ManagerState.Pinging) else {
+			print("There's either no testMasterResult or we're not in the Pinging state anymore! No actions taken, nothing saved.")
+			return
+		}
+		
+		testMasterResult.pingResults.append(result)
 		
 		if let progressDelegate = self.progressDelegate,
-			let remainingTests = self.testPlan?.count,
-			let originalTests = self.originalTestCount,
-			let target = self.progressTarget {
+			let remainingTests = self.testPlan?.count {
 				
-				let progress = Double((abs(remainingTests - originalTests) * 4) + 3) / target
+				let progress = Double((abs(remainingTests - self.originalTestCount) * 4) + 3) / self.progressTarget
 				
 				progressDelegate.progressReport(progress)
 		}

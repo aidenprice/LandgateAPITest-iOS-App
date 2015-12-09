@@ -7,23 +7,25 @@
 //
 
 import Foundation
+
+//import Realm
 import RealmSwift
 
 class ResultObject: Object {
 	dynamic var testID: String = ""
-	dynamic var parentID: String? = ""
+	dynamic var parentID: String = ""
 	dynamic var datetime: Double = 0.0
 	dynamic var success: Bool = false
-	dynamic var comment: String? = ""
+	dynamic var comment: String = ""
 	dynamic var uploaded: Bool = false
 	
-	override static func primaryKey() -> String? {
-		return "testID"
-	}
-	
-	override static func indexedProperties() -> [String] {
-		return ["testID", "parentID"]
-	}
+//	override static func primaryKey() -> String? {
+//		return "testID"
+//	}
+//	
+//	override static func indexedProperties() -> [String] {
+//		return ["testID", "parentID"]
+//	}
 }
 
 class TestMasterResult: ResultObject {
@@ -42,23 +44,23 @@ class EndpointResult: ResultObject {
 	dynamic var startDatetime: Double = 0.0
 	dynamic var finishDatetime: Double = 0.0
 	dynamic var testedURL: String = ""
-	let responseCode = RealmOptional<Int>()
-	dynamic var errorResponse: String? = ""
+	dynamic var responseCode: Int = 0
+	dynamic var errorResponse: String = ""
 	dynamic var responseData: NSData?
 }
 
 class NetworkResult: ResultObject {
 	dynamic var connectionType: String = ""
-	dynamic var carrierName: String? = ""
-	dynamic var cellID: String? = ""
+	dynamic var carrierName: String = ""
+	dynamic var cellID: String = ""
 }
 
 class LocationResult: ResultObject {
-	let latitude = RealmOptional<Double>()
-	let longitude = RealmOptional<Double>()
+	dynamic var latitude: Double = 0.0
+	dynamic var longitude: Double = 0.0
 }
 
 class PingResult: ResultObject {
 	dynamic var pingedURL: String = ""
-	let pingTime = RealmOptional<Double>()
+	dynamic var pingTime: Double = 0.0
 }

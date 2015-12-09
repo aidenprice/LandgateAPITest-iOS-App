@@ -31,14 +31,22 @@ class LocationTester: NSObject, CLLocationManagerDelegate {
 			throw SubTestError.missingResultObject(reason: "Locate method failed. Missing either a delegateObject or a LocationResult")
 		}
 		
+		let status = CLLocationManager.authorizationStatus()
+		
+		if status == .NotDetermined {
+			locationManager.requestWhenInUseAuthorization()
+		}
+		
 		locationResult.datetime = NSDate().timeIntervalSince1970
-		locationResult.testID = "\(id.deviceID)" + "\(locationResult.datetime)"
+		locationResult.testID = "\(id.deviceID)/\(locationResult.datetime)"
 		locationResult.parentID = id.parentID
 		
-		locationManager.delegate = self
-		locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-		locationManager.requestWhenInUseAuthorization()		
-		locationManager.requestLocation()
+		if status == .AuthorizedAlways || status == .AuthorizedWhenInUse {
+			
+			locationManager.delegate = self
+			locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+			locationManager.requestLocation()
+		}
 	}
 	
 	func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -54,8 +62,8 @@ class LocationTester: NSObject, CLLocationManagerDelegate {
 		}
 		
 		print("Location successful! Current location: \(location)")
-		locationResult.latitude.value = location.coordinate.latitude
-		locationResult.longitude.value = location.coordinate.longitude
+		locationResult.latitude = location.coordinate.latitude
+		locationResult.longitude = location.coordinate.longitude
 		locationResult.datetime = location.timestamp.timeIntervalSince1970
 		locationResult.success = true
 		
