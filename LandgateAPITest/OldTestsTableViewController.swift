@@ -13,9 +13,12 @@ import RealmSwift
 
 struct OldTestConstants {
 	static let oldTestCellReuse = "OldTestsTableViewCell"
+	static let oldTestDetailsSegueIdentifier = "oldTestDetailsSegue"
 }
 
 class OldTestTableViewCell: UITableViewCell {
+	
+	var oldTestResult: TestMasterResult?
 	
 	@IBOutlet weak var titleLabel: UILabel!
 	
@@ -26,6 +29,8 @@ class OldTestTableViewCell: UITableViewCell {
 class OldTestsTableViewController: UITableViewController {
 
 	var completedTests: Results<TestMasterResult>?
+	
+	let dateFormatter = NSDateFormatter()
 	
 	lazy var realm: Realm = {
 		print("Realm started! Check for multiple startups!")
@@ -53,7 +58,7 @@ class OldTestsTableViewController: UITableViewController {
 	
 	func uploadAll() {
 		print("Upload All button pressed!")
-		guard let allTests = self.completedTests where allTests.count > 0 else { return }
+		guard let allTests = self.completedTests where !allTests.isEmpty else { return }
 		print("There are tests not yet uploaded!")
 		let tests = allTests.filter("uploaded == false")
 		
@@ -69,7 +74,9 @@ class OldTestsTableViewController: UITableViewController {
 		
 		navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Upload All", style: .Plain, target: self, action: "uploadAll")
 		
-		completedTests = realm.objects(TestMasterResult)
+		completedTests = realm.objects(TestMasterResult).sorted("datetime", ascending: false)
+		
+		dateFormatter.dateFormat = "H:mm dd/MM/yyyy"
 		
 		tableView.estimatedRowHeight = 70.0
 		tableView.rowHeight = UITableViewAutomaticDimension
@@ -105,9 +112,32 @@ class OldTestsTableViewController: UITableViewController {
 			return cell
 		}
 		
-		cell.titleLabel.text = "\(NSDate(timeIntervalSince1970: test.datetime))"
-		cell.detailLabel.text = "Uploaded: \(test.uploaded) Successful: \(test.success)"
+		let date = NSDate(timeIntervalSince1970: test.datetime)
+		
+		cell.titleLabel.text = "\(dateFormatter.stringFromDate(date))"
+		cell.detailLabel.text = test.uploaded ? "Uploaded" : "Not yet uploaded"
+		
+		cell.oldTestResult = test
 		
         return cell
     }
+	
+	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+		print("Entered prepareForSegue in OldTestsViewController.")
+		if (segue.identifier == OldTestConstants.oldTestDetailsSegueIdentifier) {
+			print("About to start OldTestViewController.")
+			if let oldTestDetailsViewController = segue.destinationViewController as? OldTestViewController,
+				index = tableView.indexPathForSelectedRow()?.row {
+				
+				
+				
+				print("parentTestMasterResult key = \()")
+				oldTestDetailsViewController.parentTestMasterResult =
+			}
+		}
+	}
 }
+
+
+
+

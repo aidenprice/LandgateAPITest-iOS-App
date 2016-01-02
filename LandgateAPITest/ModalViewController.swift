@@ -13,6 +13,8 @@ class ModalViewController: UIViewController, TestManagerProgressDelegate {
 	@IBOutlet weak var progressView: KDCircularProgress!
 
 	@IBAction func cancel(sender: UIButton) {
+		
+		// TODO: consider forcing SingletonTestManager's progressDelegate to nil. See whether it happens on it's own in any case with didSet.
 		TestManager.sharedInstance.stateMachine.fireEvent(ManagerEvents.Abort)
 		
 		progressView.animateFromAngle(progressView.angle, toAngle: 0, duration: 0.5, completion: nil)

@@ -17,6 +17,7 @@
 		47120BDD1C0942A6004D11A7 /* NewTestTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47120BDC1C0942A6004D11A7 /* NewTestTableViewController.swift */; };
 		47120BDF1C0942C6004D11A7 /* OldTestsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47120BDE1C0942C6004D11A7 /* OldTestsTableViewController.swift */; };
 		471E6E461C071598002C43C5 /* Credits.swift in Sources */ = {isa = PBXBuildFile; fileRef = 471E6E451C071598002C43C5 /* Credits.swift */; };
+		4751F4551C18C26F0035AEED /* OldTestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4751F4541C18C26F0035AEED /* OldTestViewController.swift */; };
 		475A40001C03237C00CC6F2A /* RealmSwift.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4703B4751BF6C06000298A03 /* RealmSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		475A40011C03239200CC6F2A /* Realm.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4703B4741BF6C06000298A03 /* Realm.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		475A40021C0323A400CC6F2A /* Transporter.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4703B4761BF6C06000298A03 /* Transporter.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -64,6 +65,7 @@
 		47120BDC1C0942A6004D11A7 /* NewTestTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewTestTableViewController.swift; sourceTree = "<group>"; };
 		47120BDE1C0942C6004D11A7 /* OldTestsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OldTestsTableViewController.swift; sourceTree = "<group>"; };
 		471E6E451C071598002C43C5 /* Credits.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Credits.swift; sourceTree = "<group>"; };
+		4751F4541C18C26F0035AEED /* OldTestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OldTestViewController.swift; sourceTree = "<group>"; };
 		475A40031C04026000CC6F2A /* TipsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TipsViewController.swift; sourceTree = "<group>"; };
 		475A40071C05597600CC6F2A /* HomeTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeTableViewController.swift; sourceTree = "<group>"; };
 		47752BAB1BEA9B8700A97859 /* LandgateAPITest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LandgateAPITest.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -135,6 +137,7 @@
 				479E7E0E1C0E378E001F735D /* KDCircularProgress.swift */,
 				479E7E101C0E38FE001F735D /* ModalViewController.swift */,
 				47120BDE1C0942C6004D11A7 /* OldTestsTableViewController.swift */,
+				4751F4541C18C26F0035AEED /* OldTestViewController.swift */,
 				475A40031C04026000CC6F2A /* TipsViewController.swift */,
 				4703B46A1BF093D600298A03 /* TestingTips.swift */,
 				4703B4721BF3D27B00298A03 /* CreditsViewController.swift */,
@@ -242,6 +245,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				479E7E0F1C0E378E001F735D /* KDCircularProgress.swift in Sources */,
+				4751F4551C18C26F0035AEED /* OldTestViewController.swift in Sources */,
 				47752BAF1BEA9B8700A97859 /* AppDelegate.swift in Sources */,
 				475A40041C04026000CC6F2A /* TipsViewController.swift in Sources */,
 				4703B4731BF3D27B00298A03 /* CreditsViewController.swift in Sources */,

@@ -103,7 +103,7 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 		didSet {
 //			print("newPlan = \(self.testPlan)")
 			
-			guard let plan = self.testPlan where plan.count > 0 && self.isNewPlan == true else { return }
+			guard let plan = self.testPlan where !plan.isEmpty && self.isNewPlan == true else { return }
 			
 			print("New Plan! Count: \(plan.count)")
 			

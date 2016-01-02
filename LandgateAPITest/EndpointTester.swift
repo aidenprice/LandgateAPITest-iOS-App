@@ -38,6 +38,14 @@ class EndpointTester {
 		let request = NSMutableURLRequest(URL: url, cachePolicy: cachePolicy, timeoutInterval: 30.0)
 		request.HTTPMethod = endpoint.method.rawValue
 		
+		if let body = endpoint.body,
+		   let data = body.dataUsingEncoding(NSUTF8StringEncoding) {
+			print("Adding body to HTTP request")
+			print(body)
+			print(data)
+			request.HTTPBody = data
+		}
+		
 		let sessionConfig = NSURLSessionConfiguration.defaultSessionConfiguration()
 		let session = NSURLSession(configuration: sessionConfig)
 		
@@ -50,6 +58,11 @@ class EndpointTester {
 				let httpError = error!
 				print("Endpoint test error; \(httpError.localizedDescription)")
 				endpointResult.errorResponse = httpError.localizedDescription
+				
+				if let reason = httpError.localizedFailureReason {
+					print("Endpoint test failure reason: \(reason)")
+					endpointResult.errorResponse += "\n\(reason)"
+				}
 				
 				delegate.didFinishEndpoint(self, result: endpointResult, size: 0)
 				return
