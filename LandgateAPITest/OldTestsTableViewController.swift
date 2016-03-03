@@ -56,27 +56,14 @@ class OldTestsTableViewController: UITableViewController {
 		return testRealm
 	}()
 	
-	func uploadAll() {
-		print("Upload All button pressed!")
-		guard let allTests = self.completedTests where !allTests.isEmpty else { return }
-		print("There are tests not yet uploaded!")
-		let tests = allTests.filter("uploaded == false")
-		
-		for test in tests {
-			
-			print(test)
-		}
-		
-	}
-	
-    override func viewDidLoad() {
+	override func viewDidLoad() {
         super.viewDidLoad()
 		
 		navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Upload All", style: .Plain, target: self, action: "uploadAll")
 		
 		completedTests = realm.objects(TestMasterResult).sorted("datetime", ascending: false)
 		
-		dateFormatter.dateFormat = "H:mm dd/MM/yyyy"
+		dateFormatter.dateFormat = "h:mm a EEEE d MMMM yyyy"
 		
 		tableView.estimatedRowHeight = 70.0
 		tableView.rowHeight = UITableViewAutomaticDimension
@@ -87,6 +74,18 @@ class OldTestsTableViewController: UITableViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+	
+	// MARK: Private API
+	
+	private func uploadAll() {
+		guard let allTests = self.completedTests where !allTests.isEmpty else { return }
+		print("There are tests not yet uploaded!")
+		
+		let tests = allTests.filter("uploaded == false").map({ $0 })
+		
+		TestUploader.sharedInstance.uploadTests(tests)
+		
+	}
 
     // MARK: - Table view data source
 
@@ -123,21 +122,17 @@ class OldTestsTableViewController: UITableViewController {
     }
 	
 	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+		
 		print("Entered prepareForSegue in OldTestsViewController.")
-		if (segue.identifier == OldTestConstants.oldTestDetailsSegueIdentifier) {
-			print("About to start OldTestViewController.")
-			if let oldTestDetailsViewController = segue.destinationViewController as? OldTestViewController,
-				index = tableView.indexPathForSelectedRow()?.row {
-				
-				
-				
-				print("parentTestMasterResult key = \()")
-				oldTestDetailsViewController.parentTestMasterResult =
-			}
+		
+		guard let destination = segue.destinationViewController as? OldTestViewController,
+			  let cell = sender as? OldTestTableViewCell else {
+			return
 		}
+		
+		print("parentTestMasterResult testID = \(cell.oldTestResult!.testID)")
+		destination.parentTestMasterResult = cell.oldTestResult
+		print("destination's parentTestMasterResult set!")
 	}
 }
-
-
-
 

@@ -11,7 +11,33 @@ import MapKit
 
 import RealmSwift
 
-class OldTestViewController: UIViewController {
+struct OldEndpointConstants {
+	static let oldEndpointCellReuse = "OldEndpointTableViewCell"
+}
+
+class OldEndpointTableViewCell: UITableViewCell {
+	
+	@IBOutlet weak var dateTimeLabel: UILabel!
+	@IBOutlet weak var successLabel: UILabel!
+	
+	@IBOutlet weak var responseTimeLabel: UILabel!
+	@IBOutlet weak var responseSizeLabel: UILabel!
+	
+}
+
+class OldTestViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+	
+	@IBOutlet weak var dateTimeLabel: UILabel!
+	@IBOutlet weak var successRatioLabel: UILabel!
+	@IBOutlet weak var averageResponseTimeLabel: UILabel!
+	
+	@IBOutlet weak var map: MKMapView!
+	
+	@IBOutlet weak var tableView: UITableView!
+	
+	let dateFormatter = NSDateFormatter()
+	let timeFormatter = NSDateFormatter()
+	let numberFormatter = NSNumberFormatter()
 	
 	var parentTestMasterResult: TestMasterResult?
 	
@@ -21,6 +47,7 @@ class OldTestViewController: UIViewController {
 	var endpointResults: Results<EndpointResult>?
 	
 	var successRatio: Double {
+		print("Calculating Success Ratio")
 		guard let endpoints = self.endpointResults where !endpoints.isEmpty else { return 0.0 }
 		
 		let failures = endpoints.filter("success == false")
@@ -29,6 +56,7 @@ class OldTestViewController: UIViewController {
 	}
 	
 	var averageResponseTime: Double {
+		print("Calculating average response time")
 		guard let endpoints = self.endpointResults where !endpoints.isEmpty else { return 0.0 }
 		
 		var total = 0.0
@@ -40,17 +68,6 @@ class OldTestViewController: UIViewController {
 		return total / Double(endpoints.count)
 	}
 
-	@IBOutlet weak var dateTimeLabel: UILabel!
-	@IBOutlet weak var successRatioLabel: UILabel!
-	@IBOutlet weak var averageResponseTimeLabel: UILabel!
-	
-	@IBOutlet weak var map: MKMapView!
-	
-	@IBOutlet weak var tableview: UITableView!
-	
-	let dateFormatter = NSDateFormatter()
-	let numberFormatter = NSNumberFormatter()
-	
 	lazy var realm: Realm = {
 		print("Realm started! Check for multiple startups!")
 		var testRealm: Realm
@@ -77,6 +94,11 @@ class OldTestViewController: UIViewController {
 	
     override func viewDidLoad() {
         super.viewDidLoad()
+
+		navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Upload", style: .Plain, target: self, action: "uploadTest")
+		
+		tableView.dataSource = self
+		tableView.delegate = self
 		
 		guard let testMasterResult = self.parentTestMasterResult else {
 			self.dateTimeLabel.text = "No Test Found!"
@@ -88,26 +110,24 @@ class OldTestViewController: UIViewController {
 		
 		let date = NSDate(timeIntervalSince1970: testMasterResult.datetime)
 		
-		dateFormatter.dateFormat = "H:mm dd/MM/yyyy"
-		
+		dateFormatter.dateFormat = "h:mm a EEEE d MMMM yyyy"
 		dateTimeLabel.text = "\(dateFormatter.stringFromDate(date))"
+		
+		timeFormatter.dateFormat = "h:mm:ss a"
 		
 		locationResults = realm.objects(LocationResult).filter("parentID = %@", testMasterResult.testID).sorted("datetime", ascending: true)
 		pingResults = realm.objects(PingResult).filter("parentID = %@", testMasterResult.testID).sorted("datetime", ascending: true)
 		networkResults = realm.objects(NetworkResult).filter("parentID = %@", testMasterResult.testID).sorted("datetime", ascending: true)
 		endpointResults = realm.objects(EndpointResult).filter("parentID = %@", testMasterResult.testID).sorted("datetime", ascending: true)
 		
-		numberFormatter.maximumFractionDigits = 2
+		numberFormatter.maximumFractionDigits = 3
 		numberFormatter.numberStyle = NSNumberFormatterStyle.DecimalStyle
 		
-		successRatioLabel.text = "Successful tests: \(numberFormatter.stringFromNumber(successRatio * 100))%"
+		successRatioLabel.text = "Successful tests: \(numberFormatter.stringFromNumber(successRatio * 100)!)%"
 		
-		averageResponseTimeLabel.text = "Average response time: \(numberFormatter.stringFromNumber(averageResponseTime)) seconds"
+		averageResponseTimeLabel.text = "Average response time: \(numberFormatter.stringFromNumber(averageResponseTime)!) seconds"
 		
 		setUpMap()
-		
-		
-		
 
     }
 
@@ -116,50 +136,103 @@ class OldTestViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 	
-	private func setUpMap() {
-		guard let locations = self.locationResults where !locations.isEmpty else {
-			let location = CLLocationCoordinate2D(latitude: -23.11666667, longitude: 132.133333)
-			let span = MKCoordinateSpanMake(15, 25)
-			let region = MKCoordinateRegion(center: location, span: span)
-			map.setRegion(region, animated: false)
-			
-			return
-		}
-		
-		var minX: Double?
-		var minY: Double?
-		var maxX: Double?
-		var maxY: Double?
-		
-		var annotationsArray = [MKPointAnnotation]()
-		
-		if let locations = locationResults where !locations.isEmpty {
-			for location in locations {
-				if let
-				let point = CLLocationCoordinate2DMake(location.latitude, location.longitude)
-				let annotation = MKPointAnnotation()
-				annotation.coordinate = point
-				annotationsArray.append(annotation)
-			}
-		}
-		
-		
-		let location = CLLocationCoordinate2D(latitude: -23.11666667, longitude: 132.133333)
-		let distance = 1000
-		let region = MKCoordinateRegionMakeWithDistance(center: location, distance: distance)
-		map.setRegion(region, animated: true)
-		
+	// MARK: - Table view data source
+	
+	func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+		return 1
 	}
 	
+	func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+		
+		guard let tests = endpointResults else {
+			return 0
+		}
+		
+		return tests.count
+	}
+	
+	func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+		
+		let cell = tableView.dequeueReusableCellWithIdentifier(OldEndpointConstants.oldEndpointCellReuse, forIndexPath: indexPath) as! OldEndpointTableViewCell
+		
+		guard let test = endpointResults?[indexPath.row] else {
+			cell.dateTimeLabel.text = "No test found"
+			cell.successLabel.text = ""
+			cell.responseTimeLabel.text = ""
+			cell.responseSizeLabel.text = ""
 
-    /*
-    // MARK: - Navigation
+			return cell
+		}
+		
+		cell.dateTimeLabel.text = "\(timeFormatter.stringFromDate(NSDate(timeIntervalSince1970: test.datetime)))"
+		
+//		cell.successLabel.text = test.success ? "Succeeded" : "Failed Code: \(test.responseCode)"
+		
+		if test.success == true {
+			cell.successLabel.text = "Succeeded"
+		} else if test.responseCode == 0 {
+			cell.successLabel.text = "Failed No Response"
+		} else {
+			cell.successLabel.text = "Failed Response Code: \(test.responseCode)"
+		}
+		
+		cell.responseTimeLabel.text = "Time: \(numberFormatter.stringFromNumber(test.finishDatetime - test.startDatetime)!) sec"
+		
+		if let data = test.responseData {
+			cell.responseSizeLabel.text = "Size: \(data.length / 1000)kB"
+		} else {
+			cell.responseSizeLabel.text = "Size: Nil"
+		}
+		
+		return cell
+	}
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
+	// MARK: - Private API
+	
+	private func setUpMap() {
+		
+		var minX = 112.467
+		var minY = -55.050
+		var maxX = 154.200
+		var maxY = -9.133
+		
+		if let locations = locationResults where !locations.isEmpty {
+			
+			var allXValues = [Double]()
+			var allYValues = [Double]()
+			
+			for location in locations {
+				
+				allXValues.append(location.longitude)
+				allYValues.append(location.latitude)
+				
+				let point = CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)
+				let annotation = MKPointAnnotation()
+				annotation.coordinate = point
+				map.addAnnotation(annotation)
+			}
+			minX = allXValues.minElement()! - 0.1
+			minY = allYValues.minElement()! - 0.1
+			maxX = allXValues.maxElement()! + 0.1
+			maxY = allYValues.maxElement()! + 0.1
+		}
+		
+		let spanX = abs(maxX - minX)
+		let spanY = abs(maxY - minY)
+		
+		let centreX = (maxX + minX) / 2.0
+		let centreY = (maxY + minY) / 2.0
+		
+		let newLocation = CLLocationCoordinate2D(latitude: centreY, longitude: centreX)
+		let newSpan = MKCoordinateSpanMake(spanY, spanX)
+		let newRegion = MKCoordinateRegion(center: newLocation, span: newSpan)
+		map.setRegion(newRegion, animated: true)
+	}
+	
+	private func uploadTest() {
+		TestUploader.sharedInstance.uploadTests([self.parentTestMasterResult!])
+	}
+	
+	
+	
 }

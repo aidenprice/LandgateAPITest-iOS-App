@@ -68,8 +68,6 @@ protocol TestManagerProgressDelegate: class {
 
 class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDelegate, EndpointTesterDelegate {
 	
-	// MARK: Public Interface
-	
 	static let sharedInstance = TestManager()
 	
 	var delegate: TestManagerDelegate?
@@ -101,8 +99,6 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 	
 	var testPlan: [TETemplate]? {
 		didSet {
-//			print("newPlan = \(self.testPlan)")
-			
 			guard let plan = self.testPlan where !plan.isEmpty && self.isNewPlan == true else { return }
 			
 			print("New Plan! Count: \(plan.count)")
@@ -117,7 +113,7 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 		}
 	}
 	
-	// MARK: Init and Start Methods
+	// MARK: Init Methods
 	
 	init() {
 		
@@ -171,24 +167,24 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 		
 	}
 	
+	// MARK: Public API
+	
 	func startWithTestPlan(plan: [TETemplate]) {
 		
 		print("startWithTestPlan function called!")
-//		print("\(plan)")
 		
 		self.isNewPlan = true
 		self.testPlan = plan
 		
-//		print("\(self.testPlan)")
 	}
 
 	// MARK: State Change Methods
 	
-	func didEnterReadyState() {
+	private func didEnterReadyState() {
 		print("Entered Ready state")
 	}
 	
-	func didEnterPreTestState() {
+	private func didEnterPreTestState() {
 		print("Entered Pretest state")
 		
 		self.testMasterResult = TestMasterResult()
@@ -224,7 +220,7 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 		}
 	}
 	
-	func didEnterEndpointTestingState() {
+	private func didEnterEndpointTestingState() {
 		print("Entered Endpoint Test state")
 		
 		guard let testMasterResult = self.testMasterResult else {
@@ -242,8 +238,6 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 			do {
 				try EndpointTester.sharedInstance.test(self, id: id, endpoint: (self.testPlan?.removeLast())!)
 				
-//				self.testPlan = remainingTests
-				
 			} catch {
 				self.progressDelegate?.didFailWithError("Endpoint test error!")
 				print("Aborting due to error condition")
@@ -258,7 +252,7 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 		}
 	}
 	
-	func didEnterLocatingState() {
+	private func didEnterLocatingState() {
 		print("Entered Location Test state")
 		
 		guard let testMasterResult = self.testMasterResult else {
@@ -280,7 +274,7 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 		}
 	}
 	
-	func didEnterNetworkingState() {
+	private func didEnterNetworkingState() {
 		print("Entered Network Test state")
 		
 		guard let testMasterResult = self.testMasterResult else {
@@ -302,7 +296,7 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 		}
 	}
 	
-	func didEnterPingingState() {
+	private func didEnterPingingState() {
 		print("Entered Ping Test state")
 		
 		guard let testMasterResult = self.testMasterResult else {
@@ -323,7 +317,7 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 		}
 	}
 	
-	func didEnterPostTestState() {
+	private func didEnterPostTestState() {
 		print("Entered Post Test state")
 		
 		guard let progressDelegate = self.progressDelegate else {
@@ -469,7 +463,7 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 	
 	// MARK: Helper methods
 	
-	func hasConnectivity() -> Bool {
+	private func hasConnectivity() -> Bool {
 		do {
 			let reachability: Reachability =  try Reachability.reachabilityForInternetConnection()
 			let networkStatus: String = reachability.currentReachabilityStatus.description
@@ -479,7 +473,7 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 		}
 	}
 	
-	func platform() -> String {
+	private func platform() -> String {
 		var sysinfo = utsname()
 		uname(&sysinfo) // ignore return value
 		return NSString(bytes: &sysinfo.machine, length: Int(_SYS_NAMELEN), encoding: NSASCIIStringEncoding)! as String

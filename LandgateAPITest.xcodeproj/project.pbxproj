@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		4703B46B1BF093D600298A03 /* TestingTips.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4703B46A1BF093D600298A03 /* TestingTips.swift */; };
-		4703B46D1BF130C000298A03 /* ReferenceObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4703B46C1BF130C000298A03 /* ReferenceObjects.swift */; };
 		4703B4731BF3D27B00298A03 /* CreditsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4703B4721BF3D27B00298A03 /* CreditsViewController.swift */; };
 		4703B4771BF6C06000298A03 /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4703B4741BF6C06000298A03 /* Realm.framework */; };
 		4703B4781BF6C06000298A03 /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4703B4751BF6C06000298A03 /* RealmSwift.framework */; settings = {ATTRIBUTES = (Required, ); }; };
@@ -17,6 +16,7 @@
 		47120BDD1C0942A6004D11A7 /* NewTestTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47120BDC1C0942A6004D11A7 /* NewTestTableViewController.swift */; };
 		47120BDF1C0942C6004D11A7 /* OldTestsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47120BDE1C0942C6004D11A7 /* OldTestsTableViewController.swift */; };
 		471E6E461C071598002C43C5 /* Credits.swift in Sources */ = {isa = PBXBuildFile; fileRef = 471E6E451C071598002C43C5 /* Credits.swift */; };
+		473099B51C5DCF0000CBA4AA /* SingletonUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 473099B41C5DCF0000CBA4AA /* SingletonUploader.swift */; };
 		4751F4551C18C26F0035AEED /* OldTestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4751F4541C18C26F0035AEED /* OldTestViewController.swift */; };
 		475A40001C03237C00CC6F2A /* RealmSwift.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4703B4751BF6C06000298A03 /* RealmSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		475A40011C03239200CC6F2A /* Realm.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4703B4741BF6C06000298A03 /* Realm.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -56,7 +56,6 @@
 
 /* Begin PBXFileReference section */
 		4703B46A1BF093D600298A03 /* TestingTips.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestingTips.swift; sourceTree = "<group>"; };
-		4703B46C1BF130C000298A03 /* ReferenceObjects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReferenceObjects.swift; sourceTree = "<group>"; };
 		4703B4721BF3D27B00298A03 /* CreditsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreditsViewController.swift; sourceTree = "<group>"; };
 		4703B4741BF6C06000298A03 /* Realm.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Realm.framework; path = Carthage/Build/iOS/Realm.framework; sourceTree = "<group>"; };
 		4703B4751BF6C06000298A03 /* RealmSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RealmSwift.framework; path = Carthage/Build/iOS/RealmSwift.framework; sourceTree = "<group>"; };
@@ -65,6 +64,7 @@
 		47120BDC1C0942A6004D11A7 /* NewTestTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewTestTableViewController.swift; sourceTree = "<group>"; };
 		47120BDE1C0942C6004D11A7 /* OldTestsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OldTestsTableViewController.swift; sourceTree = "<group>"; };
 		471E6E451C071598002C43C5 /* Credits.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Credits.swift; sourceTree = "<group>"; };
+		473099B41C5DCF0000CBA4AA /* SingletonUploader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingletonUploader.swift; sourceTree = "<group>"; };
 		4751F4541C18C26F0035AEED /* OldTestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OldTestViewController.swift; sourceTree = "<group>"; };
 		475A40031C04026000CC6F2A /* TipsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TipsViewController.swift; sourceTree = "<group>"; };
 		475A40071C05597600CC6F2A /* HomeTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeTableViewController.swift; sourceTree = "<group>"; };
@@ -123,32 +123,72 @@
 			isa = PBXGroup;
 			children = (
 				47752BAE1BEA9B8700A97859 /* AppDelegate.swift */,
-				47F2AEF51BFB1C5D00E70DEB /* Reachability.swift */,
-				4703B47E1BF6DF7000298A03 /* ResultObjects.swift */,
-				47752BC01BEA9DC800A97859 /* TestMasterTemplates.swift */,
-				47FC450A1BEEFAE3005A90E5 /* SingletonTestManager.swift */,
-				47F2AEF31BFAD0C800E70DEB /* EndpointTester.swift */,
-				47F2AEED1BF978AC00E70DEB /* LocationTester.swift */,
-				47F2AEEF1BFA71F600E70DEB /* NetworkTester.swift */,
-				47F2AEF11BFAD0B900E70DEB /* PingTester.swift */,
-				475A40071C05597600CC6F2A /* HomeTableViewController.swift */,
-				47120BDC1C0942A6004D11A7 /* NewTestTableViewController.swift */,
-				47D8F7101C0BF3E700E4ED9C /* TestViewController.swift */,
-				479E7E0E1C0E378E001F735D /* KDCircularProgress.swift */,
-				479E7E101C0E38FE001F735D /* ModalViewController.swift */,
-				47120BDE1C0942C6004D11A7 /* OldTestsTableViewController.swift */,
-				4751F4541C18C26F0035AEED /* OldTestViewController.swift */,
-				475A40031C04026000CC6F2A /* TipsViewController.swift */,
-				4703B46A1BF093D600298A03 /* TestingTips.swift */,
-				4703B4721BF3D27B00298A03 /* CreditsViewController.swift */,
-				471E6E451C071598002C43C5 /* Credits.swift */,
-				4703B46C1BF130C000298A03 /* ReferenceObjects.swift */,
+				47FB28401C6048760084A395 /* Singleton Managers */,
+				47FB283E1C6047EF0084A395 /* Testers */,
+				47FB28411C6048AF0084A395 /* Model */,
+				47FB28421C6048C80084A395 /* View Controllers */,
+				47FB283F1C60484E0084A395 /* Open Source Code */,
 				47752BB21BEA9B8700A97859 /* Main.storyboard */,
 				47752BB71BEA9B8700A97859 /* LaunchScreen.storyboard */,
 				47752BB51BEA9B8700A97859 /* Assets.xcassets */,
 				47752BBA1BEA9B8700A97859 /* Info.plist */,
 			);
 			path = LandgateAPITest;
+			sourceTree = "<group>";
+		};
+		47FB283E1C6047EF0084A395 /* Testers */ = {
+			isa = PBXGroup;
+			children = (
+				47F2AEF31BFAD0C800E70DEB /* EndpointTester.swift */,
+				47F2AEED1BF978AC00E70DEB /* LocationTester.swift */,
+				47F2AEEF1BFA71F600E70DEB /* NetworkTester.swift */,
+				47F2AEF11BFAD0B900E70DEB /* PingTester.swift */,
+			);
+			name = Testers;
+			sourceTree = "<group>";
+		};
+		47FB283F1C60484E0084A395 /* Open Source Code */ = {
+			isa = PBXGroup;
+			children = (
+				47F2AEF51BFB1C5D00E70DEB /* Reachability.swift */,
+				479E7E0E1C0E378E001F735D /* KDCircularProgress.swift */,
+			);
+			name = "Open Source Code";
+			sourceTree = "<group>";
+		};
+		47FB28401C6048760084A395 /* Singleton Managers */ = {
+			isa = PBXGroup;
+			children = (
+				47FC450A1BEEFAE3005A90E5 /* SingletonTestManager.swift */,
+				473099B41C5DCF0000CBA4AA /* SingletonUploader.swift */,
+			);
+			name = "Singleton Managers";
+			sourceTree = "<group>";
+		};
+		47FB28411C6048AF0084A395 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				471E6E451C071598002C43C5 /* Credits.swift */,
+				4703B47E1BF6DF7000298A03 /* ResultObjects.swift */,
+				4703B46A1BF093D600298A03 /* TestingTips.swift */,
+				47752BC01BEA9DC800A97859 /* TestMasterTemplates.swift */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		47FB28421C6048C80084A395 /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				4703B4721BF3D27B00298A03 /* CreditsViewController.swift */,
+				475A40071C05597600CC6F2A /* HomeTableViewController.swift */,
+				479E7E101C0E38FE001F735D /* ModalViewController.swift */,
+				47120BDC1C0942A6004D11A7 /* NewTestTableViewController.swift */,
+				47120BDE1C0942C6004D11A7 /* OldTestsTableViewController.swift */,
+				4751F4541C18C26F0035AEED /* OldTestViewController.swift */,
+				47D8F7101C0BF3E700E4ED9C /* TestViewController.swift */,
+				475A40031C04026000CC6F2A /* TipsViewController.swift */,
+			);
+			name = "View Controllers";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -249,7 +289,6 @@
 				47752BAF1BEA9B8700A97859 /* AppDelegate.swift in Sources */,
 				475A40041C04026000CC6F2A /* TipsViewController.swift in Sources */,
 				4703B4731BF3D27B00298A03 /* CreditsViewController.swift in Sources */,
-				4703B46D1BF130C000298A03 /* ReferenceObjects.swift in Sources */,
 				47120BDD1C0942A6004D11A7 /* NewTestTableViewController.swift in Sources */,
 				47F2AEEE1BF978AC00E70DEB /* LocationTester.swift in Sources */,
 				471E6E461C071598002C43C5 /* Credits.swift in Sources */,
@@ -259,6 +298,7 @@
 				47F2AEF01BFA71F600E70DEB /* NetworkTester.swift in Sources */,
 				47FC450B1BEEFAE3005A90E5 /* SingletonTestManager.swift in Sources */,
 				4703B47F1BF6DF7000298A03 /* ResultObjects.swift in Sources */,
+				473099B51C5DCF0000CBA4AA /* SingletonUploader.swift in Sources */,
 				47F2AEF21BFAD0B900E70DEB /* PingTester.swift in Sources */,
 				47120BDF1C0942C6004D11A7 /* OldTestsTableViewController.swift in Sources */,
 				479E7E111C0E38FE001F735D /* ModalViewController.swift in Sources */,

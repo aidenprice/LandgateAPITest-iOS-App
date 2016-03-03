@@ -32,18 +32,38 @@ class EndpointTester {
 		endpointResult.testID = "\(id.deviceID)/\(endpointResult.datetime)"
 		endpointResult.parentID = id.parentID
 		endpointResult.testedURL = endpoint.url
+		endpointResult.server = endpoint.server.rawValue
+		endpointResult.dataset = endpoint.dataset.rawValue
+		endpointResult.returnType = endpoint.returnType.rawValue
+		endpointResult.testName = endpoint.testName.rawValue
+		endpointResult.httpMethod = endpoint.method.rawValue
 		
-		let url = NSURL(string: endpoint.url)!
+		guard var url = NSURL(string: endpoint.url) else { return }
+		
+		if let urlParams = endpoint.urlParams {
+			print("Adding URL parameters to request")
+			url = url.URLByAppendingQueryParameters(urlParams)
+		}
+		
 		let cachePolicy = NSURLRequestCachePolicy.ReloadIgnoringLocalCacheData
 		let request = NSMutableURLRequest(URL: url, cachePolicy: cachePolicy, timeoutInterval: 30.0)
 		request.HTTPMethod = endpoint.method.rawValue
 		
-		if let body = endpoint.body,
-		   let data = body.dataUsingEncoding(NSUTF8StringEncoding) {
-			print("Adding body to HTTP request")
-			print(body)
-			print(data)
-			request.HTTPBody = data
+		if let header = endpoint.header {
+			print("Adding headers to request")
+			for (headerField, value) in header {
+				request.addValue(value, forHTTPHeaderField: headerField)
+			}
+		}
+		
+		if let body = endpoint.bodyString {
+			print("Adding XML body to HTTP request")
+			request.HTTPBody = body.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
+			
+		} else if let body = endpoint.bodyForm {
+			print("Adding Form-encoded body to HTTP request")
+			let bodyString = body.queryParameters
+			request.HTTPBody = bodyString.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
 		}
 		
 		let sessionConfig = NSURLSessionConfiguration.defaultSessionConfiguration()
@@ -89,3 +109,45 @@ class EndpointTester {
 		task.resume()
 	}
 }
+
+// MARK: - Helper Functions
+
+// The following code borrowed from Paw HTTP Client examples, and quite well thoughtout it is too.
+
+protocol URLQueryParameterStringConvertible {
+	var queryParameters: String {get}
+}
+
+extension Dictionary : URLQueryParameterStringConvertible {
+	/**
+	This computed property returns a query parameters string from the given NSDictionary. For
+	example, if the input is @{@"day":@"Tuesday", @"month":@"January"}, the output
+	string will be @"day=Tuesday&month=January".
+	@return The computed parameters string.
+	*/
+	var queryParameters: String {
+		var parts: [String] = []
+		for (key, value) in self {
+			let part = NSString(format: "%@=%@",
+				String(key).stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!,
+				String(value).stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!)
+			parts.append(part as String)
+		}
+		return parts.joinWithSeparator("&")
+	}
+}
+
+extension NSURL {
+	/**
+	Creates a new URL by adding the given query parameters.
+	@param parametersDictionary The query parameter dictionary to add.
+	@return A new NSURL.
+	*/
+	func URLByAppendingQueryParameters(parametersDictionary : Dictionary<String, String>) -> NSURL {
+		let URLString : NSString = NSString(format: "%@?%@", self.absoluteString, parametersDictionary.queryParameters)
+		return NSURL(string: URLString as String)!
+	}
+}
+
+
+

@@ -16,9 +16,40 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	var window: UIWindow?
 
-
 	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
 		// Override point for customization after application launch.
+		
+		Realm.Configuration.defaultConfiguration = Realm.Configuration(
+			schemaVersion: 2,
+			migrationBlock: { migration, oldSchemaVersion in
+				if (oldSchemaVersion < 2) {
+					print("Migrating database versions!")
+					migration.enumerate(EndpointResult.className()) { oldObject, newObject in
+						newObject!["uploaded"] = false
+						newObject!["httpMethod"] = "GET"
+						newObject!["server"] = "GME"
+						newObject!["testName"] = ""
+						
+						if let data: NSData = oldObject!["responseData"] as? NSData {
+							if let _: UIImage = UIImage(data: data) {
+								print("Converting an NSData to a UIImage succeeded! Assigning properties as per a WMS image return.")
+								newObject!["dataset"] = "AerialPhoto"
+								newObject!["returnType"] = "Image"
+								
+							} else {
+								print("Found an NSData which could not be converted to UIImage. Assuming JSON from the GME days.")
+								newObject!["dataset"] = "BusStops"
+								newObject!["returnType"] = "JSON"
+							}
+						} else {
+							print("No response data found! Probably a failed test.")
+							newObject!["dataset"] = ""
+							newObject!["returnType"] = ""
+						}
+					}
+				}
+			}
+		)
 		
 		let testManager = TestManager.sharedInstance
 		
@@ -37,6 +68,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		// Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
 		
 		TestManager.sharedInstance.stateMachine.fireEvent(ManagerEvents.Abort)
+		TestUploader.sharedInstance.stateMachine.fireEvent(UploaderEvents.Abort)
 	}	
 
 	func applicationDidEnterBackground(application: UIApplication) {

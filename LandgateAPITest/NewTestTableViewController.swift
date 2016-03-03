@@ -76,14 +76,9 @@ class NewTestTableViewController: UITableViewController {
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
 		
-		guard let destination = segue.destinationViewController as? TestViewController else {
-			return
-		}
-		
-		guard let cell = sender as? NewTestTableViewCell else {
+		guard let destination = segue.destinationViewController as? TestViewController,
+			  let cell = sender as? NewTestTableViewCell else {
 			return
 		}
 		
