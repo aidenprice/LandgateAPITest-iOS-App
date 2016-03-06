@@ -121,6 +121,7 @@ class TestUploader {
 			
 			if error == nil {
 				print("Upload task successful!")
+				print("Response; \(response)")
 				try! self.realm.write { result.uploaded = true }
 				self.stateMachine.fireEvent(UploaderEvents.Success)
 				
