@@ -7,11 +7,14 @@
 //
 
 import Foundation
-
-//import Realm
 import RealmSwift
 import UIKit
 
+// MARK: Model classes
+
+/**
+ResultObject is the base class from which others inherit, provides properties common to all classes.
+*/
 class ResultObject: Object {
 	dynamic var testID: String = ""
 	dynamic var parentID: String = ""
@@ -25,8 +28,8 @@ class TestMasterResult: ResultObject {
 	dynamic var startDatetime: Double = 0.0
 	dynamic var finishDatetime: Double = 0.0
 	dynamic var deviceType: String = ""
-	dynamic var iOSVersion: String = ""
 	dynamic var deviceID: String = ""
+	dynamic var iOSVersion: String = ""
 	let endpointResults = List<EndpointResult>()
 	let networkResults = List<NetworkResult>()
 	let locationResults = List<LocationResult>()
@@ -63,8 +66,13 @@ class PingResult: ResultObject {
 	dynamic var pingTime: Double = 0.0
 }
 
+// MARK: toDict Extension
 
 extension Object {
+	/**
+	An extension to Realm Object base class to recursively convert any class to a dictionary to be later transformed to a JSON array.
+	Checks the NSData responseData property looking for images which it converts to base64 text.
+	*/
 	func toDict() -> NSDictionary {
 		let properties = self.objectSchema.properties.map { $0.name }
 		let dictionary = self.dictionaryWithValuesForKeys(properties)
@@ -74,9 +82,10 @@ extension Object {
 		
 		for prop in self.objectSchema.properties as [Property]! {
 			// Find empty responses, these will be optionals resolving to nil, then assign them empty strings for the JSON upload dict.
+			// The web service will assign null JSON response type.
 			if (self[prop.name] == nil) {
 				print("Nil response found, assigning empty string in its place.")
-				mutableDict.setValue("", forKey: "jsonResponse")
+				mutableDict.setValue("", forKey: "responseData")
 			
 			// Response data could be an image or a JSON or XML string, determine which it is, convert to string and append to JSON upload dict.
 			} else if let dataObject = self[prop.name] as? NSData {

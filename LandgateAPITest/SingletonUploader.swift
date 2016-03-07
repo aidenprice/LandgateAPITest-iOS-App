@@ -7,13 +7,10 @@
 //
 
 import Foundation
-
 import RealmSwift
 import Transporter
 
-enum UploaderState {
-	case Ready, Uploading, Success, Fail
-}
+// MARK: Constants
 
 struct UploaderEvents {
 	static let Start = "StartUpload"
@@ -24,8 +21,15 @@ struct UploaderEvents {
 	static let Abort = "Abort"
 }
 
+// MARK: State Enum
+
+enum UploaderState {
+	case Ready, Uploading, Success, Fail
+}
+
+// MARK: TestUploader Singleton Class
+
 class TestUploader {
-	
 	static let sharedInstance = TestUploader()
 	
 	let stateMachine: StateMachine<UploaderState>
@@ -156,6 +160,11 @@ class TestUploader {
 	
 	// MARK: - Helper methods
 	
+	/**
+		Checks whether the device can connect to the internet.
+		Intended to prevent upload attempts when there is not connectivity.
+		Uses the open source reachability library.
+	*/
 	private func hasConnectivity() -> Bool {
 		do {
 			let reachability: Reachability =  try Reachability.reachabilityForInternetConnection()

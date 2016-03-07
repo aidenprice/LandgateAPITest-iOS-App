@@ -74,7 +74,7 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 	
 	var progressDelegate: TestManagerProgressDelegate?
 	
-	var campaign: String = "test_campaign"
+	var campaign: String = "production_campaign"
 	
 	var testMasterResult: TestMasterResult?
 	
