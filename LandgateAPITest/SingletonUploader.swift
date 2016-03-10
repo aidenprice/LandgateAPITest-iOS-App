@@ -51,7 +51,7 @@ class TestUploader {
 		
 		let stateMachine = StateMachine(initialState: readyState, states: [readyState, uploadingState, successState, failState])
 		
-		let startEvent = Event(name: UploaderEvents.Start, sourceStates: [UploaderState.Ready], destinationState: UploaderState.Uploading)
+		let startEvent = Event(name: UploaderEvents.Start, sourceStates: [UploaderState.Ready, UploaderState.Success], destinationState: UploaderState.Uploading)
 		let successEvent = Event(name: UploaderEvents.Success, sourceStates: [UploaderState.Uploading], destinationState: UploaderState.Success)
 		let failEvent = Event(name: UploaderEvents.Fail, sourceStates: [UploaderState.Uploading], destinationState: UploaderState.Fail)
 		let backToReadyEvent = Event(name: UploaderEvents.Ready, sourceStates: [UploaderState.Success, UploaderState.Fail], destinationState: UploaderState.Ready)
@@ -107,11 +107,9 @@ class TestUploader {
 			return
 		}
 		
-		guard let result = self.queue.first else {
-			print("Can't upload! No first element in the queue. Not sure how you'd end up here having passed the first guard statement.")
-			stateMachine.fireEvent(UploaderEvents.Fail)
-			return
-		}
+		// Grab the object and its primary key so we can reinstantiate it on the background uploading thread.
+		let result = self.queue.removeLast()
+		let resultKey = result.testID
 		
 		guard let jsonData = try? NSJSONSerialization.dataWithJSONObject(result.toDict(), options: []) else {
 			print("Couldn't encode JSON for upload.")
@@ -119,6 +117,7 @@ class TestUploader {
 			return
 		}
 		
+		// NSURLSession config and parameters
 		let sessionConfig = NSURLSessionConfiguration.defaultSessionConfiguration()
 		
 		let session = NSURLSession(configuration: sessionConfig, delegate: nil, delegateQueue: nil)
@@ -129,15 +128,20 @@ class TestUploader {
 		request.HTTPMethod = HTTPMethod.post.rawValue
 		request.addValue("application/json", forHTTPHeaderField: "Content-Type")
 		
+		// Start the upload task.
 		let task = session.uploadTaskWithRequest(request, fromData: jsonData) { data, response, error in
-			
+			print("Upload task started!")
 			if error == nil {
 				print("Upload task successful!")
 				print("Response; \(response)")
 				
+				// Assume that iOS has pushed the upload task to a background thread, as Realm objects are not thread safe
+				// we have to get a new Realm and a new instance of the ResultObject, thankfully we stored the primary key earlier.
 				do {
 					let writeRealm = try Realm()
-					try writeRealm.write { result.uploaded = true }
+					if let resultOnAnotherThread = writeRealm.objectForPrimaryKey(ResultObject.self, key: resultKey) {
+						try writeRealm.write { resultOnAnotherThread.uploaded = true }
+					}
 				} catch {
 					print("Can't change uploaded flag in Realm!")
 				}
@@ -147,7 +151,8 @@ class TestUploader {
 			} else {
 				print("Upload task failed!")
 				let statusCode = (response as! NSHTTPURLResponse).statusCode
-				print("Response; \(statusCode)")
+				print("Response code; \(statusCode)")
+				print("Response; \(response)")
 				print("Error: \(error!.localizedDescription)")
 				self.stateMachine.fireEvent(UploaderEvents.Fail)
 			}

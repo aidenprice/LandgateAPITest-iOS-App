@@ -22,9 +22,9 @@ class CreditsViewController: UIViewController {
 		// Build the credits view simply from concatenated text in the Credits model file.
 		var text = "The best helpers a dev could have;\n\n"
 		text += Credits.helpers.joinWithSeparator("\n\n")
-		text += "Coders who made their code available through Stack Overflow;\n\n"
+		text += "\n\nCoders who made their code available through Stack Overflow;\n\n"
 		text += Credits.coders.joinWithSeparator("\n\n")
-		text += "Licences for open source libraries used in this app;\n\n"
+		text += "\n\nLicences for open source libraries used in this app;\n\n"
 		
 		for (key, value) in Credits.licences {
 			text += "\(key)\n\n\(value)\n\n"

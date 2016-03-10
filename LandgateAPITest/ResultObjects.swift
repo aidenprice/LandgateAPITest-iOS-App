@@ -22,6 +22,10 @@ class ResultObject: Object {
 	dynamic var success: Bool = false
 	dynamic var comment: String = ""
 	dynamic var uploaded: Bool = false
+	
+	override static func primaryKey() -> String? {
+		return "testID"
+	}
 }
 
 class TestMasterResult: ResultObject {
@@ -75,18 +79,14 @@ extension Object {
 	*/
 	func toDict() -> NSDictionary {
 		let properties = self.objectSchema.properties.map{ $0.name }.filter{ !(["responseData", "uploaded"].contains($0)) }
-		print("Printing properties array:\n \(properties)")
 		let dictionary = self.dictionaryWithValuesForKeys(properties)
-		print("Printing dictionaryWithValuesForKeys with properties array:\n \(dictionary)")
 		
 		let mutableDict = NSMutableDictionary()
 		mutableDict.setValuesForKeysWithDictionary(dictionary)
-		print("Printing mutableDict setValuesForKeysWithDictionary dictionary:\n \(mutableDict)")
 		
 		for prop in self.objectSchema.properties as [Property]! {
 			// If the property is the uploaded flag, skip it as anything in the Google App Engine database is obviously uploaded!
 			guard prop.name != "uploaded" else {
-				print("uploaded flag property found!")
 				continue
 			}
 			
@@ -99,13 +99,11 @@ extension Object {
 			
 			// If the property is responseData skip over it to prevent the statement dumping the NSData byte buffer into the JSON and crashing the app on upload.
 			guard prop.name != "responseData" else {
-				print("responseData property found!")
 				// Response data could be an image or a JSON or XML string, determine which it is, convert to string and append to JSON upload dict.
 				if let dataObject = self[prop.name] as? NSData {
 					
 					// if NSData is an image then set the imageResponse key
 					if let _: UIImage = UIImage(data: dataObject) {
-						print("Image response data found! Proceeding to upload.")
 						mutableDict.setValue(dataObject.base64EncodedStringWithOptions(.Encoding64CharacterLineLength), forKey: "imageResponse")
 						
 					} else if let string: String = String(data: dataObject, encoding: NSUTF8StringEncoding) {
@@ -113,11 +111,9 @@ extension Object {
 						// standard libraries as we hope to find responses where transmission was interrupted.
 						// The first character is sufficient to determine whether the string is XML or JSON.
 						if string.hasPrefix("{") {
-							print("JSON response data found! Proceeding to upload.")
 							mutableDict.setValue(string, forKey: "jsonResponse")
 							
 						} else if string.hasPrefix("<") {
-							print("XML response data found! Proceeding to upload.")
 							mutableDict.setValue(string, forKey: "xmlResponse")
 							
 							// If the NSData object converts to a string but doesn't match our simple XML vs JSON test, drop it into
@@ -145,7 +141,6 @@ extension Object {
 				mutableDict.setObject(objects, forKey: prop.name)
 			}
 		}
-		print("Printing mutableDict:\n \(mutableDict)")
 		return mutableDict
 	}
 }

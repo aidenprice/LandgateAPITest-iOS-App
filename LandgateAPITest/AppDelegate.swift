@@ -20,10 +20,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		// Realm database version migration code. Only runs when the database version number increments.
 		Realm.Configuration.defaultConfiguration = Realm.Configuration(
-			schemaVersion: 2,
+			schemaVersion: 3,
 			migrationBlock: { migration, oldSchemaVersion in
 				if (oldSchemaVersion < 2) {
-					print("Migrating database versions!")
+					print("Migrating database version 1 to 2!")
 					migration.enumerate(EndpointResult.className()) { oldObject, newObject in
 						newObject!["uploaded"] = false
 						newObject!["httpMethod"] = "GET"
@@ -46,6 +46,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 							newObject!["dataset"] = ""
 							newObject!["returnType"] = ""
 						}
+					}
+				}
+				if (oldSchemaVersion < 3) {
+					print("Migrating database version 2 to 3!")
+					migration.enumerate(ResultObject.className()) { oldObject, newObject in
+						newObject!["primaryKeyProperty"] = "testID"
 					}
 				}
 			}
