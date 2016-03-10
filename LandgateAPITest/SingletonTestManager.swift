@@ -8,28 +8,11 @@
 
 import Foundation
 import UIKit
-
 import Realm
 import RealmSwift
 import Transporter
 
-struct idDetails {
-	let parentID: String
-	let deviceID: String
-}
-
-enum SubTestError: ErrorType {
-	case missingResultObject(reason: String)
-}
-
-enum TestManagerError: ErrorType {
-	case missingTestMasterResultObject(reason: String)
-	case subtestFailure(reason: String)
-}
-
-enum ManagerState {
-	case Ready, PreTest, EndpointTesting, Locating, Networking, Pinging, PostTest
-}
+// MARK: Constants
 
 struct ManagerEvents {
 	static let Prepare = "PrepareFotTest"
@@ -44,6 +27,8 @@ struct ManagerEvents {
 	static let Abort = "Abort"
 	static let Awake = "Awake"
 }
+
+// MARK: Delegate Protocols
 
 protocol TestManagerDelegate: class {
 	
@@ -63,17 +48,47 @@ protocol TestManagerProgressDelegate: class {
 	func didFinishTesting(testID: String)
 	
 	func didFailWithError(reason: String)
-	
 }
 
+// MARK: Enums
+
+// Error type enumerations
+enum SubTestError: ErrorType {
+	case missingResultObject(reason: String)
+}
+
+enum TestManagerError: ErrorType {
+	case missingTestMasterResultObject(reason: String)
+	case subtestFailure(reason: String)
+}
+
+// Test Manager states enumeration
+enum ManagerState {
+	case Ready, PreTest, EndpointTesting, Locating, Networking, Pinging, PostTest
+}
+
+// A small struct to hold ID details to pass in to a sub-test manager.
+struct idDetails {
+	let parentID: String
+	let deviceID: String
+}
+
+// MARK: TestManager Singleton
+
+/** 
+Test Manager Singleton.
+The workhorse of the application, loops through testing states firing tests sequentially
+and squaring away the results at the end of testing. */
 class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDelegate, EndpointTesterDelegate {
 	
+	// Singleton constructor.
 	static let sharedInstance = TestManager()
 	
 	var delegate: TestManagerDelegate?
 	
 	var progressDelegate: TestManagerProgressDelegate?
 	
+	// The key linking multiple Test Master results in a single over-arching campaign.
 	var campaign: String = "production_campaign"
 	
 	var testMasterResult: TestMasterResult?
@@ -84,25 +99,23 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 	
 	var downloadTotal: Int = 0
 	
+	// Properties for the progress delegate to determine percent completion.
 	var originalTestCount: Int = 0
 	var progressTarget: Double = 0.0
 	
-	var isNewPlan: Bool = false {
-		willSet {
-			print("isNewPlan flag about to be set to \(newValue)")
-		}
-		
-		didSet {
-			print("isNewPlan flag set to \(isNewPlan)")
-		}
-	}
+	// Determines whether the testPlan is newly assigned.
+	// Prevents testPlan's didSet logic from firing each time a test is popped off the array.
+	var isNewPlan: Bool = false
 	
 	var testPlan: [TETemplate]? {
+		// When the testPlan property receives a new array fire up the state machine.
+		// Only fire when the plan is first set, not when each test is popped off the array, controlled with the isNewPlan propety.
 		didSet {
 			guard let plan = self.testPlan where !plan.isEmpty && self.isNewPlan == true else { return }
 			
 			print("New Plan! Count: \(plan.count)")
 			
+			// Properties for the progress delegate to determine percent completion.
 			self.originalTestCount = plan.count
 			self.progressTarget = Double((plan.count * 4) + 3)
 			
@@ -116,8 +129,9 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 	// MARK: Init Methods
 	
 	init() {
-		
 		print("State Machine Started!")
+		
+		// State machine states...
 		let readyState = State(ManagerState.Ready)
 		let preTestState = State(ManagerState.PreTest)
 		let endpointTestingState = State(ManagerState.EndpointTesting)
@@ -128,6 +142,7 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 		
 		let stateMachine = StateMachine(initialState: readyState, states: [preTestState, endpointTestingState, locatingState, networkingState, pingingState, postTestState])
 		
+		// State machine events to force state change
 		let prepareForTestEvent = Event(name: ManagerEvents.Prepare, sourceStates: [ManagerState.Ready], destinationState: ManagerState.PreTest)
 		let startTestEvent = Event(name: ManagerEvents.Start, sourceStates: [ManagerState.PreTest], destinationState: ManagerState.Locating)
 		let networkTestEvent = Event(name: ManagerEvents.Network, sourceStates: [ManagerState.Locating], destinationState: ManagerState.Networking)
@@ -144,6 +159,7 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 		
 		self.stateMachine = stateMachine
 		
+		// Realm database wake up call, prompt user if database not found and default to in memory tables.
 		var testRealm: Realm? = nil
 		do {
 			try testRealm = Realm()
@@ -157,6 +173,7 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 		}
 		self.realm = testRealm!
 		
+		// Assign functions to state change events. For some reason this had to be assigned after the processor had been off on some other task.
 		readyState.didEnterState = { _ in self.didEnterReadyState() }
 		preTestState.didEnterState = { _ in self.didEnterPreTestState() }
 		endpointTestingState.didEnterState = { _ in self.didEnterEndpointTestingState() }
@@ -169,10 +186,10 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 	
 	// MARK: Public API
 	
+	// Other modules may also fire events, though in theory the manager could ignore them.
+	
 	func startWithTestPlan(plan: [TETemplate]) {
-		
-		print("startWithTestPlan function called!")
-		
+		// On receiving a new plan of endpoint tests start the process.
 		self.isNewPlan = true
 		self.testPlan = plan
 		
@@ -189,11 +206,13 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 		
 		self.testMasterResult = TestMasterResult()
 		
+		// Fail out of the routine if there is no test master result object to write results.
 		guard let testMasterResult = self.testMasterResult else {
 			stateMachine.fireEvent(ManagerEvents.UnableToStart)
 			return
 		}
 		
+		// Write basic properties for a Test Master result object.
 		let start = NSDate().timeIntervalSince1970
 		testMasterResult.datetime = start
 		print("Start time: \(start)")
@@ -205,6 +224,7 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 		testMasterResult.testID = "\(testMasterResult.deviceID)/\(start)"
 		print("Test ID: \(testMasterResult.testID)")
 		
+		// Test for internet connectivity at the outset, fail entirely if no connection at all so as to avoid wasting time and battery.
 		if hasConnectivity() {
 			testMasterResult.success = true
 			print("didStartTesting about to be called on delegate: \(self.delegate)")
@@ -223,6 +243,7 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 	private func didEnterEndpointTestingState() {
 		print("Entered Endpoint Test state")
 		
+		// Fail out of the test if no Test Master result object to store EndpointTest result.
 		guard let testMasterResult = self.testMasterResult else {
 			print("Missing TestMasterResult object.")
 			self.progressDelegate?.didFailWithError("Missing TestMasterResult object.")
@@ -233,8 +254,10 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 		if let remainingTests = self.testPlan where !remainingTests.isEmpty {
 			print("\(self.testPlan!.count)" + " items in self.testPlan before pop operation.")
 			
+			// Create a test ID object to identify the test and its parent Test Master.
 			let id = idDetails(parentID: testMasterResult.testID, deviceID: testMasterResult.deviceID)
 			
+			// Pop the top test off the array, cancel the test if we got this far but couldn't get a test off the array.
 			do {
 				try EndpointTester.sharedInstance.test(self, id: id, endpoint: (self.testPlan?.removeLast())!)
 				
@@ -247,6 +270,7 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 			print("\(self.testPlan!.count)" + " items in self.testPlan after pop operation.")
 			
 		} else {
+			// An absolute worst case default condition, really shouldn't end up here.
 			print("Aborting due to an empty testPlan array. How did we end up here? The didFinishPing() method should handle this!")
 			stateMachine.fireEvent(ManagerEvents.Abort)
 		}
@@ -255,6 +279,7 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 	private func didEnterLocatingState() {
 		print("Entered Location Test state")
 		
+		// Cancel everything if there's no Test Master result object to store the result.
 		guard let testMasterResult = self.testMasterResult else {
 			print("Missing TestMasterResult object.")
 			self.progressDelegate?.didFailWithError("Missing testMasterResult object error!")
@@ -264,6 +289,7 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 		
 		let id = idDetails(parentID: testMasterResult.testID, deviceID: testMasterResult.deviceID)
 		
+		// Conduct location test, the delegate method will call back when it's done.
 		do {
 			try LocationTester.sharedInstance.locate(self, id: id)
 			
@@ -277,6 +303,7 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 	private func didEnterNetworkingState() {
 		print("Entered Network Test state")
 		
+		// Cancel everything if there's no Test Master to store the result.
 		guard let testMasterResult = self.testMasterResult else {
 			print("Missing TestMasterResult object.")
 			self.progressDelegate?.didFailWithError("Missing testMasterResult object error!")
@@ -286,6 +313,7 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 		
 		let id = idDetails(parentID: testMasterResult.testID, deviceID: testMasterResult.deviceID)
 		
+		// Test network connection type and carrier.
 		do {
 			try NetworkTester.sharedInstance.network(self, id: id)
 			
@@ -299,6 +327,7 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 	private func didEnterPingingState() {
 		print("Entered Ping Test state")
 		
+		// Cancel everything if there's no Test Master result object to store the ping result.
 		guard let testMasterResult = self.testMasterResult else {
 			print("Missing TestMasterResult object.")
 			self.progressDelegate?.didFailWithError("Missing testMasterResult object error!")
@@ -308,6 +337,7 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 		
 		let id = idDetails(parentID: testMasterResult.testID, deviceID: testMasterResult.deviceID)
 		
+		// Ping google.com.au with a HEAD request and time.
 		do {
 			try PingTester.sharedInstance.ping(self, id: id)
 		} catch {
@@ -320,12 +350,12 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 	private func didEnterPostTestState() {
 		print("Entered Post Test state")
 		
+		// Get the delegate to send progress updates.
 		guard let progressDelegate = self.progressDelegate else {
 			return
 		}
 		
-		print("Progress delegate found")
-		
+		// Get the Test Master result object.
 		guard let testMasterResult = self.testMasterResult else {
 			print("Missing TestMasterResult object in PostTestState.")
 			progressDelegate.didFailWithError("Missing testMasterResult object in PostTestState error!")
@@ -333,22 +363,15 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 			return
 		}
 		
-		print("testMasterResult found")
-		
+		// Assign a finish time for the whole Test Master, not just the smaller sub-tests.
 		testMasterResult.finishDatetime = NSDate().timeIntervalSince1970
 		
-		print("testMasterResult finishDatetime set")
-		
+		// Write the whole Test Master, along with all sub-tests in their arrays, to the Realm database.
 		do {
-			print("Writing to Realm store.")
-			print("testMasterResult in this Realm before write: \(testMasterResult.realm)")
-			
 			let writeRealm = try Realm()
 			try writeRealm.write {
 				writeRealm.add(testMasterResult)
 			}
-		
-			print("testMasterResult in this Realm after write: \(testMasterResult.realm)")
 			print("testMasterResult write complete!")
 			
 		} catch {
@@ -358,29 +381,33 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 		
 		print("Final download size \(self.downloadTotal)")
 		
+		// Update progress delegate to 100% complete.
 		progressDelegate.progressReport(1.0)
 		progressDelegate.didFinishTesting(testMasterResult.testID)
 		
-		print("progressDelegate sent didFinishTesting with testID")
-		
+		// Return the state machine to the ready state.
 		stateMachine.fireEvent(ManagerEvents.Ready)
 	}
 	
-	// MARK: Delegate event methods
+	// MARK: Delegate Event Methods
 	
 	func didFinishEndpoint(sender: EndpointTester, result: EndpointResult, size: Int) {
 		print("Finished testing endpoint!")
 		
+		// Get the Test Master result object, but only if the state machine is testing endpoints.
+		// This stops conflicts of trying to move between states incorrectly, i.e. moving in the wrong sequence.
 		guard let testMasterResult = self.testMasterResult where self.stateMachine.isInState(ManagerState.EndpointTesting) else {
 			print("There's either no testMasterResult or we're not in the EndpointTesting state anymore! No actions taken, nothing saved.")
 			return
 		}
 		
+		// Add the endpoint result to the Test Master's array.
 		testMasterResult.endpointResults.append(result)
 		
 		self.downloadTotal += size
 		print("Download size thus far: \(self.downloadTotal)")
 		
+		// Update the progress delegate to change the UI.
 		if let progressDelegate = self.progressDelegate,
 			let remainingTests = self.testPlan?.count {
 		
@@ -389,19 +416,24 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 			progressDelegate.progressReport(progress)
 		}
 		
+		// Fire the event to call the next test state, location in this case.
 		stateMachine.fireEvent(ManagerEvents.Location)
 	}
 	
 	func didFinishLocating(sender: LocationTester, result: LocationResult) {
 		print("Finished testing location!")
 		
+		// Get the Test Master result object, but only if we're currently locating the device. 
+		//This prevents double location results, actually a noticeable problem in this app of unknown cause.
 		guard let testMasterResult = self.testMasterResult where self.stateMachine.isInState(ManagerState.Locating) else {
 			print("There's either no testMasterResult or we're not in the Locating state anymore! No actions taken, nothing saved.")
 			return
 		}
 		
+		// Add the location to the Test Master's location array.
 		testMasterResult.locationResults.append(result)
 		
+		// Update the progress delegate to update the UI.
 		if let progressDelegate = self.progressDelegate,
 			let remainingTests = self.testPlan?.count {
 				
@@ -410,19 +442,24 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 				progressDelegate.progressReport(progress)
 		}
 		
+		// Fire the event to call the next test state, network tests in this case.
 		stateMachine.fireEvent(ManagerEvents.Network)
 	}
 	
 	func didFinishNetwork(sender: NetworkTester, result: NetworkResult) {
 		print("Finished testing network!")
 		
+		// Get the Test Master result, but only if we're in the Networking state.
+		// This stops conflicts of trying to move between states incorrectly, i.e. moving in the wrong sequence.
 		guard let testMasterResult = self.testMasterResult where self.stateMachine.isInState(ManagerState.Networking) else {
 			print("There's either no testMasterResult or we're not in the Networking state anymore! No actions taken, nothing saved.")
 			return
 		}
 		
+		// Add the result to the Test Master's array.
 		testMasterResult.networkResults.append(result)
 		
+		// Update the progress delegate to update the UI.
 		if let progressDelegate = self.progressDelegate,
 			let remainingTests = self.testPlan?.count {
 				
@@ -431,19 +468,24 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 				progressDelegate.progressReport(progress)
 		}
 		
+		// Fire the event to call the next test state, pinging in this case.
 		stateMachine.fireEvent(ManagerEvents.Ping)
 	}
 	
 	func didFinishPing(sender: PingTester, result: PingResult) {
 		print("Finished ping test!")
 		
+		// Get the Test Master result object, but only if we're in the ping test state.
+		// This stops conflicts of trying to move between states incorrectly, i.e. moving in the wrong sequence.
 		guard let testMasterResult = self.testMasterResult where self.stateMachine.isInState(ManagerState.Pinging) else {
 			print("There's either no testMasterResult or we're not in the Pinging state anymore! No actions taken, nothing saved.")
 			return
 		}
 		
+		// Add the ping result to the Test Master's array.
 		testMasterResult.pingResults.append(result)
 		
+		// Update the progress delegate to update the UI.
 		if let progressDelegate = self.progressDelegate,
 			let remainingTests = self.testPlan?.count {
 				
@@ -452,6 +494,7 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 				progressDelegate.progressReport(progress)
 		}
 		
+		// If there are endpoint tests left in the array go back into the test loop again, otherwise break out to the post-test state.
 		if let remainingTests = self.testPlan where !remainingTests.isEmpty {
 			print("Still endpoint tests yet to be run!")
 			stateMachine.fireEvent(ManagerEvents.Endpoint)
@@ -461,8 +504,10 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 		}
 	}
 	
-	// MARK: Helper methods
+	// MARK: Helper Methods
 	
+	// A helper function to determine whether the device has any internet connectivity.
+	// Derived from the open source Reachability library.
 	private func hasConnectivity() -> Bool {
 		do {
 			let reachability: Reachability =  try Reachability.reachabilityForInternetConnection()
@@ -473,6 +518,7 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 		}
 	}
 	
+	// A helper function to determine device type.
 	private func platform() -> String {
 		var sysinfo = utsname()
 		uname(&sysinfo) // ignore return value

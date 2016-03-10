@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-// MARK: - Constants
+// MARK: Constants
 
 enum HTTPMethod: String {
 	case get = "GET"
@@ -48,7 +48,7 @@ enum TestName: String {
 	case getTileKVP = "GetTileKVP"
 }
 
-// MARK: - TestEndpoint Templates
+// MARK: TestEndpoint Templates
 
 struct TETemplate {
 	let server: ServerType
@@ -62,6 +62,9 @@ struct TETemplate {
 	let bodyString: String?
 	let bodyForm: [String:String]?
 }
+
+// A struct of static structs to model tests. 
+// The EndpointTester class will apply these tests and store the raw values of the enums to the result objects.
 
 struct TestEndpoint {
 	
@@ -1104,6 +1107,7 @@ struct TestEndpoint {
 	)
 	
 	// MARK: Google Maps Engine Requests
+	// Now very much obsolete, preserved here to explain the earlier results still stored from the testing phase.
 	/*
 	static let GME_GET_BusStops_Small = TETemplate(
 		url: "https://www.googleapis.com/mapsengine/v1/tables/09372590152434720789-08620406515972909896/features?version=published&maxResults=25&select=STOPID%2CSTOPNAME%2CSTOPTYPE%2Cgeometry&key=AIzaSyA9PTBAlQB-GnqQHw2JIPB47D52PdHvZZs",
@@ -1178,7 +1182,7 @@ struct TestEndpoint {
 */
 }
 
-// MARK: - TestMaster Templates
+// MARK: TestMaster Templates
 
 struct TMTemplate {
 	let name: String
@@ -1187,6 +1191,9 @@ struct TMTemplate {
 	let downloadSize: Int
 	let testPlan: [TETemplate]
 }
+
+// Lists of endpoint tests that make up the greater Test Masters.
+// The TestMaster singleton will iterate through these tests, interspersing them with location, ping and network tests.  
 
 struct TestMaster {
 	static let Templates: [TMTemplate] = [
@@ -1655,7 +1662,7 @@ struct TestMaster {
 		)
 		
 		// MARK: GME TestMaster Templates
-		
+		// Old Google Maps Engine tests, now obsolete, preserved here to help explain earlier results in the app's testing phase.
 		/*
 		TMTemplate(
 			name: "Standard Test",

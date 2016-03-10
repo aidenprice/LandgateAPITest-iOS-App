@@ -13,7 +13,7 @@ import UIKit
 // MARK: Model classes
 
 /**
-ResultObject is the base class from which others inherit, provides properties common to all classes.
+	ResultObject is the base class from which others inherit, provides properties common to all classes.
 */
 class ResultObject: Object {
 	dynamic var testID: String = ""
@@ -74,48 +74,65 @@ extension Object {
 	Checks the NSData responseData property looking for images which it converts to base64 text.
 	*/
 	func toDict() -> NSDictionary {
-		let properties = self.objectSchema.properties.map { $0.name }
+		let properties = self.objectSchema.properties.map{ $0.name }.filter{ !(["responseData", "uploaded"].contains($0)) }
+		print("Printing properties array:\n \(properties)")
 		let dictionary = self.dictionaryWithValuesForKeys(properties)
+		print("Printing dictionaryWithValuesForKeys with properties array:\n \(dictionary)")
 		
 		let mutableDict = NSMutableDictionary()
 		mutableDict.setValuesForKeysWithDictionary(dictionary)
+		print("Printing mutableDict setValuesForKeysWithDictionary dictionary:\n \(mutableDict)")
 		
 		for prop in self.objectSchema.properties as [Property]! {
-			// Find empty responses, these will be optionals resolving to nil, then assign them empty strings for the JSON upload dict.
-			// The web service will assign null JSON response type.
-			if (self[prop.name] == nil) {
-				print("Nil response found, assigning empty string in its place.")
-				mutableDict.setValue("", forKey: "responseData")
+			// If the property is the uploaded flag, skip it as anything in the Google App Engine database is obviously uploaded!
+			guard prop.name != "uploaded" else {
+				print("uploaded flag property found!")
+				continue
+			}
 			
-			// Response data could be an image or a JSON or XML string, determine which it is, convert to string and append to JSON upload dict.
-			} else if let dataObject = self[prop.name] as? NSData {
-				
-				// if NSData is an image then set the imageResponse key
-				if let _: UIImage = UIImage(data: dataObject) {
-					print("Image response data found! Proceeding to upload.")
-					mutableDict.setValue(dataObject.base64EncodedStringWithOptions(.Encoding64CharacterLineLength), forKey: "imageResponse")
+			// Find empty responses, these will be optionals resolving to nil, then assign them empty strings for the JSON upload dict.
+			guard self[prop.name] != nil else {
+				print("Nil response found, assigning empty string in its place.")
+				mutableDict.setValue("", forKey: prop.name)
+				continue
+			}
+			
+			// If the property is responseData skip over it to prevent the statement dumping the NSData byte buffer into the JSON and crashing the app on upload.
+			guard prop.name != "responseData" else {
+				print("responseData property found!")
+				// Response data could be an image or a JSON or XML string, determine which it is, convert to string and append to JSON upload dict.
+				if let dataObject = self[prop.name] as? NSData {
 					
-				} else if let string: String = String(data: dataObject, encoding: NSUTF8StringEncoding) {
-					// We can not test whether the response is a well formed JSON or XML string using 
-					// standard libraries as we hope to find responses where transmission was interrupted.
-					// The first character is sufficient to determine whether the string is XML or JSON.
-					if string.hasPrefix("{") {
-						print("JSON response data found! Proceeding to upload.")
-						mutableDict.setValue(string, forKey: "jsonResponse")
+					// if NSData is an image then set the imageResponse key
+					if let _: UIImage = UIImage(data: dataObject) {
+						print("Image response data found! Proceeding to upload.")
+						mutableDict.setValue(dataObject.base64EncodedStringWithOptions(.Encoding64CharacterLineLength), forKey: "imageResponse")
 						
-					} else if string.hasPrefix("<") {
-						print("XML response data found! Proceeding to upload.")
-						mutableDict.setValue(string, forKey: "xmlResponse")
-					
-					// If the NSData object converts to a string but doesn't match our simple XML vs JSON test, drop it into
-					// a jsonResponse and we'll investigate later.
-					} else {
-						print("NSData converted to string but doesn't appear to be XML or JSON. Investigate further later on.")
-						mutableDict.setValue(string, forKey: "jsonResponse")
+					} else if let string: String = String(data: dataObject, encoding: NSUTF8StringEncoding) {
+						// We can not test whether the response is a well formed JSON or XML string using
+						// standard libraries as we hope to find responses where transmission was interrupted.
+						// The first character is sufficient to determine whether the string is XML or JSON.
+						if string.hasPrefix("{") {
+							print("JSON response data found! Proceeding to upload.")
+							mutableDict.setValue(string, forKey: "jsonResponse")
+							
+						} else if string.hasPrefix("<") {
+							print("XML response data found! Proceeding to upload.")
+							mutableDict.setValue(string, forKey: "xmlResponse")
+							
+							// If the NSData object converts to a string but doesn't match our simple XML vs JSON test, drop it into
+							// a jsonResponse and we'll investigate later.
+						} else {
+							print("NSData converted to string but doesn't appear to be XML or JSON. Investigate further later on.")
+							mutableDict.setValue(string, forKey: "jsonResponse")
+						}
 					}
 				}
-			// Every other object is handled recursively.
-			} else if let nestedObject = self[prop.name] as? Object {
+				continue
+			}
+			
+			// Every other Realm object is handled recursively.
+			if let nestedObject = self[prop.name] as? Object {
 				mutableDict.setValue(nestedObject.toDict(), forKey: prop.name)
 			
 			// If the object is an array of other objects, create a new array and recursively dive into them.
@@ -128,18 +145,7 @@ extension Object {
 				mutableDict.setObject(objects, forKey: prop.name)
 			}
 		}
-		print(mutableDict)
+		print("Printing mutableDict:\n \(mutableDict)")
 		return mutableDict
 	}
 }
-
-
-
-
-
-
-
-
-
-
-

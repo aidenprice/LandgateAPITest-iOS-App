@@ -77,7 +77,7 @@ class OldTestsTableViewController: UITableViewController {
 	
 	// MARK: Private API
 	
-	private func uploadAll() {
+	func uploadAll() {
 		guard let allTests = self.completedTests where !allTests.isEmpty else { return }
 		print("There are tests not yet uploaded!")
 		
@@ -87,7 +87,7 @@ class OldTestsTableViewController: UITableViewController {
 		
 	}
 
-    // MARK: - Table view data source
+    // MARK: Table view data source
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1

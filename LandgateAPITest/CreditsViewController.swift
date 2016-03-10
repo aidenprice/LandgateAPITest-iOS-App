@@ -8,6 +8,10 @@
 
 import UIKit
 
+// MARK: Credits View Controller
+/**
+	A very simple view controller that builds a concatenated text view to thank all the people who helped make the app possible.
+*/
 class CreditsViewController: UIViewController {
 	
 	@IBOutlet weak var textView: UITextView!
@@ -15,8 +19,20 @@ class CreditsViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		self.textView.text = Credits.helpers.joinWithSeparator("\n\n")
+		// Build the credits view simply from concatenated text in the Credits model file.
+		var text = "The best helpers a dev could have;\n\n"
+		text += Credits.helpers.joinWithSeparator("\n\n")
+		text += "Coders who made their code available through Stack Overflow;\n\n"
+		text += Credits.coders.joinWithSeparator("\n\n")
+		text += "Licences for open source libraries used in this app;\n\n"
 		
+		for (key, value) in Credits.licences {
+			text += "\(key)\n\n\(value)\n\n"
+		}
+		
+		self.textView.text = text
+		
+		// This line forces the textView to start at the top of its scroll range, not sure why they don't do so automatically...
 		self.textView.scrollRangeToVisible(NSMakeRange(0, 0))
 		
 	}

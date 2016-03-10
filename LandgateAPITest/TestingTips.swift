@@ -8,6 +8,10 @@
 
 import Foundation
 
+// MARK: Tips List
+/**
+	A simple model file with tips for using the app as an array of strings in a struct.
+*/
 struct Tips {
 	static let tipList: [String] = [
 		"Please don't test from home.\nThis is important for the sake of" +

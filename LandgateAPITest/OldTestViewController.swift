@@ -166,8 +166,6 @@ class OldTestViewController: UIViewController, UITableViewDelegate, UITableViewD
 		
 		cell.dateTimeLabel.text = "\(timeFormatter.stringFromDate(NSDate(timeIntervalSince1970: test.datetime)))"
 		
-//		cell.successLabel.text = test.success ? "Succeeded" : "Failed Code: \(test.responseCode)"
-		
 		if test.success == true {
 			cell.successLabel.text = "Succeeded"
 		} else if test.responseCode == 0 {
@@ -187,7 +185,7 @@ class OldTestViewController: UIViewController, UITableViewDelegate, UITableViewD
 		return cell
 	}
 
-	// MARK: - Private API
+	// MARK: Private API
 	
 	private func setUpMap() {
 		
@@ -229,7 +227,7 @@ class OldTestViewController: UIViewController, UITableViewDelegate, UITableViewD
 		map.setRegion(newRegion, animated: true)
 	}
 	
-	private func uploadTest() {
+	func uploadTest() {
 		TestUploader.sharedInstance.uploadTests([self.parentTestMasterResult!])
 	}
 	

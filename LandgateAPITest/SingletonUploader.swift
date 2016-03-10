@@ -27,8 +27,12 @@ enum UploaderState {
 	case Ready, Uploading, Success, Fail
 }
 
-// MARK: TestUploader Singleton Class
-
+// MARK: TestUploader Singleton
+/**
+Test Uploader singleton,
+Very similar to the Test Manager singleton, uploads tests to the Google App Engine web service sequentially, 
+looping through ready, uploading and success states until its queue is empty.
+*/
 class TestUploader {
 	static let sharedInstance = TestUploader()
 	
@@ -75,9 +79,13 @@ class TestUploader {
 	
 	// MARK: Public API
 	
+	// Other objects can, and do, fire events at the state machine to cause it to change its behaviour.
 	func uploadTests(tests: [TestMasterResult]) {
 		self.queue += tests
-		self.stateMachine.fireEvent(UploaderEvents.Ready)
+		
+		if !self.queue.isEmpty {
+			stateMachine.fireEvent(UploaderEvents.Start)
+		}
 	}
 	
 	// MARK: Statemachine Event Functions
@@ -126,7 +134,14 @@ class TestUploader {
 			if error == nil {
 				print("Upload task successful!")
 				print("Response; \(response)")
-				try! self.realm.write { result.uploaded = true }
+				
+				do {
+					let writeRealm = try Realm()
+					try writeRealm.write { result.uploaded = true }
+				} catch {
+					print("Can't change uploaded flag in Realm!")
+				}
+				
 				self.stateMachine.fireEvent(UploaderEvents.Success)
 				
 			} else {
@@ -158,7 +173,7 @@ class TestUploader {
 		// TODO add a pop up to alert the user.
 	}
 	
-	// MARK: - Helper methods
+	// MARK: Helper methods
 	
 	/**
 		Checks whether the device can connect to the internet.
@@ -175,13 +190,3 @@ class TestUploader {
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
