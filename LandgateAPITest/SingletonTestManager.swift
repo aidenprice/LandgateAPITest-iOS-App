@@ -143,17 +143,17 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 		let stateMachine = StateMachine(initialState: readyState, states: [preTestState, endpointTestingState, locatingState, networkingState, pingingState, postTestState])
 		
 		// State machine events to force state change
-		let prepareForTestEvent = Event(name: ManagerEvents.Prepare, sourceStates: [ManagerState.Ready], destinationState: ManagerState.PreTest)
-		let startTestEvent = Event(name: ManagerEvents.Start, sourceStates: [ManagerState.PreTest], destinationState: ManagerState.Locating)
-		let networkTestEvent = Event(name: ManagerEvents.Network, sourceStates: [ManagerState.Locating], destinationState: ManagerState.Networking)
-		let pingTestEvent = Event(name: ManagerEvents.Ping, sourceStates: [ManagerState.Networking], destinationState: ManagerState.Pinging)
-		let endpointTestEvent = Event(name: ManagerEvents.Endpoint, sourceStates: [ManagerState.Pinging], destinationState: ManagerState.EndpointTesting)
-		let locationTestEvent = Event(name: ManagerEvents.Location, sourceStates: [ManagerState.EndpointTesting], destinationState: ManagerState.Locating)
-		let finishTestEvent = Event(name: ManagerEvents.Finish, sourceStates: [ManagerState.Pinging], destinationState: ManagerState.PostTest)
-		let unableToTestEvent = Event(name: ManagerEvents.UnableToStart, sourceStates: [ManagerState.PreTest], destinationState: ManagerState.PostTest)
-		let backToReadyEvent = Event(name: ManagerEvents.Ready, sourceStates: [ManagerState.PostTest], destinationState: ManagerState.Ready)
-		let abortEvent = Event(name: ManagerEvents.Abort, sourceStates: [ManagerState.PreTest, ManagerState.EndpointTesting, ManagerState.Locating, ManagerState.Networking, ManagerState.Pinging], destinationState: ManagerState.PostTest)
-		let awakeEvent = Event(name: ManagerEvents.Awake, sourceStates: [ManagerState.PreTest, ManagerState.EndpointTesting, ManagerState.Locating, ManagerState.Networking, ManagerState.Pinging, ManagerState.PostTest, ManagerState.Ready], destinationState: ManagerState.Ready)
+		let prepareForTestEvent = Event(name: ManagerEvents.Prepare, sourceValues: [ManagerState.Ready], destinationValue: ManagerState.PreTest)
+		let startTestEvent = Event(name: ManagerEvents.Start, sourceValues: [ManagerState.PreTest], destinationValue: ManagerState.Locating)
+		let networkTestEvent = Event(name: ManagerEvents.Network, sourceValues: [ManagerState.Locating], destinationValue: ManagerState.Networking)
+		let pingTestEvent = Event(name: ManagerEvents.Ping, sourceValues: [ManagerState.Networking], destinationValue: ManagerState.Pinging)
+		let endpointTestEvent = Event(name: ManagerEvents.Endpoint, sourceValues: [ManagerState.Pinging], destinationValue: ManagerState.EndpointTesting)
+		let locationTestEvent = Event(name: ManagerEvents.Location, sourceValues: [ManagerState.EndpointTesting], destinationValue: ManagerState.Locating)
+		let finishTestEvent = Event(name: ManagerEvents.Finish, sourceValues: [ManagerState.Pinging], destinationValue: ManagerState.PostTest)
+		let unableToTestEvent = Event(name: ManagerEvents.UnableToStart, sourceValues: [ManagerState.PreTest], destinationValue: ManagerState.PostTest)
+		let backToReadyEvent = Event(name: ManagerEvents.Ready, sourceValues: [ManagerState.PostTest], destinationValue: ManagerState.Ready)
+		let abortEvent = Event(name: ManagerEvents.Abort, sourceValues: [ManagerState.PreTest, ManagerState.EndpointTesting, ManagerState.Locating, ManagerState.Networking, ManagerState.Pinging], destinationValue: ManagerState.PostTest)
+		let awakeEvent = Event(name: ManagerEvents.Awake, sourceValues: [ManagerState.PreTest, ManagerState.EndpointTesting, ManagerState.Locating, ManagerState.Networking, ManagerState.Pinging, ManagerState.PostTest, ManagerState.Ready], destinationValue: ManagerState.Ready)
 		
 		stateMachine.addEvents([prepareForTestEvent, startTestEvent, networkTestEvent, pingTestEvent, endpointTestEvent, locationTestEvent, finishTestEvent, unableToTestEvent, backToReadyEvent, abortEvent, awakeEvent])
 		
@@ -197,11 +197,11 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 
 	// MARK: State Change Methods
 	
-	private func didEnterReadyState() {
+	func didEnterReadyState() {
 		print("Entered Ready state")
 	}
 	
-	private func didEnterPreTestState() {
+	func didEnterPreTestState() {
 		print("Entered Pretest state")
 		
 		self.testMasterResult = TestMasterResult()
@@ -240,7 +240,7 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 		}
 	}
 	
-	private func didEnterEndpointTestingState() {
+	func didEnterEndpointTestingState() {
 		print("Entered Endpoint Test state")
 		
 		// Fail out of the test if no Test Master result object to store EndpointTest result.
@@ -276,7 +276,7 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 		}
 	}
 	
-	private func didEnterLocatingState() {
+	func didEnterLocatingState() {
 		print("Entered Location Test state")
 		
 		// Cancel everything if there's no Test Master result object to store the result.
@@ -300,7 +300,7 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 		}
 	}
 	
-	private func didEnterNetworkingState() {
+	func didEnterNetworkingState() {
 		print("Entered Network Test state")
 		
 		// Cancel everything if there's no Test Master to store the result.
@@ -324,7 +324,7 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 		}
 	}
 	
-	private func didEnterPingingState() {
+	func didEnterPingingState() {
 		print("Entered Ping Test state")
 		
 		// Cancel everything if there's no Test Master result object to store the ping result.
@@ -347,7 +347,7 @@ class TestManager: LocationTesterDelegate, NetworkTesterDelegate, PingTesterDele
 		}
 	}
 	
-	private func didEnterPostTestState() {
+	func didEnterPostTestState() {
 		print("Entered Post Test state")
 		
 		// Get the delegate to send progress updates.

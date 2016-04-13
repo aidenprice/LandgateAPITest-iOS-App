@@ -18,7 +18,7 @@ enum HTTPMethod: String {
 }
 
 enum ServerType: String {
-	case esri = "Esri"
+	case esri = "ESRI"
 	case ogc = "OGC"
 	case gme = "GME"
 }
@@ -551,8 +551,8 @@ struct TestEndpoint {
 	
 	static let ESRI_Topo_Small_POST = TETemplate(
 		server: .esri,
-		dataset: .busStops,
-		returnType: .json,
+		dataset: .topo,
+		returnType: .image,
 		testName: .small,
 		url: "https://services.slip.wa.gov.au/public/rest/services/Landgate_Public_Services/Medium_Scale_Topo_Public_Services/MapServer/export",
 		method: .post,
@@ -575,8 +575,8 @@ struct TestEndpoint {
 	
 	static let ESRI_Topo_Big_GET = TETemplate(
 		server: .esri,
-		dataset: .busStops,
-		returnType: .json,
+		dataset: .topo,
+		returnType: .image,
 		testName: .big,
 		url: "https://services.slip.wa.gov.au/public/rest/services/Landgate_Public_Services/Medium_Scale_Topo_Public_Services/MapServer/export",
 		method: .get,
@@ -604,8 +604,8 @@ struct TestEndpoint {
 	
 	static let ESRI_Topo_Big_POST = TETemplate(
 		server: .esri,
-		dataset: .busStops,
-		returnType: .json,
+		dataset: .topo,
+		returnType: .image,
 		testName: .big,
 		url: "https://services.slip.wa.gov.au/public/rest/services/Landgate_Public_Services/Medium_Scale_Topo_Public_Services/MapServer/export",
 		method: .post,

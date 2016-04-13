@@ -17,12 +17,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	var window: UIWindow?
 
 	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-		
+		print("Application Did Finish Launching with Options!")
 		// Realm database version migration code. Only runs when the database version number increments.
 		Realm.Configuration.defaultConfiguration = Realm.Configuration(
-			schemaVersion: 3,
+			schemaVersion: 12,
 			migrationBlock: { migration, oldSchemaVersion in
+				print("Migration underway! Old schema version = \(oldSchemaVersion)")
 				if (oldSchemaVersion < 2) {
+					// This migration converted some old Google Maps Engine test results to the
+					// newest database schema, otherwise they would have fallen through the cracks.
+					
 					print("Migrating database version 1 to 2!")
 					migration.enumerate(EndpointResult.className()) { oldObject, newObject in
 						newObject!["uploaded"] = false
@@ -49,9 +53,109 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 					}
 				}
 				if (oldSchemaVersion < 3) {
+					// This migration nominated the "testID" property as the primary key for each record.
+					
 					print("Migrating database version 2 to 3!")
 					migration.enumerate(ResultObject.className()) { oldObject, newObject in
 						newObject!["primaryKeyProperty"] = "testID"
+					}
+				}
+				if (oldSchemaVersion < 4) {
+					// This migration diliberately sets all uploaded flags back to false before
+					// a big Google App Engine database wipe and rebuild.
+					// Also there was an error found where some WMS images were incorrectly tagged
+					// as JSON responses, this migration tests for those with images and sets 
+					// their tag correctly.
+					
+					print("Migrating database version 3 to 4!")
+					migration.enumerate(ResultObject.className()) { oldObject, newObject in
+						if let uploadedFlag = oldObject!["uploaded"] as? Bool where uploadedFlag == true {
+							print("Setting uploaded flag to false")
+							newObject!["uploaded"] = false
+						}
+						if let serverType = oldObject!["server"] as? String where serverType == "Esri" {
+							print("Setting server type to all caps ESRI")
+							newObject!["server"] = "ESRI"
+						}
+						if let data: NSData = oldObject!["responseData"] as? NSData,
+								_: UIImage = UIImage(data: data),
+								datasetName =  oldObject!["dataset"] as? String,
+								dataType = oldObject!["returnType"] as? String
+								where datasetName == "BusStops" && dataType == "JSON" {
+							print("Converting an NSData to a UIImage succeeded! Assigning properties as per a WMS image return.")
+							newObject!["dataset"] = "Topo"
+							newObject!["returnType"] = "Image"
+						}
+					}
+				}
+				if (oldSchemaVersion < 8) {
+					// The previous migration failed to change the uploaded flags, dataset and returnType values. Retrying here.
+					// In case you're wondering about the Pyramid of Doom of if clauses, I tried the modern Swift version above and it wasn't called.
+					print("Migrating database version 7 to 8!")
+					migration.enumerate(EndpointResult.className()) { oldObject, newObject in
+						print("Old object uploaded flag: \(oldObject!["uploaded"])")
+						newObject!["uploaded"] = false
+						print("New object uploaded flag: \(newObject!["uploaded"])")
+						
+						if let serverType = oldObject!["server"] as? String {
+							if serverType == "Esri" {
+								print("Setting server type to all caps ESRI")
+								newObject!["server"] = "ESRI"
+
+							}
+						}
+						
+						if let data: NSData = oldObject!["responseData"] as? NSData {
+							if let _: UIImage = UIImage(data: data) {
+								let datasetName =  oldObject!["dataset"] as? String
+								let dataType = oldObject!["returnType"] as? String
+								if datasetName == "BusStops" && dataType == "JSON" {
+									print("Converting an NSData to a UIImage succeeded! Assigning properties as per a WMS image return.")
+									newObject!["dataset"] = "Topo"
+									newObject!["returnType"] = "Image"
+								}
+							}
+						}
+					}
+				}
+				if (oldSchemaVersion < 12) {
+					// Resetting all uploadedFlags to false in preparation for dumping the test
+					// database in favour of the production dataset.
+					print("Migrating database version 11 to 12!")
+					migration.enumerate(TestMasterResult.className()) { oldObject, newObject in
+						if let uploadedFlag = oldObject!["uploaded"] as? Bool {
+							print("Uploaded flag before = \(uploadedFlag)")
+							newObject!["uploaded"] = false
+							print("Uploaded flag after = \(uploadedFlag)")
+						}
+					}
+					migration.enumerate(EndpointResult.className()) { oldObject, newObject in
+						if let uploadedFlag = oldObject!["uploaded"] as? Bool {
+							print("Uploaded flag before = \(uploadedFlag)")
+							newObject!["uploaded"] = false
+							print("Uploaded flag after = \(uploadedFlag)")
+						}
+					}
+					migration.enumerate(NetworkResult.className()) { oldObject, newObject in
+						if let uploadedFlag = oldObject!["uploaded"] as? Bool {
+							print("Uploaded flag before = \(uploadedFlag)")
+							newObject!["uploaded"] = false
+							print("Uploaded flag after = \(uploadedFlag)")
+						}
+					}
+					migration.enumerate(LocationResult.className()) { oldObject, newObject in
+						if let uploadedFlag = oldObject!["uploaded"] as? Bool {
+							print("Uploaded flag before = \(uploadedFlag)")
+							newObject!["uploaded"] = false
+							print("Uploaded flag after = \(uploadedFlag)")
+						}
+					}
+					migration.enumerate(PingResult.className()) { oldObject, newObject in
+						if let uploadedFlag = oldObject!["uploaded"] as? Bool {
+							print("Uploaded flag before = \(uploadedFlag)")
+							newObject!["uploaded"] = false
+							print("Uploaded flag after = \(uploadedFlag)")
+						}
 					}
 				}
 			}

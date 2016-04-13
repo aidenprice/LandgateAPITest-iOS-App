@@ -38,9 +38,12 @@ class TestUploader {
 	
 	let stateMachine: StateMachine<UploaderState>
 	
-	let realm: Realm
+//	var jsonRealm: Realm?
+//	var writeRealm: Realm?
 	
-	var queue = [TestMasterResult]()
+	var resultKey: String?
+	
+	var queue = [String]()
 	
 	init() {
 		print("Uploader State Machine started")
@@ -51,36 +54,43 @@ class TestUploader {
 		
 		let stateMachine = StateMachine(initialState: readyState, states: [readyState, uploadingState, successState, failState])
 		
-		let startEvent = Event(name: UploaderEvents.Start, sourceStates: [UploaderState.Ready, UploaderState.Success], destinationState: UploaderState.Uploading)
-		let successEvent = Event(name: UploaderEvents.Success, sourceStates: [UploaderState.Uploading], destinationState: UploaderState.Success)
-		let failEvent = Event(name: UploaderEvents.Fail, sourceStates: [UploaderState.Uploading], destinationState: UploaderState.Fail)
-		let backToReadyEvent = Event(name: UploaderEvents.Ready, sourceStates: [UploaderState.Success, UploaderState.Fail], destinationState: UploaderState.Ready)
-		let newTestsEvent = Event(name: UploaderEvents.NewTests, sourceStates: [UploaderState.Ready], destinationState: UploaderState.Ready)
-		let abortEvent = Event(name: UploaderEvents.Abort, sourceStates: [UploaderState.Uploading], destinationState: UploaderState.Fail)
+		let startEvent = Event(name: UploaderEvents.Start, sourceValues: [UploaderState.Ready, UploaderState.Success], destinationValue: UploaderState.Uploading)
+		let successEvent = Event(name: UploaderEvents.Success, sourceValues: [UploaderState.Uploading], destinationValue: UploaderState.Success)
+		let failEvent = Event(name: UploaderEvents.Fail, sourceValues: [UploaderState.Uploading], destinationValue: UploaderState.Fail)
+		let backToReadyEvent = Event(name: UploaderEvents.Ready, sourceValues: [UploaderState.Success, UploaderState.Fail], destinationValue: UploaderState.Ready)
+		let newTestsEvent = Event(name: UploaderEvents.NewTests, sourceValues: [UploaderState.Ready], destinationValue: UploaderState.Ready)
+		let abortEvent = Event(name: UploaderEvents.Abort, sourceValues: [UploaderState.Uploading], destinationValue: UploaderState.Fail)
 		
 		stateMachine.addEvents([startEvent, successEvent, failEvent, backToReadyEvent, newTestsEvent, abortEvent])
 		
 		self.stateMachine = stateMachine
 
-		var uploadRealm: Realm? = nil
-		do {
-			try uploadRealm = Realm()
-		} catch {
-			print("SingletonUploader Realm start up failure!")
-		}
-		self.realm = uploadRealm!
+//		var readRealm: Realm? = nil
+//		do {
+//			try readRealm = Realm()
+//		} catch {
+//			print("jsonRealm start up failure!")
+//		}
+//		self.jsonRealm = readRealm
+//		
+//		var uploadRealm: Realm? = nil
+//		do {
+//			try uploadRealm = Realm()
+//		} catch {
+//			print("jsonRealm start up failure!")
+//		}
+//		self.writeRealm = uploadRealm
 		
 		readyState.didEnterState = { _ in self.didEnterReadyState() }
 		uploadingState.didEnterState = { _ in self.didEnterUploadingState() }
 		successState.didEnterState = { _ in self.didEnterSuccessState() }
 		failState.didEnterState = { _ in self.didEnterFailState() }
-		
 	}
 	
 	// MARK: Public API
 	
 	// Other objects can, and do, fire events at the state machine to cause it to change its behaviour.
-	func uploadTests(tests: [TestMasterResult]) {
+	func uploadTests(tests: [String]) {
 		self.queue += tests
 		
 		if !self.queue.isEmpty {
@@ -90,7 +100,7 @@ class TestUploader {
 	
 	// MARK: Statemachine Event Functions
 	
-	private func didEnterReadyState() {
+	func didEnterReadyState() {
 		print("Entered Ready state")
 		
 		if !self.queue.isEmpty {
@@ -98,7 +108,7 @@ class TestUploader {
 		}
 	}
 	
-	private func didEnterUploadingState() {
+	func didEnterUploadingState() {
 		print("Entered Uploading state")
 		
 		guard !self.queue.isEmpty && hasConnectivity() else {
@@ -107,11 +117,28 @@ class TestUploader {
 			return
 		}
 		
-		// Grab the object and its primary key so we can reinstantiate it on the background uploading thread.
-		let result = self.queue.removeLast()
-		let resultKey = result.testID
+		// Grab the object's primary key so we can reinstantiate it on the background uploading thread.
+		print("About to grab the next TestMaster in the queue.")
+		self.resultKey = self.queue.removeLast()
 		
-		guard let jsonData = try? NSJSONSerialization.dataWithJSONObject(result.toDict(), options: []) else {
+		// Grab a new pointer to the Realm on this thread
+		var jsonRealm: Realm? = nil
+		do {
+			try jsonRealm = Realm()
+		} catch {
+			print("Error getting jsonRealm.")
+			stateMachine.fireEvent(UploaderEvents.Fail)
+		}
+		
+		guard let result = jsonRealm?.objectForPrimaryKey(TestMasterResult.self, key: resultKey!) else {
+			print("Error getting jsonRealm or objectForPrimaryKey.")
+			stateMachine.fireEvent(UploaderEvents.Fail)
+			return
+		}
+		
+		let resultDict: [String:AnyObject] = ["campaignName":"production_campaign", "TestMasters":[result.toDict()]]
+		
+		guard let jsonData = try? NSJSONSerialization.dataWithJSONObject(resultDict, options: []) else {
 			print("Couldn't encode JSON for upload.")
 			stateMachine.fireEvent(UploaderEvents.Fail)
 			return
@@ -122,7 +149,11 @@ class TestUploader {
 		
 		let session = NSURLSession(configuration: sessionConfig, delegate: nil, delegateQueue: nil)
 		
-		guard let url = NSURL(string: "https://landgateapitest.appspot.com/database") else { return }
+		guard let url = NSURL(string: "https://landgateapitest.appspot.com/database") else {
+			print("Can't produce NSURL from string, odd that this would happen, frankly.")
+			stateMachine.fireEvent(UploaderEvents.Fail)
+			return
+		}
 		
 		let request = NSMutableURLRequest(URL: url)
 		request.HTTPMethod = HTTPMethod.post.rawValue
@@ -130,38 +161,88 @@ class TestUploader {
 		
 		// Start the upload task.
 		let task = session.uploadTaskWithRequest(request, fromData: jsonData) { data, response, error in
-			print("Upload task started!")
-			if error == nil {
-				print("Upload task successful!")
-				print("Response; \(response)")
+			let statusCode = (response as! NSHTTPURLResponse).statusCode
+			print("Response code; \(statusCode)")
+			print("Response; \(response)")
+			
+			if error != nil {
+				print("Upload task failed!")
+				print("Error: \(error!.localizedDescription)")
 				
-				// Assume that iOS has pushed the upload task to a background thread, as Realm objects are not thread safe
-				// we have to get a new Realm and a new instance of the ResultObject, thankfully we stored the primary key earlier.
-				do {
-					let writeRealm = try Realm()
-					if let resultOnAnotherThread = writeRealm.objectForPrimaryKey(ResultObject.self, key: resultKey) {
-						try writeRealm.write { resultOnAnotherThread.uploaded = true }
-					}
-				} catch {
-					print("Can't change uploaded flag in Realm!")
-				}
+				self.stateMachine.fireEvent(UploaderEvents.Fail)
 				
-				self.stateMachine.fireEvent(UploaderEvents.Success)
+			} else if statusCode >= 400 {
+				// The 555 error code is a custom response code I built into the Google App Engine web app.
+				// It's meant to help determine custom exception types from generic internet errors.
+				// Unfortunately it doesn't come with an error payload and needs to be handled separately.
+				print("Upload task failed!")
+				let datastring = NSString(data: data!, encoding: NSUTF8StringEncoding)
+				print("Response; \(datastring)")
+				
+				self.stateMachine.fireEvent(UploaderEvents.Fail)
 				
 			} else {
-				print("Upload task failed!")
-				let statusCode = (response as! NSHTTPURLResponse).statusCode
-				print("Response code; \(statusCode)")
-				print("Response; \(response)")
-				print("Error: \(error!.localizedDescription)")
-				self.stateMachine.fireEvent(UploaderEvents.Fail)
+				
+				print("Upload task successful!")
+				let datastring = NSString(data: data!, encoding: NSUTF8StringEncoding)
+				print("Response; \(datastring)")
+				
+				self.stateMachine.fireEvent(UploaderEvents.Success)
 			}
 		}
 		task.resume()
 	}
 	
-	private func didEnterSuccessState() {
+	func didEnterSuccessState() {
 		print("Entered Success State.")
+		
+		// Assume that iOS has pushed the upload task to a background thread, as Realm objects are not thread safe
+		// we have to get a new Realm and a new instance of the ResultObject, thankfully we stored the primary key earlier.
+		
+		let backgroundQueue = dispatch_get_global_queue(Int(QOS_CLASS_BACKGROUND.rawValue), 0)
+		dispatch_async(backgroundQueue, {
+			print("About to get a pointer to Realm.")
+			
+			var writeRealm: Realm? = nil
+			do {
+				try writeRealm = Realm()
+				print("Realm: \(writeRealm)")
+				
+				guard let resultOnAnotherThread = writeRealm?.objectForPrimaryKey(TestMasterResult.self, key: self.resultKey!) else {
+					print("Error getting objectForPrimaryKey.")
+					return
+				}
+				try writeRealm!.write { resultOnAnotherThread.uploaded = true }
+				
+//				writeRealm!.beginWrite()
+//				resultOnAnotherThread.uploaded = true
+//				try writeRealm!.commitWrite()
+
+				print("Changed uploaded flag to \(resultOnAnotherThread.uploaded)")
+				
+			} catch {
+				print("Can't change uploaded flag in Realm!")
+			}
+		})
+		
+//		var writeRealm: Realm? = nil
+//		do {
+//			try self.writeRealm = Realm()
+//			print("About to change uploaded flag.")
+//			if let resultOnAnotherThread = self.writeRealm!.objectForPrimaryKey(TestMasterResult.self, key: resultKey!) {
+//				print("Trying to write to writeRealm")
+//				writeRealm!.beginWrite()
+//				resultOnAnotherThread.uploaded = true
+//				try writeRealm!.commitWrite()
+//				
+//				try self.writeRealm!.write { resultOnAnotherThread.uploaded = true }
+//				print("Changed uploaded flag to \(resultOnAnotherThread.uploaded)")
+//			}
+//		} catch {
+//			print("Can't change uploaded flag in Realm!")
+//		}
+		
+//		self.funWithFlags(self.resultKey!)
 		
 		if !self.queue.isEmpty {
 			print("Still uploads in the queue.")
@@ -172,7 +253,7 @@ class TestUploader {
 		}
 	}
 	
-	private func didEnterFailState() {
+	func didEnterFailState() {
 		print("Entered fail state.")
 		
 		// TODO add a pop up to alert the user.
@@ -182,7 +263,7 @@ class TestUploader {
 	
 	/**
 		Checks whether the device can connect to the internet.
-		Intended to prevent upload attempts when there is not connectivity.
+		Intended to prevent upload attempts when there is no connectivity.
 		Uses the open source reachability library.
 	*/
 	private func hasConnectivity() -> Bool {
@@ -194,4 +275,43 @@ class TestUploader {
 			return false
 		}
 	}
+	
+//	private func funWithFlags(key: String){
+//		let backgroundQueue = dispatch_get_global_queue(Int(QOS_CLASS_BACKGROUND.rawValue), 0)
+//		dispatch_async(backgroundQueue, {
+//			print("About to get a pointer to Realm.")
+//			
+//			let writeRealm = try! Realm()
+//			
+//			guard let resultOnAnotherThread = writeRealm.objectForPrimaryKey(TestMasterResult.self, key: self.resultKey!) else {
+//				print("Error getting objectForPrimaryKey.")
+//				return
+//			}
+//			
+//			try! writeRealm.write { resultOnAnotherThread.uploaded = true }
+//			
+//			
+	
+//			var writeRealm: Realm? = nil
+//			do {
+//				try writeRealm = Realm()
+//				print("Realm: \(writeRealm)")
+//				
+//				guard let resultOnAnotherThread = writeRealm?.objectForPrimaryKey(TestMasterResult.self, key: self.resultKey!) else {
+//					print("Error getting objectForPrimaryKey.")
+//					return
+//				}
+//				try writeRealm!.write { resultOnAnotherThread.uploaded = true }
+//				
+//				// writeRealm!.beginWrite()
+//				// resultOnAnotherThread.uploaded = true
+//				// try writeRealm!.commitWrite()
+//				
+//				print("Changed uploaded flag to \(resultOnAnotherThread.uploaded)")
+//				
+//			} catch {
+//				print("Can't change uploaded flag in Realm!")
+//			}
+//		})
+//	}
 }

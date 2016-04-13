@@ -102,27 +102,40 @@ extension Object {
 				// Response data could be an image or a JSON or XML string, determine which it is, convert to string and append to JSON upload dict.
 				if let dataObject = self[prop.name] as? NSData {
 					
-					// if NSData is an image then set the imageResponse key
+					// if NSData is an image then convert to a base 64 string and append.
 					if let _: UIImage = UIImage(data: dataObject) {
-						mutableDict.setValue(dataObject.base64EncodedStringWithOptions(.Encoding64CharacterLineLength), forKey: "imageResponse")
+						mutableDict.setValue(dataObject.base64EncodedStringWithOptions(.Encoding64CharacterLineLength), forKey: "responseData")
 						
 					} else if let string: String = String(data: dataObject, encoding: NSUTF8StringEncoding) {
 						// We can not test whether the response is a well formed JSON or XML string using
 						// standard libraries as we hope to find responses where transmission was interrupted.
+						mutableDict.setValue(string, forKey: "responseData")
+					} else {
+						// Something odd going on, completely unexpected response data which has somehow slipped through all the other gateways.
+						mutableDict.setValue("", forKey: "responseData")
+					}
+					
+					// if NSData is an image then set the imageResponse key
+//					if let _: UIImage = UIImage(data: dataObject) {
+//						mutableDict.setValue(dataObject.base64EncodedStringWithOptions(.Encoding64CharacterLineLength), forKey: "imageResponse")
+//						
+//					} else if let string: String = String(data: dataObject, encoding: NSUTF8StringEncoding) {
+						// We can not test whether the response is a well formed JSON or XML string using
+						// standard libraries as we hope to find responses where transmission was interrupted.
 						// The first character is sufficient to determine whether the string is XML or JSON.
-						if string.hasPrefix("{") {
-							mutableDict.setValue(string, forKey: "jsonResponse")
-							
-						} else if string.hasPrefix("<") {
-							mutableDict.setValue(string, forKey: "xmlResponse")
-							
+//						if string.hasPrefix("{") {
+//							mutableDict.setValue(string, forKey: "jsonResponse")
+//							
+//						} else if string.hasPrefix("<") {
+//							mutableDict.setValue(string, forKey: "xmlResponse")
+//							
 							// If the NSData object converts to a string but doesn't match our simple XML vs JSON test, drop it into
 							// a jsonResponse and we'll investigate later.
-						} else {
-							print("NSData converted to string but doesn't appear to be XML or JSON. Investigate further later on.")
-							mutableDict.setValue(string, forKey: "jsonResponse")
-						}
-					}
+//						} else {
+//							print("NSData converted to string but doesn't appear to be XML or JSON. Investigate further later on.")
+//							mutableDict.setValue(string, forKey: "jsonResponse")
+//						}
+//					}
 				}
 				continue
 			}

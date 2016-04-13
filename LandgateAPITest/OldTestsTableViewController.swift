@@ -59,9 +59,7 @@ class OldTestsTableViewController: UITableViewController {
 	override func viewDidLoad() {
         super.viewDidLoad()
 		
-		navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Upload All", style: .Plain, target: self, action: "uploadAll")
-		
-		completedTests = realm.objects(TestMasterResult).sorted("datetime", ascending: false)
+		navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Upload All", style: .Plain, target: self, action: #selector(OldTestsTableViewController.uploadAll))
 		
 		dateFormatter.dateFormat = "h:mm a EEEE d MMMM yyyy"
 		
@@ -69,6 +67,18 @@ class OldTestsTableViewController: UITableViewController {
 		tableView.rowHeight = UITableViewAutomaticDimension
 		
     }
+	
+	override func viewWillAppear(animated: Bool) {
+		super.viewWillAppear(animated)
+		
+		completedTests = realm.objects(TestMasterResult).sorted("datetime", ascending: false)
+	}
+	
+	override func viewWillDisappear(animated: Bool) {
+		super.viewWillDisappear(animated)
+		
+		realm.invalidate()
+	}
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -81,9 +91,9 @@ class OldTestsTableViewController: UITableViewController {
 		guard let allTests = self.completedTests where !allTests.isEmpty else { return }
 		print("There are tests not yet uploaded!")
 		
-		let tests = allTests.filter("uploaded == false").map({ $0 })
+		let testKeys = realm.objects(TestMasterResult).filter("uploaded == false").map({ $0.testID })
 		
-		TestUploader.sharedInstance.uploadTests(tests)
+		TestUploader.sharedInstance.uploadTests(testKeys)
 		
 	}
 
@@ -131,8 +141,7 @@ class OldTestsTableViewController: UITableViewController {
 		}
 		
 		print("parentTestMasterResult testID = \(cell.oldTestResult!.testID)")
-		destination.parentTestMasterResult = cell.oldTestResult
-		print("destination's parentTestMasterResult set!")
+		destination.parentTestMasterKey = cell.oldTestResult!.testID
 	}
 }
 

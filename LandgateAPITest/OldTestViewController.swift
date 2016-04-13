@@ -39,7 +39,7 @@ class OldTestViewController: UIViewController, UITableViewDelegate, UITableViewD
 	let timeFormatter = NSDateFormatter()
 	let numberFormatter = NSNumberFormatter()
 	
-	var parentTestMasterResult: TestMasterResult?
+	var parentTestMasterKey: String?
 	
 	var locationResults: Results<LocationResult>?
 	var pingResults: Results<PingResult>?
@@ -47,7 +47,6 @@ class OldTestViewController: UIViewController, UITableViewDelegate, UITableViewD
 	var endpointResults: Results<EndpointResult>?
 	
 	var successRatio: Double {
-		print("Calculating Success Ratio")
 		guard let endpoints = self.endpointResults where !endpoints.isEmpty else { return 0.0 }
 		
 		let failures = endpoints.filter("success == false")
@@ -56,7 +55,6 @@ class OldTestViewController: UIViewController, UITableViewDelegate, UITableViewD
 	}
 	
 	var averageResponseTime: Double {
-		print("Calculating average response time")
 		guard let endpoints = self.endpointResults where !endpoints.isEmpty else { return 0.0 }
 		
 		var total = 0.0
@@ -92,44 +90,57 @@ class OldTestViewController: UIViewController, UITableViewDelegate, UITableViewD
 		return testRealm
 	}()
 	
+	// MARK: - View Controller Functions
+	
     override func viewDidLoad() {
         super.viewDidLoad()
 
-		navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Upload", style: .Plain, target: self, action: "uploadTest")
+		navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Upload", style: .Plain, target: self, action: #selector(OldTestViewController.uploadTest))
 		
 		tableView.dataSource = self
 		tableView.delegate = self
 		
-		guard let testMasterResult = self.parentTestMasterResult else {
-			self.dateTimeLabel.text = "No Test Found!"
-			self.successRatioLabel.text = ""
-			self.averageResponseTimeLabel.text = ""
-			
-			return
-		}
+		self.dateTimeLabel.text = "No Test Found!"
+		self.successRatioLabel.text = ""
+		self.averageResponseTimeLabel.text = ""
+		
+		dateFormatter.dateFormat = "h:mm a EEEE d MMMM yyyy"
+		timeFormatter.dateFormat = "h:mm:ss a"
+		
+		numberFormatter.maximumFractionDigits = 3
+		numberFormatter.numberStyle = NSNumberFormatterStyle.DecimalStyle
+		
+    }
+	
+	override func viewWillAppear(animated: Bool) {
+		super.viewWillAppear(animated)
+		
+		guard let masterKey = self.parentTestMasterKey else { return }
+		
+		guard let testMasterResult = realm.objectForPrimaryKey(EndpointResult.self, key: masterKey) else { return }
 		
 		let date = NSDate(timeIntervalSince1970: testMasterResult.datetime)
 		
-		dateFormatter.dateFormat = "h:mm a EEEE d MMMM yyyy"
 		dateTimeLabel.text = "\(dateFormatter.stringFromDate(date))"
-		
-		timeFormatter.dateFormat = "h:mm:ss a"
 		
 		locationResults = realm.objects(LocationResult).filter("parentID = %@", testMasterResult.testID).sorted("datetime", ascending: true)
 		pingResults = realm.objects(PingResult).filter("parentID = %@", testMasterResult.testID).sorted("datetime", ascending: true)
 		networkResults = realm.objects(NetworkResult).filter("parentID = %@", testMasterResult.testID).sorted("datetime", ascending: true)
 		endpointResults = realm.objects(EndpointResult).filter("parentID = %@", testMasterResult.testID).sorted("datetime", ascending: true)
 		
-		numberFormatter.maximumFractionDigits = 3
-		numberFormatter.numberStyle = NSNumberFormatterStyle.DecimalStyle
 		
 		successRatioLabel.text = "Successful tests: \(numberFormatter.stringFromNumber(successRatio * 100)!)%"
 		
 		averageResponseTimeLabel.text = "Average response time: \(numberFormatter.stringFromNumber(averageResponseTime)!) seconds"
 		
 		setUpMap()
-
-    }
+	}
+	
+	override func viewWillDisappear(animated: Bool) {
+		super.viewWillDisappear(animated)
+		
+		realm.invalidate()
+	}
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -228,9 +239,6 @@ class OldTestViewController: UIViewController, UITableViewDelegate, UITableViewD
 	}
 	
 	func uploadTest() {
-		TestUploader.sharedInstance.uploadTests([self.parentTestMasterResult!])
+		TestUploader.sharedInstance.uploadTests([self.parentTestMasterKey!])
 	}
-	
-	
-	
 }

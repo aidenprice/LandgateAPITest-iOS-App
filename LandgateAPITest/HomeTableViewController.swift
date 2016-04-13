@@ -76,6 +76,8 @@ class HomeTableViewController: UITableViewController {
 		return testRealm
 	}()
 	
+	// MARK: - View Controller Functions
+	
 	override func viewDidLoad() {
         super.viewDidLoad()
 		
@@ -83,11 +85,20 @@ class HomeTableViewController: UITableViewController {
 		
 		tableView.estimatedRowHeight = 70.0
 		tableView.rowHeight = UITableViewAutomaticDimension
+    }
+	
+	override func viewWillAppear(animated: Bool) {
+		super.viewWillAppear(animated)
 		
 		testsComplete = realm.objects(TestMasterResult).count
 		testsYetToUpload = realm.objects(TestMasterResult).filter("uploaded == false").count
+	}
+	
+	override func viewWillDisappear(animated: Bool) {
+		super.viewWillDisappear(animated)
 		
-    }
+		realm.invalidate()
+	}
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
