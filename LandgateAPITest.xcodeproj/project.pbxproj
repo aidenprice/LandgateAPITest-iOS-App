@@ -30,6 +30,7 @@
 		47752BC11BEA9DC800A97859 /* TestMasterTemplates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47752BC01BEA9DC800A97859 /* TestMasterTemplates.swift */; };
 		479E7E0F1C0E378E001F735D /* KDCircularProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 479E7E0E1C0E378E001F735D /* KDCircularProgress.swift */; };
 		479E7E111C0E38FE001F735D /* ModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 479E7E101C0E38FE001F735D /* ModalViewController.swift */; };
+		47C85AF81CBFB28A006E3438 /* backup.realm in Resources */ = {isa = PBXBuildFile; fileRef = 47C85AF71CBFB28A006E3438 /* backup.realm */; };
 		47D8F7111C0BF3E700E4ED9C /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47D8F7101C0BF3E700E4ED9C /* TestViewController.swift */; };
 		47F2AEEE1BF978AC00E70DEB /* LocationTester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47F2AEED1BF978AC00E70DEB /* LocationTester.swift */; };
 		47F2AEF01BFA71F600E70DEB /* NetworkTester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47F2AEEF1BFA71F600E70DEB /* NetworkTester.swift */; };
@@ -77,6 +78,7 @@
 		47752BC01BEA9DC800A97859 /* TestMasterTemplates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestMasterTemplates.swift; sourceTree = "<group>"; };
 		479E7E0E1C0E378E001F735D /* KDCircularProgress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KDCircularProgress.swift; sourceTree = "<group>"; };
 		479E7E101C0E38FE001F735D /* ModalViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModalViewController.swift; sourceTree = "<group>"; };
+		47C85AF71CBFB28A006E3438 /* backup.realm */ = {isa = PBXFileReference; lastKnownFileType = file; path = backup.realm; sourceTree = "<group>"; };
 		47D8F7101C0BF3E700E4ED9C /* TestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
 		47F2AEED1BF978AC00E70DEB /* LocationTester.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationTester.swift; sourceTree = "<group>"; };
 		47F2AEEF1BFA71F600E70DEB /* NetworkTester.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkTester.swift; sourceTree = "<group>"; };
@@ -103,6 +105,7 @@
 		47752BA21BEA9B8700A97859 = {
 			isa = PBXGroup;
 			children = (
+				47C85AF71CBFB28A006E3438 /* backup.realm */,
 				473E01571CB523FF001D6047 /* RealmSwift.framework */,
 				473E01581CB523FF001D6047 /* Realm.framework */,
 				4703B4761BF6C06000298A03 /* Transporter.framework */,
@@ -255,6 +258,7 @@
 				47752BB91BEA9B8700A97859 /* LaunchScreen.storyboard in Resources */,
 				47752BB61BEA9B8700A97859 /* Assets.xcassets in Resources */,
 				47752BB41BEA9B8700A97859 /* Main.storyboard in Resources */,
+				47C85AF81CBFB28A006E3438 /* backup.realm in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

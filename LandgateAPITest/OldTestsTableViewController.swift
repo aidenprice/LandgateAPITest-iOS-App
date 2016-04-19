@@ -77,7 +77,9 @@ class OldTestsTableViewController: UITableViewController {
 	override func viewWillDisappear(animated: Bool) {
 		super.viewWillDisappear(animated)
 		
-		realm.invalidate()
+		// invalidate() causes the Realm DB to drop references to query results
+		// returning them to the store unchanged. Used here to free up memory.
+//		realm.invalidate()
 	}
 
     override func didReceiveMemoryWarning() {
@@ -133,15 +135,13 @@ class OldTestsTableViewController: UITableViewController {
 	
 	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
 		
-		print("Entered prepareForSegue in OldTestsViewController.")
-		
 		guard let destination = segue.destinationViewController as? OldTestViewController,
 			  let cell = sender as? OldTestTableViewCell else {
 			return
 		}
 		
 		print("parentTestMasterResult testID = \(cell.oldTestResult!.testID)")
-		destination.parentTestMasterKey = cell.oldTestResult!.testID
+		destination.parentTestMasterResult = cell.oldTestResult!
 	}
 }
 

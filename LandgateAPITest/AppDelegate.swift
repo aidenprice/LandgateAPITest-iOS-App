@@ -18,6 +18,49 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
 		print("Application Did Finish Launching with Options!")
+		
+		// Running Realm()'s writeCopyToPath compacts the database en route to save memory.
+		// Also used here to save a backup copy.
+		// This code will only be run one time, it raises an error if the destination file already exists.
+		
+//		let fileManager = NSFileManager.defaultManager()
+//		
+//		let bundledRealmPath = NSBundle.mainBundle().pathForResource("backup", ofType:"realm")
+//		
+//		let defaultRealmPath = NSURL.fileURLWithPath(Realm.Configuration.defaultConfiguration.path!)
+//		guard let copyRealmPath = defaultRealmPath.URLByDeletingLastPathComponent?.URLByAppendingPathComponent("backup.realm") else { return true }
+		
+//		let config = Realm.Configuration(path: bundledRealmPath, readOnly: true)
+//		
+//		let realm = try! Realm(configuration: config)
+//		
+//		do {
+//			print("Starting deletion of old default realm file.")
+//			try fileManager.removeItemAtURL(defaultRealmPath)
+//			
+//			print("Starting writeCopyToPath")
+//			try realm.writeCopyToPath(defaultRealmPath.path!)
+//			
+//		} catch let error as NSError {
+//			print("Error while copying default Realm file: \(error)")
+//		}
+		
+//		do {
+//			print("Starting writeCopyToPath")
+//			try Realm().writeCopyToPath(copyRealmPath.path!)
+//			
+//			print("Starting deletion of old default realm file.")
+//			try fileManager.removeItemAtURL(defaultRealmPath)
+//
+//			print("Starting copying backup realm across to default path.")
+//			try fileManager.copyItemAtURL(copyRealmPath, toURL: defaultRealmPath)
+//			
+//		} catch let error as NSError {
+//			print("Error while copying default Realm file: \(error)")
+//		}
+		
+//		print("Backup complete.")
+		
 		// Realm database version migration code. Only runs when the database version number increments.
 		Realm.Configuration.defaultConfiguration = Realm.Configuration(
 			schemaVersion: 12,

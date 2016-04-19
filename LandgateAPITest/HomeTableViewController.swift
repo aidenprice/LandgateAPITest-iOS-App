@@ -97,6 +97,8 @@ class HomeTableViewController: UITableViewController {
 	override func viewWillDisappear(animated: Bool) {
 		super.viewWillDisappear(animated)
 		
+		// invalidate() causes the Realm DB to drop references to query results
+		// returning them to the store unchanged. Used here to free up memory.
 		realm.invalidate()
 	}
 

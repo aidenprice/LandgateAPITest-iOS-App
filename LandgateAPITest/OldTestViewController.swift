@@ -39,7 +39,7 @@ class OldTestViewController: UIViewController, UITableViewDelegate, UITableViewD
 	let timeFormatter = NSDateFormatter()
 	let numberFormatter = NSNumberFormatter()
 	
-	var parentTestMasterKey: String?
+	var parentTestMasterResult: TestMasterResult?
 	
 	var locationResults: Results<LocationResult>?
 	var pingResults: Results<PingResult>?
@@ -104,20 +104,9 @@ class OldTestViewController: UIViewController, UITableViewDelegate, UITableViewD
 		self.successRatioLabel.text = ""
 		self.averageResponseTimeLabel.text = ""
 		
-		dateFormatter.dateFormat = "h:mm a EEEE d MMMM yyyy"
-		timeFormatter.dateFormat = "h:mm:ss a"
+		guard let testMasterResult = self.parentTestMasterResult else { return }
 		
-		numberFormatter.maximumFractionDigits = 3
-		numberFormatter.numberStyle = NSNumberFormatterStyle.DecimalStyle
-		
-    }
-	
-	override func viewWillAppear(animated: Bool) {
-		super.viewWillAppear(animated)
-		
-		guard let masterKey = self.parentTestMasterKey else { return }
-		
-		guard let testMasterResult = realm.objectForPrimaryKey(EndpointResult.self, key: masterKey) else { return }
+//		guard let testMasterResult = realm.objectForPrimaryKey(EndpointResult.self, key: masterKey) else { return }
 		
 		let date = NSDate(timeIntervalSince1970: testMasterResult.datetime)
 		
@@ -128,18 +117,29 @@ class OldTestViewController: UIViewController, UITableViewDelegate, UITableViewD
 		networkResults = realm.objects(NetworkResult).filter("parentID = %@", testMasterResult.testID).sorted("datetime", ascending: true)
 		endpointResults = realm.objects(EndpointResult).filter("parentID = %@", testMasterResult.testID).sorted("datetime", ascending: true)
 		
+		dateFormatter.dateFormat = "h:mm a EEEE d MMMM yyyy"
+		timeFormatter.dateFormat = "h:mm:ss a"
+		
+		numberFormatter.maximumFractionDigits = 3
+		numberFormatter.numberStyle = NSNumberFormatterStyle.DecimalStyle
 		
 		successRatioLabel.text = "Successful tests: \(numberFormatter.stringFromNumber(successRatio * 100)!)%"
 		
 		averageResponseTimeLabel.text = "Average response time: \(numberFormatter.stringFromNumber(averageResponseTime)!) seconds"
 		
 		setUpMap()
+    }
+	
+	override func viewWillAppear(animated: Bool) {
+		super.viewWillAppear(animated)
 	}
 	
 	override func viewWillDisappear(animated: Bool) {
 		super.viewWillDisappear(animated)
 		
-		realm.invalidate()
+		// invalidate() causes the Realm DB to drop references to query results
+		// returning them to the store unchanged. Used here to free up memory.
+//		realm.invalidate()
 	}
 
     override func didReceiveMemoryWarning() {
@@ -239,6 +239,6 @@ class OldTestViewController: UIViewController, UITableViewDelegate, UITableViewD
 	}
 	
 	func uploadTest() {
-		TestUploader.sharedInstance.uploadTests([self.parentTestMasterKey!])
+		TestUploader.sharedInstance.uploadTests([self.parentTestMasterResult!.testID])
 	}
 }

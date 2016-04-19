@@ -64,22 +64,6 @@ class TestUploader {
 		stateMachine.addEvents([startEvent, successEvent, failEvent, backToReadyEvent, newTestsEvent, abortEvent])
 		
 		self.stateMachine = stateMachine
-
-//		var readRealm: Realm? = nil
-//		do {
-//			try readRealm = Realm()
-//		} catch {
-//			print("jsonRealm start up failure!")
-//		}
-//		self.jsonRealm = readRealm
-//		
-//		var uploadRealm: Realm? = nil
-//		do {
-//			try uploadRealm = Realm()
-//		} catch {
-//			print("jsonRealm start up failure!")
-//		}
-//		self.writeRealm = uploadRealm
 		
 		readyState.didEnterState = { _ in self.didEnterReadyState() }
 		uploadingState.didEnterState = { _ in self.didEnterUploadingState() }
@@ -206,43 +190,19 @@ class TestUploader {
 			var writeRealm: Realm? = nil
 			do {
 				try writeRealm = Realm()
-				print("Realm: \(writeRealm)")
 				
 				guard let resultOnAnotherThread = writeRealm?.objectForPrimaryKey(TestMasterResult.self, key: self.resultKey!) else {
 					print("Error getting objectForPrimaryKey.")
 					return
 				}
 				try writeRealm!.write { resultOnAnotherThread.uploaded = true }
-				
-//				writeRealm!.beginWrite()
-//				resultOnAnotherThread.uploaded = true
-//				try writeRealm!.commitWrite()
-
+								
 				print("Changed uploaded flag to \(resultOnAnotherThread.uploaded)")
 				
 			} catch {
 				print("Can't change uploaded flag in Realm!")
 			}
 		})
-		
-//		var writeRealm: Realm? = nil
-//		do {
-//			try self.writeRealm = Realm()
-//			print("About to change uploaded flag.")
-//			if let resultOnAnotherThread = self.writeRealm!.objectForPrimaryKey(TestMasterResult.self, key: resultKey!) {
-//				print("Trying to write to writeRealm")
-//				writeRealm!.beginWrite()
-//				resultOnAnotherThread.uploaded = true
-//				try writeRealm!.commitWrite()
-//				
-//				try self.writeRealm!.write { resultOnAnotherThread.uploaded = true }
-//				print("Changed uploaded flag to \(resultOnAnotherThread.uploaded)")
-//			}
-//		} catch {
-//			print("Can't change uploaded flag in Realm!")
-//		}
-		
-//		self.funWithFlags(self.resultKey!)
 		
 		if !self.queue.isEmpty {
 			print("Still uploads in the queue.")
@@ -275,43 +235,4 @@ class TestUploader {
 			return false
 		}
 	}
-	
-//	private func funWithFlags(key: String){
-//		let backgroundQueue = dispatch_get_global_queue(Int(QOS_CLASS_BACKGROUND.rawValue), 0)
-//		dispatch_async(backgroundQueue, {
-//			print("About to get a pointer to Realm.")
-//			
-//			let writeRealm = try! Realm()
-//			
-//			guard let resultOnAnotherThread = writeRealm.objectForPrimaryKey(TestMasterResult.self, key: self.resultKey!) else {
-//				print("Error getting objectForPrimaryKey.")
-//				return
-//			}
-//			
-//			try! writeRealm.write { resultOnAnotherThread.uploaded = true }
-//			
-//			
-	
-//			var writeRealm: Realm? = nil
-//			do {
-//				try writeRealm = Realm()
-//				print("Realm: \(writeRealm)")
-//				
-//				guard let resultOnAnotherThread = writeRealm?.objectForPrimaryKey(TestMasterResult.self, key: self.resultKey!) else {
-//					print("Error getting objectForPrimaryKey.")
-//					return
-//				}
-//				try writeRealm!.write { resultOnAnotherThread.uploaded = true }
-//				
-//				// writeRealm!.beginWrite()
-//				// resultOnAnotherThread.uploaded = true
-//				// try writeRealm!.commitWrite()
-//				
-//				print("Changed uploaded flag to \(resultOnAnotherThread.uploaded)")
-//				
-//			} catch {
-//				print("Can't change uploaded flag in Realm!")
-//			}
-//		})
-//	}
 }
