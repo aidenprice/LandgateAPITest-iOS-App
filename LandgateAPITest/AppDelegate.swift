@@ -63,7 +63,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		// Realm database version migration code. Only runs when the database version number increments.
 		Realm.Configuration.defaultConfiguration = Realm.Configuration(
-			schemaVersion: 12,
+			schemaVersion: 18,
 			migrationBlock: { migration, oldSchemaVersion in
 				print("Migration underway! Old schema version = \(oldSchemaVersion)")
 				if (oldSchemaVersion < 2) {
@@ -161,10 +161,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 						}
 					}
 				}
-				if (oldSchemaVersion < 12) {
+				if (oldSchemaVersion < 14) {
 					// Resetting all uploadedFlags to false in preparation for dumping the test
 					// database in favour of the production dataset.
-					print("Migrating database version 11 to 12!")
+					print("Migrating database version 13 to 14!")
+					
+					var referenceList = [ReferenceFile]()
+					
+					for var file in ReferenceFiles.files {
+						let fileURL: NSURL = NSURL.fileURLWithPath(NSBundle.mainBundle().pathForResource(file.fileName, ofType: "txt")!)
+						print(fileURL)
+						do {
+							file.reference = try String(contentsOfURL: fileURL)
+							referenceList.append(file)
+							print(fileURL)
+						} catch let error as NSError {
+							print("Failed reading from URL: \(fileURL), Error: " + error.localizedDescription)
+						}
+					}
+
 					migration.enumerate(TestMasterResult.className()) { oldObject, newObject in
 						if let uploadedFlag = oldObject!["uploaded"] as? Bool {
 							print("Uploaded flag before = \(uploadedFlag)")
@@ -177,6 +192,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 							print("Uploaded flag before = \(uploadedFlag)")
 							newObject!["uploaded"] = false
 							print("Uploaded flag after = \(uploadedFlag)")
+						}
+						
+						if let data: NSData = oldObject!["responseData"] as? NSData,
+						   let string: String = String(data: data, encoding: NSUTF8StringEncoding) {
+							for referenceFile in referenceList {
+								if string.containsString(referenceFile.reference!) {
+									newObject!["testName"] = referenceFile.name
+									print("\(newObject!["testName"])")
+								}
+							}
 						}
 					}
 					migration.enumerate(NetworkResult.className()) { oldObject, newObject in
@@ -198,6 +223,87 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 							print("Uploaded flag before = \(uploadedFlag)")
 							newObject!["uploaded"] = false
 							print("Uploaded flag after = \(uploadedFlag)")
+						}
+					}
+				}
+				if (oldSchemaVersion < 17) {
+					print("Migrating database version 16 to 17!")
+					
+					var referenceList = [ReferenceFile]()
+					
+					for var file in ReferenceFiles.files {
+						let fileURL: NSURL = NSURL.fileURLWithPath(NSBundle.mainBundle().pathForResource(file.fileName, ofType: "txt")!)
+						print(fileURL)
+						do {
+							file.reference = try String(contentsOfURL: fileURL)
+							referenceList.append(file)
+						} catch let error as NSError {
+							print("Failed reading from URL: \(fileURL), Error: " + error.localizedDescription)
+						}
+					}
+					
+					print(referenceList)
+					
+					migration.enumerate(EndpointResult.className()) { oldObject, newObject in
+						if let name = oldObject!["testName"] as? String where name == "" {
+							if let data: NSData = oldObject!["responseData"] as? NSData {
+								var responseString: String?
+								if let string: String = String(data: data, encoding: NSUTF8StringEncoding) {
+									responseString = string
+								} else if let data: NSData = oldObject!["responseData"] as? NSData {
+									if let _: UIImage = UIImage(data: data) {
+										responseString = data.base64EncodedStringWithOptions(.Encoding64CharacterLineLength)
+										
+									}
+								}
+								let cleanResponseString = responseString!.componentsSeparatedByCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()).filter{ !$0.isEmpty }.joinWithSeparator("")
+								
+								for referenceFile in referenceList {
+									let cleanReferenceString = referenceFile.reference!.componentsSeparatedByCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()).filter{ !$0.isEmpty }.joinWithSeparator("")
+									
+									if cleanResponseString.containsString(cleanReferenceString) {
+										newObject!["testName"] = referenceFile.name
+										print("\(newObject!["testName"])")
+									}
+								}
+							}
+						}
+					}
+				}
+				if (oldSchemaVersion < 18) {
+					print("Migrating database version 17 to 18!")
+					migration.enumerate(EndpointResult.className()) { oldObject, newObject in
+						if let server = oldObject!["server"] as? String where server == "GME" {
+							if let data: NSData = oldObject!["responseData"] as? NSData {
+								if let string: String = String(data: data, encoding: NSUTF8StringEncoding) {
+									if let name = oldObject!["testName"] as? String where name == "" || name == "FeatureByID" {
+										if name == "" {
+											if string.containsString("<WMS_Capabilities version=") {
+												newObject!["testName"] = "WMSGetCapabilities"
+												newObject!["dataset"] = "AerialPhoto"
+												newObject!["returnType"] = "XML"
+												print("\(newObject!["testName"])")
+												
+											} else if string.containsString("<ows:ServiceType>OGC WMTS</ows:ServiceType>") {
+												newObject!["testName"] = "WMTSGetCapabilities"
+												newObject!["dataset"] = "AerialPhoto"
+												newObject!["returnType"] = "XML"
+												print("\(newObject!["testName"])")
+												
+											} else if string.componentsSeparatedByString("ASSET").count > 50 {
+												newObject!["testName"] = "Big"
+												print("\(newObject!["testName"])")
+												
+											}
+										} else if name == "FeatureByID" {
+											if string.characters.count > 1000 {
+												newObject!["testName"] = "AttributeFilter"
+												print("\(newObject!["testName"])")
+											}
+										}
+									}
+								}
+							}
 						}
 					}
 				}

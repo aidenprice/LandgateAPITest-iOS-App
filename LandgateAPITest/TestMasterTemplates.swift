@@ -37,6 +37,8 @@ enum ReturnType: String {
 
 enum TestName: String {
 	case getCapabilities = "GetCapabilities"
+	case wmsGetCapabilities = "WMSGetCapabilities"
+	case wmtsGetCapabilities = "WMTSGetCapabilities"
 	case small = "Small"
 	case big = "Big"
 	case featureByID = "FeatureByID"
@@ -46,6 +48,9 @@ enum TestName: String {
 	case getMap = "GetMap"
 	case getTileRest = "GetTileRestful"
 	case getTileKVP = "GetTileKVP"
+	case getTileKVP2 = "GetTileKVP2"
+	case getTileKVP3 = "GetTileKVP3"
+	case getTileKVP4 = "GetTileKVP4"
 }
 
 // MARK: TestEndpoint Templates

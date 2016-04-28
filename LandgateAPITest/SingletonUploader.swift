@@ -54,7 +54,7 @@ class TestUploader {
 		
 		let stateMachine = StateMachine(initialState: readyState, states: [readyState, uploadingState, successState, failState])
 		
-		let startEvent = Event(name: UploaderEvents.Start, sourceValues: [UploaderState.Ready, UploaderState.Success], destinationValue: UploaderState.Uploading)
+		let startEvent = Event(name: UploaderEvents.Start, sourceValues: [UploaderState.Ready, UploaderState.Success, UploaderState.Fail], destinationValue: UploaderState.Uploading)
 		let successEvent = Event(name: UploaderEvents.Success, sourceValues: [UploaderState.Uploading], destinationValue: UploaderState.Success)
 		let failEvent = Event(name: UploaderEvents.Fail, sourceValues: [UploaderState.Uploading], destinationValue: UploaderState.Fail)
 		let backToReadyEvent = Event(name: UploaderEvents.Ready, sourceValues: [UploaderState.Success, UploaderState.Fail], destinationValue: UploaderState.Ready)
@@ -217,6 +217,15 @@ class TestUploader {
 		print("Entered fail state.")
 		
 		// TODO add a pop up to alert the user.
+		
+		if !self.queue.isEmpty {
+			print("Still uploads in the queue.")
+			stateMachine.fireEvent(UploaderEvents.Start)
+		} else {
+			print("Queue emptied! Back to ready state instead!")
+			stateMachine.fireEvent(UploaderEvents.Ready)
+		}
+
 	}
 	
 	// MARK: Helper methods

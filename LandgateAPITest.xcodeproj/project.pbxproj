@@ -30,7 +30,21 @@
 		47752BC11BEA9DC800A97859 /* TestMasterTemplates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47752BC01BEA9DC800A97859 /* TestMasterTemplates.swift */; };
 		479E7E0F1C0E378E001F735D /* KDCircularProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 479E7E0E1C0E378E001F735D /* KDCircularProgress.swift */; };
 		479E7E111C0E38FE001F735D /* ModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 479E7E101C0E38FE001F735D /* ModalViewController.swift */; };
-		47C85AF81CBFB28A006E3438 /* backup.realm in Resources */ = {isa = PBXBuildFile; fileRef = 47C85AF71CBFB28A006E3438 /* backup.realm */; };
+		47C85B241CCD739B006E3438 /* GME_AerialPhoto_Big_GET_Image.txt in Resources */ = {isa = PBXBuildFile; fileRef = 47C85B161CCD739B006E3438 /* GME_AerialPhoto_Big_GET_Image.txt */; };
+		47C85B251CCD739B006E3438 /* GME_AerialPhoto_GetTileKVP_GET_Image.txt in Resources */ = {isa = PBXBuildFile; fileRef = 47C85B171CCD739B006E3438 /* GME_AerialPhoto_GetTileKVP_GET_Image.txt */; };
+		47C85B261CCD739B006E3438 /* GME_AerialPhoto_GetTileKVP2_GET_Image.txt in Resources */ = {isa = PBXBuildFile; fileRef = 47C85B181CCD739B006E3438 /* GME_AerialPhoto_GetTileKVP2_GET_Image.txt */; };
+		47C85B271CCD739B006E3438 /* GME_AerialPhoto_GetTileKVP3_GET_Image.txt in Resources */ = {isa = PBXBuildFile; fileRef = 47C85B191CCD739B006E3438 /* GME_AerialPhoto_GetTileKVP3_GET_Image.txt */; };
+		47C85B281CCD739B006E3438 /* GME_AerialPhoto_GetTileKVP4_GET_Image.txt in Resources */ = {isa = PBXBuildFile; fileRef = 47C85B1A1CCD739B006E3438 /* GME_AerialPhoto_GetTileKVP4_GET_Image.txt */; };
+		47C85B291CCD739B006E3438 /* GME_AerialPhoto_Small_GET_Image.txt in Resources */ = {isa = PBXBuildFile; fileRef = 47C85B1B1CCD739B006E3438 /* GME_AerialPhoto_Small_GET_Image.txt */; };
+		47C85B2A1CCD739B006E3438 /* GME_AerialPhoto_WMSGetCapabilities_GET_XML.txt in Resources */ = {isa = PBXBuildFile; fileRef = 47C85B1C1CCD739B006E3438 /* GME_AerialPhoto_WMSGetCapabilities_GET_XML.txt */; };
+		47C85B2B1CCD739B006E3438 /* GME_AerialPhoto_WMTSGetCapabilities_GET_XML.txt in Resources */ = {isa = PBXBuildFile; fileRef = 47C85B1D1CCD739B006E3438 /* GME_AerialPhoto_WMTSGetCapabilities_GET_XML.txt */; };
+		47C85B2C1CCD739B006E3438 /* GME_BusStops_AttributeFilter_GET_JSON.txt in Resources */ = {isa = PBXBuildFile; fileRef = 47C85B1E1CCD739B006E3438 /* GME_BusStops_AttributeFilter_GET_JSON.txt */; };
+		47C85B2D1CCD739B006E3438 /* GME_BusStops_Big_GET_JSON.txt in Resources */ = {isa = PBXBuildFile; fileRef = 47C85B1F1CCD739B006E3438 /* GME_BusStops_Big_GET_JSON.txt */; };
+		47C85B2E1CCD739B006E3438 /* GME_BusStops_DistanceFilter_GET_JSON.txt in Resources */ = {isa = PBXBuildFile; fileRef = 47C85B201CCD739B006E3438 /* GME_BusStops_DistanceFilter_GET_JSON.txt */; };
+		47C85B2F1CCD739B006E3438 /* GME_BusStops_FeatureByID_GET_JSON.txt in Resources */ = {isa = PBXBuildFile; fileRef = 47C85B211CCD739B006E3438 /* GME_BusStops_FeatureByID_GET_JSON.txt */; };
+		47C85B301CCD739B006E3438 /* GME_BusStops_IntersectFilter_GET_JSON.txt in Resources */ = {isa = PBXBuildFile; fileRef = 47C85B221CCD739B006E3438 /* GME_BusStops_IntersectFilter_GET_JSON.txt */; };
+		47C85B311CCD739B006E3438 /* GME_BusStops_Small_GET_JSON.txt in Resources */ = {isa = PBXBuildFile; fileRef = 47C85B231CCD739B006E3438 /* GME_BusStops_Small_GET_JSON.txt */; };
+		47C85B331CCD7E3C006E3438 /* ReferenceObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47C85B321CCD7E3C006E3438 /* ReferenceObjects.swift */; };
 		47D8F7111C0BF3E700E4ED9C /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47D8F7101C0BF3E700E4ED9C /* TestViewController.swift */; };
 		47F2AEEE1BF978AC00E70DEB /* LocationTester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47F2AEED1BF978AC00E70DEB /* LocationTester.swift */; };
 		47F2AEF01BFA71F600E70DEB /* NetworkTester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47F2AEEF1BFA71F600E70DEB /* NetworkTester.swift */; };
@@ -79,6 +93,21 @@
 		479E7E0E1C0E378E001F735D /* KDCircularProgress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KDCircularProgress.swift; sourceTree = "<group>"; };
 		479E7E101C0E38FE001F735D /* ModalViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModalViewController.swift; sourceTree = "<group>"; };
 		47C85AF71CBFB28A006E3438 /* backup.realm */ = {isa = PBXFileReference; lastKnownFileType = file; path = backup.realm; sourceTree = "<group>"; };
+		47C85B161CCD739B006E3438 /* GME_AerialPhoto_Big_GET_Image.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = GME_AerialPhoto_Big_GET_Image.txt; sourceTree = "<group>"; };
+		47C85B171CCD739B006E3438 /* GME_AerialPhoto_GetTileKVP_GET_Image.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = GME_AerialPhoto_GetTileKVP_GET_Image.txt; sourceTree = "<group>"; };
+		47C85B181CCD739B006E3438 /* GME_AerialPhoto_GetTileKVP2_GET_Image.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = GME_AerialPhoto_GetTileKVP2_GET_Image.txt; sourceTree = "<group>"; };
+		47C85B191CCD739B006E3438 /* GME_AerialPhoto_GetTileKVP3_GET_Image.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = GME_AerialPhoto_GetTileKVP3_GET_Image.txt; sourceTree = "<group>"; };
+		47C85B1A1CCD739B006E3438 /* GME_AerialPhoto_GetTileKVP4_GET_Image.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = GME_AerialPhoto_GetTileKVP4_GET_Image.txt; sourceTree = "<group>"; };
+		47C85B1B1CCD739B006E3438 /* GME_AerialPhoto_Small_GET_Image.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = GME_AerialPhoto_Small_GET_Image.txt; sourceTree = "<group>"; };
+		47C85B1C1CCD739B006E3438 /* GME_AerialPhoto_WMSGetCapabilities_GET_XML.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = GME_AerialPhoto_WMSGetCapabilities_GET_XML.txt; sourceTree = "<group>"; };
+		47C85B1D1CCD739B006E3438 /* GME_AerialPhoto_WMTSGetCapabilities_GET_XML.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = GME_AerialPhoto_WMTSGetCapabilities_GET_XML.txt; sourceTree = "<group>"; };
+		47C85B1E1CCD739B006E3438 /* GME_BusStops_AttributeFilter_GET_JSON.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = GME_BusStops_AttributeFilter_GET_JSON.txt; sourceTree = "<group>"; };
+		47C85B1F1CCD739B006E3438 /* GME_BusStops_Big_GET_JSON.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = GME_BusStops_Big_GET_JSON.txt; sourceTree = "<group>"; };
+		47C85B201CCD739B006E3438 /* GME_BusStops_DistanceFilter_GET_JSON.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = GME_BusStops_DistanceFilter_GET_JSON.txt; sourceTree = "<group>"; };
+		47C85B211CCD739B006E3438 /* GME_BusStops_FeatureByID_GET_JSON.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = GME_BusStops_FeatureByID_GET_JSON.txt; sourceTree = "<group>"; };
+		47C85B221CCD739B006E3438 /* GME_BusStops_IntersectFilter_GET_JSON.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = GME_BusStops_IntersectFilter_GET_JSON.txt; sourceTree = "<group>"; };
+		47C85B231CCD739B006E3438 /* GME_BusStops_Small_GET_JSON.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = GME_BusStops_Small_GET_JSON.txt; sourceTree = "<group>"; };
+		47C85B321CCD7E3C006E3438 /* ReferenceObjects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReferenceObjects.swift; sourceTree = "<group>"; };
 		47D8F7101C0BF3E700E4ED9C /* TestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
 		47F2AEED1BF978AC00E70DEB /* LocationTester.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationTester.swift; sourceTree = "<group>"; };
 		47F2AEEF1BFA71F600E70DEB /* NetworkTester.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkTester.swift; sourceTree = "<group>"; };
@@ -105,6 +134,20 @@
 		47752BA21BEA9B8700A97859 = {
 			isa = PBXGroup;
 			children = (
+				47C85B161CCD739B006E3438 /* GME_AerialPhoto_Big_GET_Image.txt */,
+				47C85B171CCD739B006E3438 /* GME_AerialPhoto_GetTileKVP_GET_Image.txt */,
+				47C85B181CCD739B006E3438 /* GME_AerialPhoto_GetTileKVP2_GET_Image.txt */,
+				47C85B191CCD739B006E3438 /* GME_AerialPhoto_GetTileKVP3_GET_Image.txt */,
+				47C85B1A1CCD739B006E3438 /* GME_AerialPhoto_GetTileKVP4_GET_Image.txt */,
+				47C85B1B1CCD739B006E3438 /* GME_AerialPhoto_Small_GET_Image.txt */,
+				47C85B1C1CCD739B006E3438 /* GME_AerialPhoto_WMSGetCapabilities_GET_XML.txt */,
+				47C85B1D1CCD739B006E3438 /* GME_AerialPhoto_WMTSGetCapabilities_GET_XML.txt */,
+				47C85B1E1CCD739B006E3438 /* GME_BusStops_AttributeFilter_GET_JSON.txt */,
+				47C85B1F1CCD739B006E3438 /* GME_BusStops_Big_GET_JSON.txt */,
+				47C85B201CCD739B006E3438 /* GME_BusStops_DistanceFilter_GET_JSON.txt */,
+				47C85B211CCD739B006E3438 /* GME_BusStops_FeatureByID_GET_JSON.txt */,
+				47C85B221CCD739B006E3438 /* GME_BusStops_IntersectFilter_GET_JSON.txt */,
+				47C85B231CCD739B006E3438 /* GME_BusStops_Small_GET_JSON.txt */,
 				47C85AF71CBFB28A006E3438 /* backup.realm */,
 				473E01571CB523FF001D6047 /* RealmSwift.framework */,
 				473E01581CB523FF001D6047 /* Realm.framework */,
@@ -175,6 +218,7 @@
 				4703B47E1BF6DF7000298A03 /* ResultObjects.swift */,
 				4703B46A1BF093D600298A03 /* TestingTips.swift */,
 				47752BC01BEA9DC800A97859 /* TestMasterTemplates.swift */,
+				47C85B321CCD7E3C006E3438 /* ReferenceObjects.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -255,10 +299,23 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				47C85B241CCD739B006E3438 /* GME_AerialPhoto_Big_GET_Image.txt in Resources */,
+				47C85B251CCD739B006E3438 /* GME_AerialPhoto_GetTileKVP_GET_Image.txt in Resources */,
+				47C85B261CCD739B006E3438 /* GME_AerialPhoto_GetTileKVP2_GET_Image.txt in Resources */,
+				47C85B271CCD739B006E3438 /* GME_AerialPhoto_GetTileKVP3_GET_Image.txt in Resources */,
+				47C85B281CCD739B006E3438 /* GME_AerialPhoto_GetTileKVP4_GET_Image.txt in Resources */,
+				47C85B291CCD739B006E3438 /* GME_AerialPhoto_Small_GET_Image.txt in Resources */,
+				47C85B2A1CCD739B006E3438 /* GME_AerialPhoto_WMSGetCapabilities_GET_XML.txt in Resources */,
+				47C85B2B1CCD739B006E3438 /* GME_AerialPhoto_WMTSGetCapabilities_GET_XML.txt in Resources */,
+				47C85B2C1CCD739B006E3438 /* GME_BusStops_AttributeFilter_GET_JSON.txt in Resources */,
+				47C85B2D1CCD739B006E3438 /* GME_BusStops_Big_GET_JSON.txt in Resources */,
+				47C85B2E1CCD739B006E3438 /* GME_BusStops_DistanceFilter_GET_JSON.txt in Resources */,
+				47C85B2F1CCD739B006E3438 /* GME_BusStops_FeatureByID_GET_JSON.txt in Resources */,
+				47C85B301CCD739B006E3438 /* GME_BusStops_IntersectFilter_GET_JSON.txt in Resources */,
+				47C85B311CCD739B006E3438 /* GME_BusStops_Small_GET_JSON.txt in Resources */,
 				47752BB91BEA9B8700A97859 /* LaunchScreen.storyboard in Resources */,
 				47752BB61BEA9B8700A97859 /* Assets.xcassets in Resources */,
 				47752BB41BEA9B8700A97859 /* Main.storyboard in Resources */,
-				47C85AF81CBFB28A006E3438 /* backup.realm in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -294,6 +351,7 @@
 				475A40041C04026000CC6F2A /* TipsViewController.swift in Sources */,
 				4703B4731BF3D27B00298A03 /* CreditsViewController.swift in Sources */,
 				47120BDD1C0942A6004D11A7 /* NewTestTableViewController.swift in Sources */,
+				47C85B331CCD7E3C006E3438 /* ReferenceObjects.swift in Sources */,
 				47F2AEEE1BF978AC00E70DEB /* LocationTester.swift in Sources */,
 				471E6E461C071598002C43C5 /* Credits.swift in Sources */,
 				47752BC11BEA9DC800A97859 /* TestMasterTemplates.swift in Sources */,
