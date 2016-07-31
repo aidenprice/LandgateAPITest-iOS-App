@@ -1,0 +1,7 @@
+*.realm
+Cartfile.*
+Carthage/
+*.zip
+*.framework
+*.txt
+KDCircularProgress.swift
